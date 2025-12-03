@@ -6,144 +6,60 @@
 <title>Panel - Hatay ODTÜ MD</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
-    :root {
-        --odtu-red: #E31E24;
-        --odtu-dark: #2c3e50;
-        --bg-light: #f4f6f9;
-        --white: #ffffff;
-        --green: #27ae60;
-        --navbar-height: 70px;
-    }
-
+    :root { --odtu-red: #E31E24; --odtu-dark: #2c3e50; --bg-light: #f4f6f9; --white: #ffffff; --green: #27ae60; --navbar-height: 70px; }
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
-    
-    body { 
-        background-color: var(--bg-light); 
-        display: block; /* Flex yerine Block yaptık çünkü dikey akış var */
-        min-height: 100vh;
-    }
+    body { background-color: var(--bg-light); display: block; min-height: 100vh; }
 
-    /* --- YENİ ÜST MENÜ (NAVBAR) --- */
-    .navbar {
-        width: 100%;
-        height: var(--navbar-height);
-        background-color: var(--odtu-dark);
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 0 30px;
-        position: fixed; /* Sayfanın tepesine yapışık */
-        top: 0;
-        left: 0;
-        z-index: 1000;
-        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-    }
-
-    /* Logo Alanı */
+    /* NAVBAR */
+    .navbar { width: 100%; height: var(--navbar-height); background-color: var(--odtu-dark); display: flex; align-items: center; justify-content: space-between; padding: 0 30px; position: fixed; top: 0; left: 0; z-index: 1000; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
     .nav-left { display: flex; align-items: center; gap: 15px; }
     
-    .nav-logo {
-        height: 50px; /* Navbar içine sığacak boyutta */
-        width: auto;
-        background: white;
-        padding: 2px;
-        border-radius: 5px;
-        object-fit: contain;
-    }
-
-    .nav-title {
-        color: white;
-        font-size: 1.1rem;
-        font-weight: bold;
-    }
-    .nav-title span { display: block; font-size: 0.75rem; color: #bdc3c7; font-weight: normal; }
-
-    /* Menü Linkleri (Ortada) */
-    .nav-links { display: flex; gap: 20px; }
-    .nav-links a {
-        color: #bdc3c7;
-        text-decoration: none;
-        font-size: 0.95rem;
-        display: flex; align-items: center; gap: 8px;
-        padding: 8px 12px;
-        border-radius: 6px;
-        transition: 0.3s;
-    }
-    .nav-links a:hover, .nav-links a.active {
-        background-color: rgba(255,255,255,0.1);
-        color: white;
-    }
-
-    /* Sağ Taraf (Profil & Çıkış) */
-    .nav-right { display: flex; align-items: center; gap: 20px; }
+    /* LOGO AYARI (Küçük ve Net) */
+    .nav-logo { height: 50px; width: auto; background: white; padding: 2px; border-radius: 5px; object-fit: contain; }
     
-    .logout-btn {
-        color: #e74c3c;
-        text-decoration: none;
-        font-size: 0.9rem;
-        border: 1px solid #e74c3c;
-        padding: 6px 15px;
-        border-radius: 20px;
-        transition: 0.3s;
-    }
+    .nav-title { color: white; font-size: 1.1rem; font-weight: bold; }
+    .nav-title span { display: block; font-size: 0.75rem; color: #bdc3c7; font-weight: normal; }
+    .nav-links { display: flex; gap: 20px; }
+    .nav-links a { color: #bdc3c7; text-decoration: none; font-size: 0.95rem; display: flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 6px; transition: 0.3s; }
+    .nav-links a:hover, .nav-links a.active { background-color: rgba(255,255,255,0.1); color: white; }
+    .nav-right { display: flex; align-items: center; gap: 20px; }
+    .logout-btn { color: #e74c3c; text-decoration: none; font-size: 0.9rem; border: 1px solid #e74c3c; padding: 6px 15px; border-radius: 20px; transition: 0.3s; }
     .logout-btn:hover { background: #e74c3c; color: white; }
 
-    /* --- ANA İÇERİK (NAVBAR ALTINDAN BAŞLAR) --- */
-    .main-content {
-        margin-top: var(--navbar-height); /* Navbar kadar boşluk bırak */
-        padding: 40px;
-        width: 100%;
-        max-width: 1200px; /* İçeriği ortala ve çok yayılmasın */
-        margin-left: auto;
-        margin-right: auto;
-    }
-
-    /* --- DASHBOARD İÇERİK TASARIMLARI (DEĞİŞMEDİ) --- */
+    /* CONTENT */
+    .main-content { margin-top: var(--navbar-height); padding: 40px; width: 100%; max-width: 1200px; margin-left: auto; margin-right: auto; }
     .top-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
-    .welcome-text h2 { color: var(--odtu-dark); }
     .digital-card-btn { background: linear-gradient(135deg, var(--odtu-dark), #34495e); color: white; padding: 10px 20px; border-radius: 8px; display: flex; align-items: center; gap: 10px; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
-    
     .dashboard-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 25px; }
     .panel-card { background: var(--white); border-radius: 12px; padding: 25px; box-shadow: 0 2px 15px rgba(0,0,0,0.05); }
     .card-header { display: flex; justify-content: space-between; margin-bottom: 20px; align-items: center; }
     .card-title { font-size: 1.1rem; font-weight: bold; color: var(--odtu-dark); display: flex; align-items: center; gap: 10px; }
 
-    /* Diğer bileşenler */
-    .privacy-box { background-color: #f8f9fa; border: 1px solid #eee; padding: 15px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; }
+    /* Component Styles */
     .switch { position: relative; display: inline-block; width: 50px; height: 26px; }
     .switch input { opacity: 0; width: 0; height: 0; }
     .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 34px; }
     .slider:before { position: absolute; content: ""; height: 20px; width: 20px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
     input:checked + .slider { background-color: var(--green); }
     input:checked + .slider:before { transform: translateX(24px); }
-
     .member-item { display: flex; align-items: center; justify-content: space-between; padding: 15px 0; border-bottom: 1px solid #eee; }
     .connect-btn { background-color: transparent; border: 1px solid var(--odtu-dark); color: var(--odtu-dark); padding: 6px 12px; border-radius: 6px; font-size: 0.8rem; cursor: pointer; transition: 0.3s; }
     .connect-btn:hover { background-color: var(--odtu-dark); color: white; }
-    
     .mentor-status { background: #e8f6f3; border: 1px solid #d1f2eb; padding: 15px; border-radius: 8px; }
     .btn-action { width: 100%; padding: 10px; border: none; border-radius: 6px; cursor: pointer; background: var(--odtu-red); color: white; margin-top: 10px; }
 
     /* Modal */
     #idCardModal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); justify-content: center; align-items: center; z-index: 2000; }
     .id-card { width: 320px; height: 200px; background: linear-gradient(135deg, #E31E24 0%, #900e12 100%); border-radius: 15px; padding: 20px; color: white; position: relative; box-shadow: 0 10px 30px rgba(0,0,0,0.3); display: flex; flex-direction: column; justify-content: space-between; }
-    
-    /* Mobil Uyum */
-    @media (max-width: 900px) {
-        .navbar { height: auto; flex-direction: column; padding: 15px; position: relative; }
-        .nav-links { flex-wrap: wrap; justify-content: center; margin: 15px 0; }
-        .main-content { margin-top: 0; }
-    }
 </style>
 </head>
 <body>
 
     <nav class="navbar">
         <div class="nav-left">
-            <img src="logo.png" class="nav-logo" onerror="this.onerror=null; this.src='https://upload.wikimedia.org/wikipedia/tr/a/a6/Odt%C3%BC_logo.png';">
+            <img src="logo.jpg" class="nav-logo" onerror="this.onerror=null; this.src='https://upload.wikimedia.org/wikipedia/tr/a/a6/Odt%C3%BC_logo.png';">
             <div class="nav-title">Hatay ODTÜ MD <span>Üye Portalı</span></div>
         </div>
-
         <div class="nav-links">
             <a href="dashboard.html" class="active"><i class="fa-solid fa-layer-group"></i> Panel</a>
             <a href="mentor.html"><i class="fa-solid fa-handshake-angle"></i> Mentorluk</a>
@@ -151,17 +67,16 @@
             <a href="network.html"><i class="fa-solid fa-users-viewfinder"></i> Mezun Ağı</a>
             <a href="settings.html"><i class="fa-solid fa-gear"></i> Ayarlar</a>
         </div>
-
         <div class="nav-right">
-            <a href="index.html" class="logout-btn" onclick="localStorage.clear()"><i class="fa-solid fa-right-from-bracket"></i> Çıkış</a>
+            <a href="#" class="logout-btn" onclick="logout()"><i class="fa-solid fa-right-from-bracket"></i> Çıkış</a>
         </div>
     </nav>
 
     <div class="main-content">
         <div class="top-header">
             <div class="welcome-text">
-                <h2>Merhaba, <span id="userName">Üye</span></h2>
-                <p>Bugün topluluğun için ne yapmak istersin?</p>
+                <h2>Merhaba, <span id="userName">Yükleniyor...</span></h2>
+                <p>Hatay ODTÜ MD Ailesine Hoş Geldin.</p>
             </div>
             <div class="digital-card-btn" onclick="document.getElementById('idCardModal').style.display='flex'">
                 <i class="fa-solid fa-id-card"></i> Dijital Kimlik Kartım
@@ -169,97 +84,97 @@
         </div>
 
         <div class="dashboard-grid">
-            
             <div class="panel-card">
-                <div class="card-header">
-                    <div class="card-title"><i class="fa-solid fa-shield-halved" style="color: #27ae60;"></i> Gizlilik</div>
-                </div>
-                <div class="privacy-box">
-                    <div>
-                        <strong>Aramalarda Görün</strong>
-                        <span style="display:block; font-size:0.8rem; color:#27ae60" id="privacyText">Açık</span>
-                    </div>
-                    <label class="switch">
-                        <input type="checkbox" id="privacyToggle" checked onchange="togglePrivacy()">
-                        <span class="slider"></span>
-                    </label>
+                <div class="card-header"><div class="card-title"><i class="fa-solid fa-shield-halved" style="color: #27ae60;"></i> Gizlilik</div></div>
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <div><strong>Aramalarda Görün</strong><span style="display:block; font-size:0.8rem; color:#27ae60" id="privacyText">Açık</span></div>
+                    <label class="switch"><input type="checkbox" id="privacyToggle" checked onchange="togglePrivacy()"><span class="slider"></span></label>
                 </div>
             </div>
-
             <div class="panel-card">
-                <div class="card-header">
-                    <div class="card-title"><i class="fa-solid fa-magnifying-glass" style="color: #2980b9;"></i> Mezun Bul</div>
-                </div>
-                <div class="member-item">
-                    <div><h4>Zeynep Y.</h4><p style="font-size:0.8rem; color:#777">Şehir Plancısı @ Hatay BB</p></div>
-                    <button class="connect-btn">Bağlantı İste</button>
-                </div>
-                <div class="member-item">
-                    <div><h4>Mehmet T.</h4><p style="font-size:0.8rem; color:#777">Makine Müh. @ İskenderun</p></div>
-                    <button class="connect-btn">Bağlantı İste</button>
-                </div>
+                <div class="card-header"><div class="card-title"><i class="fa-solid fa-magnifying-glass" style="color: #2980b9;"></i> Mezun Bul</div></div>
+                <div class="member-item"><div><h4>Zeynep Y.</h4><p style="font-size:0.8rem; color:#777">Şehir Plancısı @ Hatay BB</p></div><button class="connect-btn">Bağlantı İste</button></div>
+                <div class="member-item"><div><h4>Mehmet T.</h4><p style="font-size:0.8rem; color:#777">Makine Müh. @ İskenderun</p></div><button class="connect-btn">Bağlantı İste</button></div>
             </div>
-
             <div class="panel-card">
-                <div class="card-header">
-                    <div class="card-title"><i class="fa-solid fa-handshake-angle" style="color: #f39c12;"></i> Mentorluk</div>
-                </div>
-                <div class="mentor-status">
-                    <strong>Aktif Mentorunuz:</strong>
-                    <div style="margin-top:5px">Ahmet K. (ASELSAN)</div>
-                </div>
+                <div class="card-header"><div class="card-title"><i class="fa-solid fa-handshake-angle" style="color: #f39c12;"></i> Mentorluk</div></div>
+                <div class="mentor-status"><strong>Aktif Mentorunuz:</strong><div style="margin-top:5px">Ahmet K. (ASELSAN)</div></div>
                 <button class="btn-action" onclick="window.location.href='mentor.html'">Programa Git</button>
             </div>
-
         </div>
     </div>
 
     <div id="idCardModal" onclick="this.style.display='none'">
         <div class="id-card" onclick="event.stopPropagation()">
-            <div style="display:flex; justify-content:space-between">
-                <i class="fa-solid fa-graduation-cap" style="font-size:30px"></i>
-                <div style="text-align:right; font-weight:bold">HATAY ODTÜ MD</div>
-            </div>
+            <div style="display:flex; justify-content:space-between"><i class="fa-solid fa-graduation-cap" style="font-size:30px"></i><div style="text-align:right; font-weight:bold">HATAY ODTÜ MD</div></div>
             <div style="text-align:center"><i class="fa-solid fa-qrcode" style="font-size:70px"></i></div>
             <div>
-                <div id="cardNameArea" style="font-weight:bold">İSİM SOYAD</div>
-                <div id="cardDeptArea" style="font-size:0.8rem">Bölüm</div>
+                <div id="cardNameArea" style="font-weight:bold">YÜKLENİYOR...</div>
+                <div id="cardDeptArea" style="font-size:0.8rem">Bölüm Bilgisi</div>
             </div>
         </div>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
     <script>
-        document.addEventListener("DOMContentLoaded", () => {
-            const ad = localStorage.getItem("kullaniciAdi");
-            const bolum = localStorage.getItem("kullaniciBolum");
+        // --- 1. SUPABASE AYARLARI ---
+        // Lütfen index.html'de çalışan anahtarları buraya da yapıştır!
+        const supabaseUrl = 'https://hftrmiiacxgtkarsvupn.supabase.co';
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhmdHJtaWlhY3hndGthcnN2dXBuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ3ODUzNzIsImV4cCI6MjA4MDM2MTM3Mn0.BgCk5xuZx6AZuxzfBHcQqg8j8BtxU9FbupDgoFecG_k';
+        
+        const supabase = supabase.createClient(supabaseUrl, supabaseKey);
+
+        // --- 2. SAYFA YÜKLENİNCE ---
+        document.addEventListener("DOMContentLoaded", async () => {
             
-            if(ad) {
-                document.getElementById("userName").innerText = ad;
-                document.getElementById("cardNameArea").innerText = ad.toUpperCase() + " [SOYAD]";
-            }
-            if(bolum) {
-                document.getElementById("cardDeptArea").innerText = bolum;
+            // 2.1 Oturum Kontrolü (Giriş yapılmış mı?)
+            const { data: { session } } = await supabase.auth.getSession();
+
+            if (!session) {
+                // Giriş yoksa ana sayfaya gönder
+                window.location.href = 'index.html';
+                return;
             }
 
-            // Gizlilik Toggle Mantığı
-            const isPrivacyOn = localStorage.getItem("privacySetting");
-            if (isPrivacyOn === "false") {
-                document.getElementById("privacyToggle").checked = false;
-                updatePrivacyText(false);
+            // 2.2 Kullanıcı Bilgilerini Çek
+            const user = session.user;
+            
+            // Profil tablosundan veriyi al
+            const { data: profile, error } = await supabase
+                .from('profiles')
+                .select('*')
+                .eq('id', user.id)
+                .single();
+
+            // İsmi Ekrana Yaz (Fallback mekanizmalı)
+            let displayName = "Değerli Üye";
+            let displayDept = "Bölüm Bilgisi Yok";
+
+            if (profile && profile.full_name) {
+                displayName = profile.full_name;
+                displayDept = profile.department || displayDept;
+            } else if (user.user_metadata && user.user_metadata.full_name) {
+                // Profiller tablosunda yoksa auth metadata'dan al
+                displayName = user.user_metadata.full_name;
             }
+
+            document.getElementById("userName").innerText = displayName;
+            document.getElementById("cardNameArea").innerText = displayName.toUpperCase();
+            document.getElementById("cardDeptArea").innerText = displayDept;
         });
 
+        // --- 3. FONKSİYONLAR ---
         function togglePrivacy() {
             const status = document.getElementById("privacyToggle").checked;
-            localStorage.setItem("privacySetting", status);
-            updatePrivacyText(status);
+            document.getElementById("privacyText").innerText = status ? "Açık" : "Gizli";
+            document.getElementById("privacyText").style.color = status ? "#27ae60" : "#e74c3c";
             if(!status) alert("Profiliniz aramalarda gizlendi.");
         }
 
-        function updatePrivacyText(status) {
-            const text = document.getElementById("privacyText");
-            text.innerText = status ? "Açık" : "Gizli";
-            text.style.color = status ? "#27ae60" : "#e74c3c";
+        async function logout() {
+            await supabase.auth.signOut();
+            window.location.href = "index.html";
         }
     </script>
 
