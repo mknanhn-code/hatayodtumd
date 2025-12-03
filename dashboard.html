@@ -3,132 +3,56 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Üye Portalı - Hatay ODTÜ MD</title>
+<title>Panel - Hatay ODTÜ MD</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
-    :root {
-        --odtu-red: #E31E24;
-        --odtu-dark: #2c3e50;
-        --bg-light: #f4f6f9;
-        --white: #ffffff;
-        --green: #27ae60;
-    }
-
+    :root { --odtu-red: #E31E24; --odtu-dark: #2c3e50; --bg-light: #f4f6f9; --white: #ffffff; --green: #27ae60; }
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
     body { background-color: var(--bg-light); display: flex; min-height: 100vh; }
 
-    /* --- SIDEBAR --- */
-    .sidebar {
-        width: 260px;
-        background-color: var(--odtu-dark);
-        color: #ecf0f1;
-        display: flex; flex-direction: column;
-    }
+    /* SIDEBAR & LOGO GÜNCELLEMESİ */
+    .sidebar { width: 260px; background-color: var(--odtu-dark); color: #ecf0f1; display: flex; flex-direction: column; }
+    .sidebar-header { padding: 10px 5px; border-bottom: 1px solid rgba(255,255,255,0.1); text-align: center; }
     
-    .sidebar-header { 
-        padding: 20px 10px; 
-        border-bottom: 1px solid rgba(255,255,255,0.1); 
-        text-align: center;
-    }
-    
-    /* GÜNCELLENMİŞ LOGO AYARLARI */
     .logo-img {
-        width: auto;
-        height: 140px;   /* Yükseklik idealleştirildi */
-        object-fit: contain;
-        background-color: white; /* JPG olduğu için arkası beyaz kalsın */
-        padding: 5px;
-        border-radius: 8px;
-        margin-bottom: 10px;
+        width: 100%; height: auto; max-width: 240px; object-fit: contain;
+        padding: 0; background-color: white; border-radius: 8px;
+        margin-bottom: 5px; display: block; margin-left: auto; margin-right: auto;
     }
 
-    .sidebar-header h3 { font-size: 1.1rem; color: var(--white); margin-top: 5px;}
+    .sidebar-header h3 { font-size: 1.1rem; color: var(--white); margin-top: 10px; }
     .sidebar-header p { font-size: 0.8rem; color: #bdc3c7; }
     
     .menu-items { flex: 1; padding-top: 20px; }
-    
-    /* MENÜ LİNKLERİ */
-    .menu-items a {
-        display: flex; align-items: center;
-        padding: 15px 25px;
-        color: #bdc3c7; text-decoration: none;
-        transition: 0.3s; border-left: 4px solid transparent;
-    }
-    .menu-items a:hover, .menu-items a.active {
-        background-color: rgba(255,255,255,0.05); color: var(--white); border-left-color: var(--odtu-red);
-    }
+    .menu-items a { display: flex; align-items: center; padding: 15px 25px; color: #bdc3c7; text-decoration: none; transition: 0.3s; border-left: 4px solid transparent; }
+    .menu-items a:hover, .menu-items a.active { background-color: rgba(255,255,255,0.05); color: var(--white); border-left-color: var(--odtu-red); }
     .menu-items i { width: 25px; font-size: 1.1rem; margin-right: 10px; }
-    
     .badge { background: var(--odtu-red); color: white; padding: 2px 6px; border-radius: 4px; font-size: 0.7rem; margin-left: auto; }
-    
     .logout-box { padding: 20px; border-top: 1px solid rgba(255,255,255,0.1); }
     .logout-btn { color: #e74c3c; text-decoration: none; display: flex; align-items: center; gap: 10px; transition: 0.3s; }
-    .logout-btn:hover { color: #ff6b6b; }
-
-    /* --- MAIN CONTENT --- */
+    
     .main-content { flex: 1; padding: 30px; overflow-y: auto; }
-
-    /* Header */
     .top-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
-    .welcome-text h2 { color: var(--odtu-dark); }
-    .digital-card-btn {
-        background: linear-gradient(135deg, var(--odtu-dark), #34495e);
-        color: white; padding: 10px 20px; border-radius: 8px;
-        display: flex; align-items: center; gap: 10px; cursor: pointer;
-        box-shadow: 0 4px 10px rgba(0,0,0,0.2); transition: transform 0.2s;
-    }
-    .digital-card-btn:active { transform: scale(0.98); }
-
-    /* Grid Layout */
-    .dashboard-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-        gap: 25px;
-    }
-
-    /* Cards */
-    .panel-card {
-        background: var(--white); border-radius: 12px; padding: 25px;
-        box-shadow: 0 2px 15px rgba(0,0,0,0.05); position: relative;
-    }
+    .digital-card-btn { background: linear-gradient(135deg, var(--odtu-dark), #34495e); color: white; padding: 10px 20px; border-radius: 8px; display: flex; align-items: center; gap: 10px; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
+    
+    .dashboard-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 25px; }
+    .panel-card { background: var(--white); border-radius: 12px; padding: 25px; box-shadow: 0 2px 15px rgba(0,0,0,0.05); }
     .card-header { display: flex; justify-content: space-between; margin-bottom: 20px; align-items: center; }
     .card-title { font-size: 1.1rem; font-weight: bold; color: var(--odtu-dark); display: flex; align-items: center; gap: 10px; }
 
-    /* Gizlilik Switch */
-    .privacy-box {
-        background-color: #f8f9fa; border: 1px solid #eee; padding: 15px; border-radius: 8px;
-        display: flex; justify-content: space-between; align-items: center;
-    }
+    /* Toggle Switch */
+    .privacy-box { background-color: #f8f9fa; border: 1px solid #eee; padding: 15px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; }
     .switch { position: relative; display: inline-block; width: 50px; height: 26px; }
     .switch input { opacity: 0; width: 0; height: 0; }
-    .slider {
-        position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0;
-        background-color: #ccc; transition: .4s; border-radius: 34px;
-    }
-    .slider:before {
-        position: absolute; content: ""; height: 20px; width: 20px; left: 3px; bottom: 3px;
-        background-color: white; transition: .4s; border-radius: 50%;
-    }
+    .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 34px; }
+    .slider:before { position: absolute; content: ""; height: 20px; width: 20px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
     input:checked + .slider { background-color: var(--green); }
     input:checked + .slider:before { transform: translateX(24px); }
-    .privacy-status-text { font-size: 0.85rem; font-weight: bold; margin-top: 5px; display: block;}
 
-    /* List & Search */
-    .search-bar { display: flex; gap: 10px; margin-bottom: 20px; }
-    .search-bar input { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; outline: none; }
+    /* Lists */
     .member-item { display: flex; align-items: center; justify-content: space-between; padding: 15px 0; border-bottom: 1px solid #eee; }
-    .member-item:last-child { border-bottom: none; }
-    .member-info h4 { font-size: 0.95rem; margin-bottom: 3px; }
-    .member-info p { font-size: 0.8rem; color: #777; }
-    .member-badge { font-size: 0.7rem; background: #e0e0e0; padding: 2px 6px; border-radius: 4px; color: #555; margin-left: 5px; }
-
-    .connect-btn {
-        background-color: transparent; border: 1px solid var(--odtu-dark); color: var(--odtu-dark);
-        padding: 6px 12px; border-radius: 6px; font-size: 0.8rem; cursor: pointer; transition: 0.3s;
-    }
+    .connect-btn { background-color: transparent; border: 1px solid var(--odtu-dark); color: var(--odtu-dark); padding: 6px 12px; border-radius: 6px; font-size: 0.8rem; cursor: pointer; transition: 0.3s; }
     .connect-btn:hover { background-color: var(--odtu-dark); color: white; }
-    .connect-btn.sent { background-color: #eee; border-color: #eee; color: #999; cursor: default; }
-
     .mentor-status { background: #e8f6f3; border: 1px solid #d1f2eb; padding: 15px; border-radius: 8px; }
     .btn-action { width: 100%; padding: 10px; border: none; border-radius: 6px; cursor: pointer; background: var(--odtu-red); color: white; margin-top: 10px; }
 
@@ -140,12 +64,10 @@
 
 <div class="sidebar">
     <div class="sidebar-header">
-        <img src="logo.png" alt="Hatay ODTÜ MD Logo" class="logo-img" onerror="this.style.display='none';">
-        
+        <img src="logo.jpg" alt="Hatay ODTÜ MD Logo" class="logo-img" onerror="this.onerror=null; this.src='https://upload.wikimedia.org/wikipedia/tr/a/a6/Odt%C3%BC_logo.png';">
         <h3>Hatay ODTÜ MD</h3>
         <p>Üye Portalı</p>
     </div>
-    
     <div class="menu-items">
         <a href="dashboard.html" class="active"><i class="fa-solid fa-layer-group"></i> Panel</a>
         <a href="mentor.html"><i class="fa-solid fa-handshake-angle"></i> Mentorluk Programı <span class="badge">1</span></a>
@@ -153,103 +75,48 @@
         <a href="network.html"><i class="fa-solid fa-users-viewfinder"></i> Mezun Ağı (Güvenli)</a>
         <a href="settings.html"><i class="fa-solid fa-gear"></i> Ayarlar</a>
     </div>
-    
     <div class="logout-box">
-        <a href="index.html" class="logout-btn" onclick="logout()"><i class="fa-solid fa-right-from-bracket"></i> Çıkış Yap</a>
+        <a href="index.html" class="logout-btn" onclick="localStorage.clear()"><i class="fa-solid fa-right-from-bracket"></i> Çıkış Yap</a>
     </div>
 </div>
 
 <div class="main-content">
-    
     <div class="top-header">
         <div class="welcome-text">
             <h2>Merhaba, <span id="userName">Üye</span></h2>
             <p>Hatay ODTÜ MD Ailesine Hoş Geldin.</p>
         </div>
-        <div class="digital-card-btn" onclick="openCard()">
+        <div class="digital-card-btn" onclick="document.getElementById('idCardModal').style.display='flex'">
             <i class="fa-solid fa-id-card"></i> Dijital Kimlik Kartım
         </div>
     </div>
 
     <div class="dashboard-grid">
-        
         <div class="panel-card">
-            <div class="card-header">
-                <div class="card-title"><i class="fa-solid fa-shield-halved" style="color: #27ae60;"></i> Gizlilik ve Görünürlük</div>
-            </div>
-            <p style="font-size: 0.85rem; color: #666; margin-bottom: 15px;">
-                Profilinizin "Mezun Ağı" aramalarında görünürlüğünü yönetin.
-            </p>
+            <div class="card-header"><div class="card-title"><i class="fa-solid fa-shield-halved" style="color: #27ae60;"></i> Gizlilik</div></div>
             <div class="privacy-box">
-                <div>
-                    <strong>Aramalarda Görün</strong>
-                    <span class="privacy-status-text" id="privacyText" style="color: #27ae60;">Açık</span>
-                </div>
-                <label class="switch">
-                    <input type="checkbox" id="privacyToggle" checked onchange="togglePrivacy()">
-                    <span class="slider"></span>
-                </label>
+                <div><strong>Aramalarda Görün</strong><span style="display:block; font-size:0.8rem; color:#27ae60" id="privacyText">Açık</span></div>
+                <label class="switch"><input type="checkbox" id="privacyToggle" checked onchange="togglePrivacy()"><span class="slider"></span></label>
             </div>
         </div>
-
         <div class="panel-card">
-            <div class="card-header">
-                <div class="card-title"><i class="fa-solid fa-magnifying-glass" style="color: #2980b9;"></i> Mezun Bul & Bağlan</div>
-            </div>
-            
-            <div class="search-bar">
-                <input type="text" placeholder="İsim, Şirket veya Bölüm ara...">
-                <button style="background: var(--odtu-dark); color: white; border: none; padding: 0 15px; border-radius: 6px;"><i class="fa-solid fa-search"></i></button>
-            </div>
-
-            <div class="member-item">
-                <div class="member-info">
-                    <h4>Zeynep Y. <span class="member-badge">2015</span></h4>
-                    <p>Şehir Plancısı @ Hatay BB</p>
-                </div>
-                <button class="connect-btn" onclick="sendRequest(this)">Bağlantı İste</button>
-            </div>
-
-            <div class="member-item">
-                <div class="member-info">
-                    <h4>Mehmet T. <span class="member-badge">2018</span></h4>
-                    <p>Makine Müh. @ İskenderun Demir Çelik</p>
-                </div>
-                <button class="connect-btn" onclick="sendRequest(this)">Bağlantı İste</button>
-            </div>
+            <div class="card-header"><div class="card-title"><i class="fa-solid fa-magnifying-glass" style="color: #2980b9;"></i> Mezun Bul</div></div>
+            <div class="member-item"><div><h4>Zeynep Y.</h4><p style="font-size:0.8rem; color:#777">Şehir Plancısı @ Hatay BB</p></div><button class="connect-btn">Bağlantı İste</button></div>
+            <div class="member-item"><div><h4>Mehmet T.</h4><p style="font-size:0.8rem; color:#777">Makine Müh. @ İskenderun</p></div><button class="connect-btn">Bağlantı İste</button></div>
         </div>
-
         <div class="panel-card">
-            <div class="card-header">
-                <div class="card-title"><i class="fa-solid fa-handshake-angle" style="color: #f39c12;"></i> Mentorluk Programı</div>
-            </div>
-            <div class="mentor-status">
-                <strong style="color: #2c3e50;">Aktif Mentorunuz:</strong>
-                <div style="margin-top: 5px;">Ahmet K. (ASELSAN)</div>
-                <small style="color: #777;">Yazılım Mimarı</small>
-            </div>
+            <div class="card-header"><div class="card-title"><i class="fa-solid fa-handshake-angle" style="color: #f39c12;"></i> Mentorluk</div></div>
+            <div class="mentor-status"><strong>Aktif Mentorunuz:</strong><div style="margin-top:5px">Ahmet K. (ASELSAN)</div></div>
             <button class="btn-action" onclick="window.location.href='mentor.html'">Programa Git</button>
         </div>
-
     </div>
 </div>
 
-<div id="idCardModal" onclick="closeCard()">
+<div id="idCardModal" onclick="this.style.display='none'">
     <div class="id-card" onclick="event.stopPropagation()">
-        <div style="display: flex; justify-content: space-between;">
-            <i class="fa-solid fa-graduation-cap" style="font-size: 30px; opacity: 0.9;"></i>
-            <div style="text-align: right;">
-                <div style="font-weight: bold;">HATAY ODTÜ MD</div>
-                <div style="font-size: 0.7rem; opacity: 0.8;">Üye No: #1092</div>
-            </div>
-        </div>
-        <div style="text-align: center;">
-            <i class="fa-solid fa-qrcode" style="font-size: 70px;"></i>
-        </div>
-        <div>
-            <div id="cardNameArea" style="font-weight: bold; font-size: 1.1rem;">ÜYE İSMİ</div>
-            <div id="cardDeptArea" style="font-size: 0.8rem; opacity: 0.9;">Bölüm Bilgisi</div>
-        </div>
+        <div style="display:flex; justify-content:space-between"><i class="fa-solid fa-graduation-cap" style="font-size:30px"></i><div style="text-align:right; font-weight:bold">HATAY ODTÜ MD</div></div>
+        <div style="text-align:center"><i class="fa-solid fa-qrcode" style="font-size:70px"></i></div>
+        <div><div id="cardNameArea" style="font-weight:bold">İSİM SOYAD</div><div id="cardDeptArea" style="font-size:0.8rem">Bölüm</div></div>
     </div>
 </div>
 
@@ -257,51 +124,14 @@
     document.addEventListener("DOMContentLoaded", () => {
         const ad = localStorage.getItem("kullaniciAdi");
         const bolum = localStorage.getItem("kullaniciBolum");
-        
-        if(ad) {
-            document.getElementById("userName").innerText = ad;
-            document.getElementById("cardNameArea").innerText = ad.toUpperCase() + " [SOYAD]";
-        }
-        if(bolum) {
-            document.getElementById("cardDeptArea").innerText = bolum;
-        }
-
-        const isPrivacyOn = localStorage.getItem("privacySetting");
-        if (isPrivacyOn === "false") {
-            document.getElementById("privacyToggle").checked = false;
-            updatePrivacyText(false);
-        }
+        if(ad) { document.getElementById("userName").innerText = ad; document.getElementById("cardNameArea").innerText = ad.toUpperCase() + " [SOYAD]"; }
+        if(bolum) document.getElementById("cardDeptArea").innerText = bolum;
     });
-
     function togglePrivacy() {
-        const toggle = document.getElementById("privacyToggle");
-        const status = toggle.checked;
-        localStorage.setItem("privacySetting", status);
-        updatePrivacyText(status);
-        if(!status) alert("Profiliniz aramalarda gizlendi (Hayalet Mod).");
+        const status = document.getElementById("privacyToggle").checked;
+        document.getElementById("privacyText").innerText = status ? "Açık" : "Gizli";
+        document.getElementById("privacyText").style.color = status ? "#27ae60" : "#e74c3c";
     }
-
-    function updatePrivacyText(status) {
-        const text = document.getElementById("privacyText");
-        if(status) {
-            text.innerText = "Açık";
-            text.style.color = "#27ae60"; 
-        } else {
-            text.innerText = "Gizli";
-            text.style.color = "#e74c3c";
-        }
-    }
-
-    function sendRequest(btn) {
-        btn.innerText = "İstek Gönderildi";
-        btn.classList.add("sent");
-        btn.disabled = true;
-    }
-
-    function openCard() { document.getElementById('idCardModal').style.display = 'flex'; }
-    function closeCard() { document.getElementById('idCardModal').style.display = 'none'; }
-    function logout() { localStorage.clear(); }
 </script>
-
 </body>
 </html>
