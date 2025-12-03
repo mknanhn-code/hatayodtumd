@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kariyer - Hatay ODTÜ MD</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+    /* Ortak CSS (Yukarıdakiyle aynı varsayıyoruz, dosya şişmesin diye kısa tuttum) */
+    :root { --odtu-red: #E31E24; --odtu-dark: #2c3e50; --bg-light: #f4f6f9; --white: #ffffff; }
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+    body { background-color: var(--bg-light); display: flex; min-height: 100vh; }
+    .sidebar { width: 260px; background-color: var(--odtu-dark); color: #ecf0f1; display: flex; flex-direction: column; }
+    .sidebar-header { padding: 15px; border-bottom: 1px solid rgba(255,255,255,0.1); text-align: center; }
+    .logo-img { width: auto; height: 120px; object-fit: contain; background-color: white; padding: 5px; border-radius: 8px; margin-bottom: 10px; }
+    .menu-items { flex: 1; padding-top: 20px; }
+    .menu-items a { display: flex; align-items: center; padding: 15px 25px; color: #bdc3c7; text-decoration: none; transition: 0.3s; border-left: 4px solid transparent; }
+    .menu-items a:hover, .menu-items a.active { background-color: rgba(255,255,255,0.05); color: var(--white); border-left-color: var(--odtu-red); }
+    .menu-items i { width: 25px; font-size: 1.1rem; margin-right: 10px; }
+    .main-content { flex: 1; padding: 30px; overflow-y: auto; }
+
+    /* İŞ İLANLARI STİLİ */
+    .job-list { background: white; border-radius: 12px; box-shadow: 0 2px 15px rgba(0,0,0,0.05); overflow: hidden; }
+    .job-row { display: flex; justify-content: space-between; align-items: center; padding: 20px; border-bottom: 1px solid #eee; transition: 0.2s; }
+    .job-row:hover { background-color: #f9f9f9; }
+    .job-row:last-child { border-bottom: none; }
+    
+    .job-main { display: flex; gap: 20px; align-items: center; }
+    .company-logo { width: 60px; height: 60px; background: #eee; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: bold; color: #777; }
+    
+    .job-details h4 { color: var(--odtu-dark); margin-bottom: 5px; }
+    .job-meta { display: flex; gap: 15px; font-size: 0.85rem; color: #777; }
+    .job-meta i { margin-right: 5px; }
+    
+    .job-type { background: #e3f2fd; color: #1976d2; padding: 5px 10px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; }
+    .job-type.intern { background: #e8f5e9; color: #2e7d32; }
+
+    .btn-apply { padding: 8px 20px; border: 1px solid var(--odtu-red); color: var(--odtu-red); background: transparent; border-radius: 6px; cursor: pointer; transition: 0.3s; font-weight: bold;}
+    .btn-apply:hover { background: var(--odtu-red); color: white; }
+</style>
+</head>
+<body>
+
+<div class="sidebar">
+    <div class="sidebar-header">
+        <img src="logo.png" class="logo-img" onerror="this.style.display='none'">
+        <h3>Hatay ODTÜ MD</h3>
+        <p>Üye Portalı</p>
+    </div>
+    <div class="menu-items">
+        <a href="dashboard.html"><i class="fa-solid fa-layer-group"></i> Panel</a>
+        <a href="mentor.html"><i class="fa-solid fa-handshake-angle"></i> Mentorluk Programı</a>
+        <a href="career.html" class="active"><i class="fa-solid fa-briefcase"></i> Kariyer Fırsatları</a>
+        <a href="network.html"><i class="fa-solid fa-users-viewfinder"></i> Mezun Ağı</a>
+        <a href="settings.html"><i class="fa-solid fa-gear"></i> Ayarlar</a>
+    </div>
+</div>
+
+<div class="main-content">
+    <div style="display:flex; justify-content:space-between; margin-bottom: 20px;">
+        <h2>💼 Kariyer ve İş İlanları</h2>
+        <button style="background: var(--odtu-red); color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer;">+ İlan Ekle</button>
+    </div>
+
+    <div class="job-list">
+        <div class="job-row">
+            <div class="job-main">
+                <div class="company-logo">ROK</div>
+                <div class="job-details">
+                    <h4>Sistem Mühendisi (Referanslı)</h4>
+                    <div class="job-meta">
+                        <span><i class="fa-solid fa-building"></i> Roketsan</span>
+                        <span><i class="fa-solid fa-location-dot"></i> Ankara</span>
+                        <span><i class="fa-solid fa-clock"></i> 2 gün önce</span>
+                    </div>
+                </div>
+            </div>
+            <div style="text-align: right;">
+                <span class="job-type">Tam Zamanlı</span><br><br>
+                <button class="btn-apply">Başvur</button>
+            </div>
+        </div>
+
+        <div class="job-row">
+            <div class="job-main">
+                <div class="company-logo">ECO</div>
+                <div class="job-details">
+                    <h4>Frontend Developer Stajyeri</h4>
+                    <div class="job-meta">
+                        <span><i class="fa-solid fa-rocket"></i> EcoSpire Startup</span>
+                        <span><i class="fa-solid fa-location-dot"></i> ODTÜ Teknokent</span>
+                        <span><i class="fa-solid fa-clock"></i> Yeni</span>
+                    </div>
+                </div>
+            </div>
+            <div style="text-align: right;">
+                <span class="job-type intern">Staj / Part-time</span><br><br>
+                <button class="btn-apply">Başvur</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
