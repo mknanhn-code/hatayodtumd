@@ -13,10 +13,7 @@
     /* NAVBAR */
     .navbar { width: 100%; height: var(--navbar-height); background-color: var(--odtu-dark); display: flex; align-items: center; justify-content: space-between; padding: 0 30px; position: fixed; top: 0; left: 0; z-index: 1000; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
     .nav-left { display: flex; align-items: center; gap: 15px; }
-    
-    /* LOGO AYARI (Küçük ve Net) */
     .nav-logo { height: 50px; width: auto; background: white; padding: 2px; border-radius: 5px; object-fit: contain; }
-    
     .nav-title { color: white; font-size: 1.1rem; font-weight: bold; }
     .nav-title span { display: block; font-size: 0.75rem; color: #bdc3c7; font-weight: normal; }
     .nav-links { display: flex; gap: 20px; }
@@ -118,16 +115,25 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
     <script>
-        // --- 1. SUPABASE AYARLARI ---
-        // Lütfen index.html'de çalışan anahtarları buraya da yapıştır!
+        // --- 1. SUPABASE AYARLARI (Senin Bilgilerin) ---
         const supabaseUrl = 'https://hftrmiiacxgtkarsvupn.supabase.co';
         const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhmdHJtaWlhY3hndGthcnN2dXBuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ3ODUzNzIsImV4cCI6MjA4MDM2MTM3Mn0.BgCk5xuZx6AZuxzfBHcQqg8j8BtxU9FbupDgoFecG_k';
         
-        const supabase = supabase.createClient(supabaseUrl, supabaseKey);
+        let supabase;
+        try {
+            // DÜZELTME: window.supabase kullanılarak çakışma önlendi
+            supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+        } catch(e) {
+            console.error("Supabase başlatılamadı:", e);
+        }
 
         // --- 2. SAYFA YÜKLENİNCE ---
         document.addEventListener("DOMContentLoaded", async () => {
-            
+            if(!supabase) {
+                document.getElementById("userName").innerText = "Bağlantı Hatası";
+                return;
+            }
+
             // 2.1 Oturum Kontrolü (Giriş yapılmış mı?)
             const { data: { session } } = await supabase.auth.getSession();
 
@@ -173,7 +179,8 @@
         }
 
         async function logout() {
-            await supabase.auth.signOut();
+            if(supabase) await supabase.auth.signOut();
+            localStorage.clear();
             window.location.href = "index.html";
         }
     </script>
