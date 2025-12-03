@@ -6,7 +6,7 @@
 <title>Kariyer - Hatay ODTÜ MD</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
-    /* --- ORTAK TASARIM (DASHBOARD İLE AYNI) --- */
+    /* --- ORTAK TASARIM --- */
     :root { --odtu-red: #E31E24; --odtu-dark: #2c3e50; --bg-light: #f4f6f9; --white: #ffffff; --navbar-height: 70px; }
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
     body { background-color: var(--bg-light); display: block; min-height: 100vh; }
@@ -59,7 +59,7 @@
 
     <nav class="navbar">
         <div class="nav-left">
-            <img src="logo.png" class="nav-logo" onerror="this.onerror=null; this.src='https://upload.wikimedia.org/wikipedia/tr/a/a6/Odt%C3%BC_logo.png';">
+            <img src="logo.jpg" class="nav-logo" onerror="this.onerror=null; this.src='https://upload.wikimedia.org/wikipedia/tr/a/a6/Odt%C3%BC_logo.png';">
             <div class="nav-title">Hatay ODTÜ MD <span>Üye Portalı</span></div>
         </div>
         <div class="nav-links">
@@ -125,19 +125,28 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
     <script>
-        // --- 1. SUPABASE AYARLARI ---
-        // Lütfen çalışan anahtarları buraya yapıştır!
+        // --- 1. SUPABASE AYARLARI (Senin Bilgilerin) ---
         const supabaseUrl = 'https://hftrmiiacxgtkarsvupn.supabase.co';
         const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhmdHJtaWlhY3hndGthcnN2dXBuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ3ODUzNzIsImV4cCI6MjA4MDM2MTM3Mn0.BgCk5xuZx6AZuxzfBHcQqg8j8BtxU9FbupDgoFecG_k';
         
-        const supabase = supabase.createClient(supabaseUrl, supabaseKey);
+        // DÜZELTME BURADA: 'window.supabase' kullanıyoruz!
+        let supabase;
+        try {
+            supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+        } catch(e) {
+            console.error("Supabase başlatılamadı:", e);
+        }
 
         // --- 2. SAYFA YÜKLENİNCE ---
         document.addEventListener("DOMContentLoaded", async () => {
+            if(!supabase) return;
+
             // Güvenlik: Giriş yapılmış mı?
             const { data: { session } } = await supabase.auth.getSession();
+            
             if (!session) {
-                window.location.href = 'index.html'; // Giriş yapmamışsa at
+                // Giriş yoksa index sayfasına at
+                window.location.href = 'index.html'; 
                 return;
             }
 
@@ -157,11 +166,15 @@
 
             if (error) {
                 console.error(error);
-                list.innerHTML = '<div style="padding:20px; text-align:center; color:red;">Veriler yüklenemedi.</div>';
+                // Eğer tablo yoksa veya RLS hatası varsa uyar
+                list.innerHTML = `<div style="padding:20px; text-align:center; color:red;">
+                    Veriler yüklenemedi. <br>Hata: ${error.message}<br>
+                    (Tablo oluşturulmamış veya RLS kapalı olabilir)
+                </div>`;
                 return;
             }
 
-            if (data.length === 0) {
+            if (!data || data.length === 0) {
                 list.innerHTML = '<div style="padding:40px; text-align:center; color:#777;">Henüz hiç ilan yok. İlk ilanı sen ekle!</div>';
                 return;
             }
@@ -208,12 +221,21 @@
             const type = document.getElementById('jType').value;
 
             // Veritabanına Ekle
+            const { data: { user } } = await supabase.auth.getUser();
+
             const { error } = await supabase
                 .from('jobs')
-                .insert({ title: title, company: company, location: location, type: type });
+                .insert({ 
+                    title: title, 
+                    company: company, 
+                    location: location, 
+                    type: type,
+                    posted_by: user ? user.id : null 
+                });
 
             if (error) {
                 alert("Hata: " + error.message);
+                console.error(error);
             } else {
                 // Başarılı
                 closeModal();
