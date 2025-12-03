@@ -27,15 +27,39 @@
     /* İÇERİK */
     .main-content { margin-top: var(--navbar-height); padding: 40px; width: 100%; max-width: 1200px; margin-left: auto; margin-right: auto; }
 
-    /* --- SAYFAYA ÖZEL STİLLER (AĞ) --- */
+    /* ARAMA KUTUSU */
     .filter-box { background: white; padding: 20px; border-radius: 12px; margin-bottom: 20px; display: flex; gap: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
-    .filter-box input, .filter-box select { flex: 1; padding: 10px; border: 1px solid #ddd; border-radius: 6px; outline: none; }
-    .btn-search { background: var(--odtu-dark); color: white; border: none; padding: 0 25px; border-radius: 6px; cursor: pointer; }
-    .network-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; }
-    .member-card { background: white; padding: 20px; border-radius: 10px; display: flex; flex-direction: column; align-items: center; text-align: center; border: 1px solid #eee; }
-    .member-avatar { width: 70px; height: 70px; background: #eee; border-radius: 50%; margin-bottom: 15px; }
-    .member-btn { margin-top: 15px; padding: 8px 20px; background: transparent; border: 1px solid var(--odtu-dark); border-radius: 20px; cursor: pointer; transition: 0.3s; }
-    .member-btn:hover { background: var(--odtu-dark); color: white; }
+    .filter-box input, .filter-box select { flex: 1; padding: 12px; border: 1px solid #ddd; border-radius: 6px; outline: none; transition: 0.3s; }
+    .filter-box input:focus { border-color: var(--odtu-red); }
+    .btn-search { background: var(--odtu-dark); color: white; border: none; padding: 0 30px; border-radius: 6px; cursor: pointer; font-weight: bold; }
+    .btn-search:hover { background: #1a252f; }
+
+    /* ÜYE KARTLARI (GRID) */
+    .network-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 25px; }
+    
+    .member-card { 
+        background: white; padding: 30px 20px; border-radius: 12px; 
+        display: flex; flex-direction: column; align-items: center; text-align: center; 
+        box-shadow: 0 2px 15px rgba(0,0,0,0.05); transition: transform 0.3s; border: 1px solid transparent;
+    }
+    .member-card:hover { transform: translateY(-5px); border-color: #eee; }
+
+    .member-avatar { 
+        width: 80px; height: 80px; background: #ecf0f1; border-radius: 50%; 
+        margin-bottom: 15px; display: flex; justify-content: center; align-items: center;
+        font-size: 1.5rem; font-weight: bold; color: #7f8c8d;
+    }
+    
+    .member-card h4 { color: var(--odtu-dark); margin-bottom: 5px; font-size: 1.1rem; }
+    .member-card p { color: #777; font-size: 0.85rem; margin-bottom: 15px; min-height: 40px; }
+    
+    .member-btn { 
+        margin-top: auto; padding: 8px 25px; background: transparent; 
+        border: 1px solid var(--odtu-red); color: var(--odtu-red); border-radius: 20px; 
+        cursor: pointer; transition: 0.3s; font-size: 0.85rem;
+    }
+    .member-btn:hover { background: var(--odtu-red); color: white; }
+    .member-btn.sent { background: #eee; border-color: #eee; color: #999; cursor: default; }
 </style>
 </head>
 <body>
@@ -59,33 +83,116 @@
 
     <div class="main-content">
         <h2>🔍 Mezun Ağı</h2>
-        <p style="color: #666; margin-bottom: 20px;">Dernek üyeleri arasında arama yapın ve bağlantı kurun.</p>
+        <p style="color: #666; margin-bottom: 20px;">Dernek üyeleri arasında arama yapın ve profesyonel ağınızı genişletin.</p>
+
         <div class="filter-box">
-            <input type="text" placeholder="İsim veya Şirket ara...">
-            <select><option>Tüm Bölümler</option></select>
-            <button class="btn-search">Ara</button>
+            <input type="text" id="searchInput" placeholder="İsim ara..." onkeypress="handleEnter(event)">
+            <button class="btn-search" onclick="searchMembers()">Ara</button>
         </div>
-        <div class="network-grid">
-            <div class="member-card">
-                <div class="member-avatar"></div>
-                <h4>Zeynep Y.</h4>
-                <p style="color:#777; font-size:0.9rem">Şehir Plancısı @ Hatay BB</p>
-                <button class="member-btn">Bağlantı Kur</button>
-            </div>
-            <div class="member-card">
-                <div class="member-avatar"></div>
-                <h4>Mehmet T.</h4>
-                <p style="color:#777; font-size:0.9rem">Makine Müh. @ İsdemir</p>
-                <button class="member-btn">Bağlantı Kur</button>
-            </div>
-            <div class="member-card">
-                <div class="member-avatar"></div>
-                <h4>Canan A.</h4>
-                <p style="color:#777; font-size:0.9rem">Girişimci @ EcoSpire</p>
-                <button class="member-btn">Bağlantı Kur</button>
+
+        <div class="network-grid" id="memberList">
+            <div style="grid-column: 1/-1; text-align:center; padding:40px; color:#999;">
+                <i class="fa-solid fa-spinner fa-spin" style="font-size: 2rem;"></i><br><br>Üyeler yükleniyor...
             </div>
         </div>
     </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <script>
+        // --- 1. AYARLAR (Senin Anahtarların) ---
+        const supabaseUrl = 'https://hftrmiiacxgtkarsvupn.supabase.co';
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhmdHJtaWlhY3hndGthcnN2dXBuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ3ODUzNzIsImV4cCI6MjA4MDM2MTM3Mn0.BgCk5xuZx6AZuxzfBHcQqg8j8BtxU9FbupDgoFecG_k';
+        
+        let supabase;
+        try { supabase = window.supabase.createClient(supabaseUrl, supabaseKey); } catch(e) { console.error(e); }
+
+        let currentUser = null;
+
+        // --- 2. BAŞLANGIÇ ---
+        document.addEventListener("DOMContentLoaded", async () => {
+            const { data: { session } } = await supabase.auth.getSession();
+            if (!session) { window.location.href = 'index.html'; return; }
+            currentUser = session.user;
+
+            // İlk açılışta tüm üyeleri getir
+            searchMembers(''); 
+        });
+
+        // --- 3. ÜYELERİ ARAMA VE LİSTELEME ---
+        async function searchMembers(query) {
+            const list = document.getElementById('memberList');
+            
+            // Eğer parametre gelmediyse input'tan al
+            if (query === undefined) {
+                query = document.getElementById('searchInput').value;
+            }
+
+            // Veritabanı Sorgusu
+            let queryBuilder = supabase
+                .from('profiles')
+                .select('*')
+                .neq('id', currentUser.id); // Kendini listede gösterme
+
+            // Eğer arama metni varsa filtrele (Büyük/Küçük harf duyarsız - ilike)
+            if (query && query.trim() !== "") {
+                queryBuilder = queryBuilder.ilike('full_name', `%${query}%`);
+            }
+
+            const { data, error } = await queryBuilder;
+
+            if (error) {
+                console.error(error);
+                list.innerHTML = '<div style="color:red; text-align:center; grid-column:1/-1;">Veri çekilemedi.</div>';
+                return;
+            }
+
+            if (!data || data.length === 0) {
+                list.innerHTML = '<div style="text-align:center; color:#777; grid-column:1/-1;">Aradığınız kriterde üye bulunamadı.</div>';
+                return;
+            }
+
+            // Listeyi Temizle ve Doldur
+            list.innerHTML = '';
+            data.forEach(m => {
+                // İsimlerin baş harfleri (Avatar için)
+                const initials = m.full_name ? m.full_name.split(' ').map(n=>n[0]).join('').substring(0,2).toUpperCase() : 'ÜY';
+                
+                // Bilgiler (Boşsa varsayılan yaz)
+                const dept = m.department || 'Bölüm bilgisi yok';
+                const comp = m.company ? `<br><small style="color:#2c3e50; font-weight:bold;">${m.company}</small>` : '';
+
+                const html = `
+                <div class="member-card">
+                    <div class="member-avatar">${initials}</div>
+                    <h4>${m.full_name}</h4>
+                    <p>${dept} ${comp}</p>
+                    <button class="member-btn" onclick="connectRequest(this)">Bağlantı Kur</button>
+                </div>`;
+                
+                list.insertAdjacentHTML('beforeend', html);
+            });
+        }
+
+        // --- 4. ENTER TUŞU İLE ARAMA ---
+        function handleEnter(e) {
+            if (e.key === 'Enter') searchMembers();
+        }
+
+        // --- 5. BAĞLANTI İSTEĞİ (Simülasyon) ---
+        function connectRequest(btn) {
+            btn.innerText = "İstek Gönderildi ✓";
+            btn.classList.add("sent");
+            btn.disabled = true;
+            // İleride buraya 'notifications' tablosuna kayıt atma kodu eklenebilir.
+        }
+        
+        async function logout() {
+            await supabase.auth.signOut();
+            localStorage.clear();
+            window.location.href = "index.html";
+        }
+    </script>
 
 </body>
 </html>
