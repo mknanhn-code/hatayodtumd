@@ -6,7 +6,7 @@
 <title>Giriş - Hatay ODTÜ MD</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
-    /* CSS STİLLERİ (Değişmedi) */
+    /* CSS STİLLERİ */
     :root { --odtu-red: #E31E24; --odtu-dark: #333333; --bg-color: #f4f4f9; --white: #ffffff; }
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
     body { background: linear-gradient(135deg, #ece9e6 0%, #ffffff 100%); display: flex; justify-content: center; align-items: center; min-height: 100vh; }
@@ -23,6 +23,7 @@
     .input-group input { width: 100%; padding: 12px 40px; border: 1px solid #ddd; border-radius: 6px; outline: none; transition: 0.3s; }
     .input-icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #888; }
     .btn-submit { width: 100%; padding: 12px; background-color: var(--odtu-red); color: var(--white); border: none; border-radius: 6px; font-size: 1rem; cursor: pointer; transition: 0.3s; margin-top: 10px; }
+    .btn-submit:disabled { background-color: #ccc; cursor: not-allowed; }
     .message-box { padding: 10px; margin-bottom: 15px; border-radius: 5px; font-size: 0.85rem; display: none; }
     .msg-success { background-color: #e8f5e9; color: #2e7d32; border: 1px solid #a5d6a7; }
     .msg-error { background-color: #ffebee; color: #c62828; border: 1px solid #ef9a9a; }
@@ -75,14 +76,20 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <script>
-    // --- 1. SUPABASE BAĞLANTISI ---
-    // NOT DEFTERİNE KAYDETTİĞİN BİLGİLERİ BURAYA YAPIŞTIR:
+    // --- 1. SUPABASE AYARLARI ---
+    // Lütfen test.html dosyasında çalışan anahtarları buraya yapıştırın!
+    
     const supabaseUrl = 'https://hftrmiiacxgtkarsvupn.supabase.co'
     const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhmdHJtaWlhY3hndGthcnN2dXBuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ3ODUzNzIsImV4cCI6MjA4MDM2MTM3Mn0.BgCk5xuZx6AZuxzfBHcQqg8j8BtxU9FbupDgoFecG_k'
     
+    // Güvenlik Kontrolü: Anahtarlar girilmemişse uyarı ver
+    if (supabaseUrl.includes('BURAYA') || supabaseKey.includes('BURAYA')) {
+        alert("DİKKAT: Lütfen kodun içindeki 'BURAYA...' yazan yerlere kendi Supabase anahtarlarınızı yapıştırın!");
+    }
+
     const supabase = supabase.createClient(supabaseUrl, supabaseKey)
 
-    // --- 2. GÖRSEL İŞLEMLER (Tab Değişimi) ---
+    // --- 2. GÖRSEL FONKSİYONLAR ---
     function switchForm(type) {
         document.getElementById('systemMessage').style.display = 'none';
         const loginForm = document.getElementById('loginForm');
@@ -106,70 +113,77 @@
         msgBox.style.display = 'block';
     }
 
-    // --- 3. KAYIT OLMA MANTIĞI (Gerçek) ---
+    // --- 3. KAYIT OLMA İŞLEMİ ---
     document.getElementById('registerForm').addEventListener('submit', async function(e) {
         e.preventDefault();
+        console.log("Kayıt butonuna basıldı..."); // Hata ayıklama için
+
         const btn = this.querySelector('button');
-        btn.innerText = 'Kaydediliyor...';
+        const originalText = btn.innerText;
+        btn.innerText = 'İşleniyor...';
         btn.disabled = true;
 
         const email = document.getElementById('regEmail').value;
         const password = document.getElementById('regPassword').value;
         const fullName = document.getElementById('regName').value;
 
-        // Supabase'e kullanıcıyı oluştur emri veriyoruz
+        // Supabase'e gönder
         const { data, error } = await supabase.auth.signUp({
             email: email,
             password: password,
             options: {
-                data: { full_name: fullName } // Ekstra bilgiyi buraya ekliyoruz
+                data: { full_name: fullName }
             }
         });
 
         if (error) {
+            console.error("Kayıt Hatası:", error);
             showMessage("Hata: " + error.message, "msg-error");
-            btn.innerText = 'Kayıt Ol';
+            btn.innerText = originalText;
             btn.disabled = false;
         } else {
-            // Başarılı!
-            showMessage("Kayıt Başarılı! Lütfen E-POSTANIZI KONTROL EDİP onaylayın.", "msg-success");
-            btn.innerText = 'Kayıt Ol';
+            console.log("Kayıt Başarılı:", data);
+            showMessage("Kayıt Başarılı! Şimdi giriş yapabilirsiniz.", "msg-success");
+            btn.innerText = originalText;
             btn.disabled = false;
             
-            // Kullanıcıyı uyarmak için formu temizle
-            document.getElementById('regEmail').value = "";
-            document.getElementById('regPassword').value = "";
+            // 2 saniye sonra giriş sekmesine geç
+            setTimeout(() => { switchForm('login'); }, 2000);
         }
     });
 
-    // --- 4. GİRİŞ YAPMA MANTIĞI (Gerçek) ---
+    // --- 4. GİRİŞ YAPMA İŞLEMİ ---
     document.getElementById('loginForm').addEventListener('submit', async function(e) {
         e.preventDefault();
+        console.log("Giriş butonuna basıldı...");
+
         const btn = this.querySelector('button');
         const originalText = btn.innerText;
         btn.innerText = 'Kontrol ediliyor...';
+        btn.disabled = true;
         
         const email = document.getElementById('loginEmail').value;
         const password = document.getElementById('loginPassword').value;
 
-        // Supabase'e giriş emri
         const { data, error } = await supabase.auth.signInWithPassword({
             email: email,
             password: password
         });
 
         if (error) {
+            console.error("Giriş Hatası:", error);
             showMessage("Giriş Başarısız: " + error.message, "msg-error");
             btn.innerText = originalText;
+            btn.disabled = false;
         } else {
+            console.log("Giriş Başarılı:", data);
             showMessage("Giriş Başarılı! Yönlendiriliyorsunuz...", "msg-success");
             
-            // Kullanıcı bilgilerini panele taşımak için hafızaya alalım
-            // Supabase'den gelen user objesinden ismi alıyoruz
+            // İsmi hafızaya al
             const userName = data.user.user_metadata.full_name || "Üye";
             localStorage.setItem("kullaniciAdi", userName);
-            
-            // 1 saniye sonra yönlendir
+            localStorage.setItem("kullaniciBolum", "Bölüm Bilgisi"); // İleride veritabanından çekilecek
+
             setTimeout(() => {
                 window.location.href = "dashboard.html"; 
             }, 1000);
