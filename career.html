@@ -6,7 +6,7 @@
 <title>Kariyer - Hatay ODTÜ MD</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
-    /* --- ORTAK TASARIM --- */
+    /* --- ORTAK TASARIM (DASHBOARD İLE AYNI) --- */
     :root { --odtu-red: #E31E24; --odtu-dark: #2c3e50; --bg-light: #f4f6f9; --white: #ffffff; --navbar-height: 70px; }
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
     body { background-color: var(--bg-light); display: block; min-height: 100vh; }
@@ -28,16 +28,31 @@
     .main-content { margin-top: var(--navbar-height); padding: 40px; width: 100%; max-width: 1200px; margin-left: auto; margin-right: auto; }
 
     /* --- SAYFAYA ÖZEL STİLLER (KARİYER) --- */
-    .job-list { background: white; border-radius: 12px; box-shadow: 0 2px 15px rgba(0,0,0,0.05); overflow: hidden; }
+    .job-list { background: white; border-radius: 12px; box-shadow: 0 2px 15px rgba(0,0,0,0.05); overflow: hidden; min-height: 200px; }
     .job-row { display: flex; justify-content: space-between; align-items: center; padding: 20px; border-bottom: 1px solid #eee; transition: 0.2s; }
     .job-row:hover { background-color: #f9f9f9; }
+    .job-row:last-child { border-bottom: none; }
+    
     .job-main { display: flex; gap: 20px; align-items: center; }
-    .company-logo { width: 60px; height: 60px; background: #eee; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: bold; color: #777; }
-    .job-details h4 { color: var(--odtu-dark); margin-bottom: 5px; }
-    .job-meta { display: flex; gap: 15px; font-size: 0.85rem; color: #777; }
+    .company-logo { width: 60px; height: 60px; background: #eee; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: bold; color: #777; font-size: 1.2rem; }
+    
+    .job-details h4 { color: var(--odtu-dark); margin-bottom: 5px; font-size: 1.1rem; }
+    .job-meta { display: flex; gap: 15px; font-size: 0.9rem; color: #777; }
+    .job-meta span { display: flex; align-items: center; gap: 5px; }
+    
     .job-type { background: #e3f2fd; color: #1976d2; padding: 5px 10px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; }
     .btn-apply { padding: 8px 20px; border: 1px solid var(--odtu-red); color: var(--odtu-red); background: transparent; border-radius: 6px; cursor: pointer; transition: 0.3s; font-weight: bold;}
     .btn-apply:hover { background: var(--odtu-red); color: white; }
+
+    /* MODAL (PENCERE) STİLİ */
+    .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 2000; display: none; justify-content: center; align-items: center; }
+    .modal-content { background: white; padding: 30px; border-radius: 10px; width: 90%; max-width: 500px; box-shadow: 0 5px 15px rgba(0,0,0,0.2); animation: slideDown 0.3s ease; }
+    @keyframes slideDown { from { transform: translateY(-50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+    
+    .form-group { margin-bottom: 15px; }
+    .form-group label { display: block; margin-bottom: 5px; font-weight: bold; color: #333; }
+    .form-group input, .form-group select { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px; outline: none; transition: 0.3s; }
+    .form-group input:focus, .form-group select:focus { border-color: var(--odtu-red); }
 </style>
 </head>
 <body>
@@ -55,45 +70,180 @@
             <a href="settings.html"><i class="fa-solid fa-gear"></i> Ayarlar</a>
         </div>
         <div class="nav-right">
-            <a href="index.html" class="logout-btn" onclick="localStorage.clear()"><i class="fa-solid fa-right-from-bracket"></i> Çıkış</a>
+            <a href="#" class="logout-btn" onclick="logout()"><i class="fa-solid fa-right-from-bracket"></i> Çıkış</a>
         </div>
     </nav>
 
     <div class="main-content">
-        <div style="display:flex; justify-content:space-between; margin-bottom: 20px;">
+        <div style="display:flex; justify-content:space-between; align-items: center; margin-bottom: 20px;">
             <h2>💼 Kariyer ve İş İlanları</h2>
-            <button style="background: var(--odtu-red); color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer;">+ İlan Ekle</button>
+            <button onclick="openModal()" style="background: var(--odtu-red); color: white; border: none; padding: 12px 25px; border-radius: 6px; cursor: pointer; font-weight: bold; display: flex; align-items: center; gap: 8px;">
+                <i class="fa-solid fa-plus"></i> İlan Ekle
+            </button>
         </div>
 
-        <div class="job-list">
-            <div class="job-row">
-                <div class="job-main">
-                    <div class="company-logo">ROK</div>
-                    <div class="job-details">
-                        <h4>Sistem Mühendisi (Referanslı)</h4>
-                        <div class="job-meta"><span>Roketsan</span><span>Ankara</span></div>
-                    </div>
-                </div>
-                <div style="text-align: right;">
-                    <span class="job-type">Tam Zamanlı</span><br><br>
-                    <button class="btn-apply">Başvur</button>
-                </div>
-            </div>
-            <div class="job-row">
-                <div class="job-main">
-                    <div class="company-logo">ECO</div>
-                    <div class="job-details">
-                        <h4>Frontend Developer Stajyeri</h4>
-                        <div class="job-meta"><span>EcoSpire</span><span>Teknokent</span></div>
-                    </div>
-                </div>
-                <div style="text-align: right;">
-                    <span class="job-type">Staj</span><br><br>
-                    <button class="btn-apply">Başvur</button>
-                </div>
+        <div class="job-list" id="jobList">
+            <div style="padding: 40px; text-align: center; color: #999;">
+                <i class="fa-solid fa-spinner fa-spin" style="font-size: 2rem;"></i><br><br>İlanlar yükleniyor...
             </div>
         </div>
     </div>
+
+    <div id="jobModal" class="modal-overlay">
+        <div class="modal-content">
+            <div style="display:flex; justify-content:space-between; margin-bottom:20px;">
+                <h3 style="margin:0;">Yeni İş İlanı</h3>
+                <span onclick="closeModal()" style="cursor:pointer; font-size:1.5rem;">&times;</span>
+            </div>
+            <form id="jobForm">
+                <div class="form-group">
+                    <label>İlan Başlığı</label>
+                    <input type="text" id="jTitle" placeholder="Örn: Yazılım Mühendisi" required>
+                </div>
+                <div class="form-group">
+                    <label>Şirket Adı</label>
+                    <input type="text" id="jComp" placeholder="Örn: Roketsan" required>
+                </div>
+                <div class="form-group">
+                    <label>Şehir / Konum</label>
+                    <input type="text" id="jLoc" placeholder="Örn: Ankara / Hibrit" required>
+                </div>
+                <div class="form-group">
+                    <label>Çalışma Tipi</label>
+                    <select id="jType">
+                        <option value="Tam Zamanlı">Tam Zamanlı</option>
+                        <option value="Yarı Zamanlı">Yarı Zamanlı</option>
+                        <option value="Staj">Staj</option>
+                        <option value="Uzaktan (Remote)">Uzaktan (Remote)</option>
+                    </select>
+                </div>
+                <button type="submit" id="saveBtn" style="background:var(--odtu-red); color:white; width:100%; padding:12px; border:none; cursor:pointer; border-radius:6px; font-weight:bold;">Yayınla</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <script>
+        // --- 1. SUPABASE AYARLARI ---
+        // Lütfen çalışan anahtarları buraya yapıştır!
+        const supabaseUrl = 'https://hftrmiiacxgtkarsvupn.supabase.co';
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhmdHJtaWlhY3hndGthcnN2dXBuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ3ODUzNzIsImV4cCI6MjA4MDM2MTM3Mn0.BgCk5xuZx6AZuxzfBHcQqg8j8BtxU9FbupDgoFecG_k';
+        
+        const supabase = supabase.createClient(supabaseUrl, supabaseKey);
+
+        // --- 2. SAYFA YÜKLENİNCE ---
+        document.addEventListener("DOMContentLoaded", async () => {
+            // Güvenlik: Giriş yapılmış mı?
+            const { data: { session } } = await supabase.auth.getSession();
+            if (!session) {
+                window.location.href = 'index.html'; // Giriş yapmamışsa at
+                return;
+            }
+
+            // İlanları Çek
+            loadJobs();
+        });
+
+        // --- 3. İLANLARI LİSTELEME FONKSİYONU ---
+        async function loadJobs() {
+            const list = document.getElementById('jobList');
+            
+            // Veritabanından çek (En yeniden eskiye)
+            const { data, error } = await supabase
+                .from('jobs')
+                .select('*')
+                .order('created_at', { ascending: false });
+
+            if (error) {
+                console.error(error);
+                list.innerHTML = '<div style="padding:20px; text-align:center; color:red;">Veriler yüklenemedi.</div>';
+                return;
+            }
+
+            if (data.length === 0) {
+                list.innerHTML = '<div style="padding:40px; text-align:center; color:#777;">Henüz hiç ilan yok. İlk ilanı sen ekle!</div>';
+                return;
+            }
+
+            // Listeyi temizle ve doldur
+            list.innerHTML = '';
+            data.forEach(job => {
+                // Şirket adının ilk 3 harfini logo gibi yap
+                const shortName = job.company ? job.company.substring(0,3).toUpperCase() : 'ODT';
+                
+                const html = `
+                <div class="job-row">
+                    <div class="job-main">
+                        <div class="company-logo">${shortName}</div>
+                        <div class="job-details">
+                            <h4>${job.title}</h4>
+                            <div class="job-meta">
+                                <span><i class="fa-solid fa-building"></i> ${job.company}</span>
+                                <span><i class="fa-solid fa-location-dot"></i> ${job.location}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="text-align: right;">
+                        <span class="job-type">${job.type}</span><br><br>
+                        <button class="btn-apply" onclick="alert('Başvurunuz alındı!')">Başvur</button>
+                    </div>
+                </div>`;
+                list.insertAdjacentHTML('beforeend', html);
+            });
+        }
+
+        // --- 4. YENİ İLAN KAYDETME ---
+        document.getElementById('jobForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const btn = document.getElementById('saveBtn');
+            const originalText = btn.innerText;
+            btn.innerText = 'Kaydediliyor...';
+            btn.disabled = true;
+
+            const title = document.getElementById('jTitle').value;
+            const company = document.getElementById('jComp').value;
+            const location = document.getElementById('jLoc').value;
+            const type = document.getElementById('jType').value;
+
+            // Veritabanına Ekle
+            const { error } = await supabase
+                .from('jobs')
+                .insert({ title: title, company: company, location: location, type: type });
+
+            if (error) {
+                alert("Hata: " + error.message);
+            } else {
+                // Başarılı
+                closeModal();
+                document.getElementById('jobForm').reset();
+                loadJobs(); // Listeyi yenile ki yeni ilanı görelim
+                alert("İlan başarıyla yayınlandı!");
+            }
+            
+            btn.innerText = originalText;
+            btn.disabled = false;
+        });
+
+        // --- 5. DİĞER FONKSİYONLAR ---
+        function openModal() { document.getElementById('jobModal').style.display = 'flex'; }
+        function closeModal() { document.getElementById('jobModal').style.display = 'none'; }
+        
+        async function logout() {
+            await supabase.auth.signOut();
+            localStorage.clear();
+            window.location.href = "index.html";
+        }
+        
+        // Modal dışına tıklayınca kapatma
+        window.onclick = function(event) {
+            const modal = document.getElementById('jobModal');
+            if (event.target == modal) {
+                closeModal();
+            }
+        }
+    </script>
 
 </body>
 </html>
