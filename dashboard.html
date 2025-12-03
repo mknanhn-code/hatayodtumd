@@ -40,8 +40,12 @@
     }
     .menu-items i { width: 25px; font-size: 1.1rem; margin-right: 10px; }
     
-    /* Etiketler (Notification Badge) */
     .badge { background: var(--odtu-red); color: white; padding: 2px 6px; border-radius: 4px; font-size: 0.7rem; margin-left: auto; }
+    
+    /* Çıkış Butonu */
+    .logout-box { padding: 20px; border-top: 1px solid rgba(255,255,255,0.1); }
+    .logout-btn { color: #e74c3c; text-decoration: none; display: flex; align-items: center; gap: 10px; transition: 0.3s; }
+    .logout-btn:hover { color: #ff6b6b; }
 
     /* ANA İÇERİK */
     .main-content { flex: 1; padding: 30px; overflow-y: auto; }
@@ -65,7 +69,6 @@
         gap: 25px;
     }
 
-    /* KART TASARIMLARI */
     .panel-card {
         background: var(--white);
         border-radius: 12px;
@@ -76,53 +79,32 @@
     .card-header { display: flex; justify-content: space-between; margin-bottom: 20px; align-items: center; }
     .card-title { font-size: 1.1rem; font-weight: bold; color: var(--odtu-dark); display: flex; align-items: center; gap: 10px; }
     
-    /* 1. MENTORLUK MODÜLÜ */
-    .mentor-status {
-        background: #e8f6f3; border: 1px solid #d1f2eb; padding: 15px; border-radius: 8px; margin-bottom: 15px;
-    }
+    /* Mentorluk */
+    .mentor-status { background: #e8f6f3; border: 1px solid #d1f2eb; padding: 15px; border-radius: 8px; margin-bottom: 15px; }
     .mentor-profile { display: flex; align-items: center; gap: 15px; }
-    .mentor-img { width: 50px; height: 50px; border-radius: 50%; background: #bdc3c7; object-fit: cover; }
-    .btn-action {
-        width: 100%; padding: 10px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold;
-        transition: 0.3s;
-    }
+    .mentor-img { width: 50px; height: 50px; border-radius: 50%; background: #bdc3c7; display:flex; align-items:center; justify-content:center; color:white; font-weight:bold; }
+    
+    .btn-action { width: 100%; padding: 10px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; transition: 0.3s; }
     .btn-primary { background-color: var(--odtu-red); color: white; }
     .btn-outline { background-color: transparent; border: 1px solid var(--odtu-red); color: var(--odtu-red); }
     .btn-primary:hover { background-color: #c0151a; }
 
-    /* 2. KARİYER FIRSATLARI */
-    .job-item {
-        display: flex; justify-content: space-between; align-items: center;
-        padding: 12px 0; border-bottom: 1px solid #eee;
-    }
+    /* İş İlanları */
+    .job-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid #eee; }
     .job-item:last-child { border-bottom: none; }
     .job-company { font-weight: bold; font-size: 0.95rem; }
     .job-role { font-size: 0.85rem; color: #7f8c8d; }
     .job-tag { font-size: 0.75rem; background: #eee; padding: 3px 8px; border-radius: 4px; color: #555; }
 
-    /* 3. AĞ (NETWORKING) */
-    .search-bar {
-        display: flex; gap: 10px; margin-bottom: 15px;
-    }
-    .search-bar input {
-        width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; outline: none;
-    }
-    .member-list-item {
-        display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px;
-    }
+    /* Mezun Arama */
+    .search-bar { display: flex; gap: 10px; margin-bottom: 15px; }
+    .search-bar input { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; outline: none; }
+    .member-list-item { display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px; }
     .connect-btn { background: #3498db; color: white; border: none; padding: 5px 10px; border-radius: 4px; font-size: 0.8rem; cursor: pointer; }
 
-    /* DİJİTAL KART MODAL (GİZLİ) */
-    #idCardModal {
-        display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-        background: rgba(0,0,0,0.6); justify-content: center; align-items: center; z-index: 1000;
-    }
-    .id-card {
-        width: 320px; height: 200px; background: linear-gradient(135deg, #E31E24 0%, #a81216 100%);
-        border-radius: 15px; padding: 20px; color: white; position: relative;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-        display: flex; flex-direction: column; justify-content: space-between;
-    }
+    /* Modal */
+    #idCardModal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); justify-content: center; align-items: center; z-index: 1000; }
+    .id-card { width: 320px; height: 200px; background: linear-gradient(135deg, #E31E24 0%, #a81216 100%); border-radius: 15px; padding: 20px; color: white; position: relative; box-shadow: 0 10px 30px rgba(0,0,0,0.3); display: flex; flex-direction: column; justify-content: space-between; }
 </style>
 </head>
 <body>
@@ -138,7 +120,9 @@
         <a href="#"><i class="fa-solid fa-briefcase"></i> Özel İlanlar <span class="badge">Yeni</span></a>
         <a href="#"><i class="fa-solid fa-users-viewfinder"></i> Üye Arama</a>
         <a href="#"><i class="fa-solid fa-percent"></i> İndirim & Avantajlar</a>
-        <a href="#"><i class="fa-solid fa-file-invoice"></i> CV Bankası</a>
+    </div>
+    <div class="logout-box">
+        <a href="index.html" class="logout-btn" onclick="logout()"><i class="fa-solid fa-right-from-bracket"></i> Çıkış Yap</a>
     </div>
 </div>
 
@@ -146,7 +130,7 @@
     
     <div class="top-header">
         <div class="welcome-text">
-            <h2>Merhaba, Alperen</h2>
+            <h2>Merhaba, <span id="userName">Üye</span></h2>
             <p>Bugün topluluğun için ne yapmak istersin?</p>
         </div>
         <div class="digital-card-btn" onclick="openCard()">
@@ -165,19 +149,16 @@
             <div class="mentor-status">
                 <p style="font-size: 0.85rem; color: #555; margin-bottom: 10px;">Atanan Mentorun:</p>
                 <div class="mentor-profile">
-                    <div class="mentor-img" style="display:flex; align-items:center; justify-content:center; color:white; font-weight:bold;">AK</div>
+                    <div class="mentor-img">AK</div>
                     <div>
                         <h4 style="color: #333;">Ahmet K.</h4>
                         <p style="font-size: 0.8rem; color: #777;">Yazılım Mimarı @ ASELSAN</p>
                     </div>
                 </div>
             </div>
-            
-            <p style="font-size: 0.9rem; margin-bottom: 15px;">📅 <span style="font-weight: bold;">Sıradaki Görüşme:</span> 14 Aralık, 20:00 (Zoom)</p>
-            
+            <p style="font-size: 0.9rem; margin-bottom: 15px;">📅 <b>Sıradaki Görüşme:</b> 14 Aralık, 20:00</p>
             <div style="display: flex; gap: 10px;">
                 <button class="btn-action btn-primary">Toplantıya Katıl</button>
-                <button class="btn-action btn-outline">Mesaj Gönder</button>
             </div>
         </div>
 
@@ -186,7 +167,6 @@
                 <div class="card-title"><i class="fa-solid fa-briefcase" style="color: #f39c12;"></i> Mezun Ağı İlanları</div>
                 <a href="#" style="font-size: 0.8rem; text-decoration: none; color: var(--odtu-red);">Tümü ></a>
             </div>
-
             <div class="job-item">
                 <div>
                     <div class="job-company">Roketsan</div>
@@ -194,7 +174,6 @@
                 </div>
                 <div class="job-tag">Ref: ODTUMD</div>
             </div>
-
             <div class="job-item">
                 <div>
                     <div class="job-company">Ankara Start-up</div>
@@ -202,15 +181,6 @@
                 </div>
                 <div class="job-tag">Hybrid</div>
             </div>
-
-            <div class="job-item">
-                <div>
-                    <div class="job-company">TUSAŞ (TAI)</div>
-                    <div class="job-role">Yapısal Analiz Uzmanı</div>
-                </div>
-                <div class="job-tag">Yerinde</div>
-            </div>
-            
             <button class="btn-action btn-outline" style="margin-top: 15px; width: 100%;">İlan Oluştur (Ücretsiz)</button>
         </div>
 
@@ -218,29 +188,16 @@
             <div class="card-header">
                 <div class="card-title"><i class="fa-solid fa-magnifying-glass" style="color: #2980b9;"></i> Mezun Bul</div>
             </div>
-            
             <div class="search-bar">
                 <input type="text" placeholder="Şirket, Şehir veya Bölüm ara...">
                 <button style="background: var(--odtu-dark); color: white; border: none; padding: 0 15px; border-radius: 6px;"><i class="fa-solid fa-search"></i></button>
             </div>
-
             <div class="member-list-item">
                 <div style="display: flex; align-items: center; gap: 10px;">
                     <div style="width: 35px; height: 35px; background: #eee; border-radius: 50%;"></div>
                     <div>
                         <div style="font-size: 0.9rem; font-weight: bold;">Zeynep Y.</div>
                         <div style="font-size: 0.75rem; color: #777;">Şehir Plancısı @ Hatay BB</div>
-                    </div>
-                </div>
-                <button class="connect-btn">Bağlan</button>
-            </div>
-
-            <div class="member-list-item">
-                <div style="display: flex; align-items: center; gap: 10px;">
-                    <div style="width: 35px; height: 35px; background: #eee; border-radius: 50%;"></div>
-                    <div>
-                        <div style="font-size: 0.9rem; font-weight: bold;">Mehmet T.</div>
-                        <div style="font-size: 0.75rem; color: #777;">Makina Müh. @ İskenderun</div>
                     </div>
                 </div>
                 <button class="connect-btn">Bağlan</button>
@@ -263,38 +220,44 @@
             <i class="fa-solid fa-qrcode" style="font-size: 60px;"></i>
         </div>
         <div>
-            <div style="font-size: 1.1rem; font-weight: bold;">ALPEREN [SOYAD]</div>
-            <div style="font-size: 0.8rem; opacity: 0.9;">Moleküler Biyoloji ve Genetik</div>
+            <div id="cardNameArea" style="font-size: 1.1rem; font-weight: bold;">ÜYE İSMİ</div>
+            <div id="cardDeptArea" style="font-size: 0.8rem; opacity: 0.9;">Bölüm Bilgisi</div>
         </div>
     </div>
 </div>
 
 <script>
-<script>
     document.addEventListener("DOMContentLoaded", () => {
-        // 1. Giriş yapılmış mı kontrol et (Güvenlik simülasyonu)
+        // 1. Giriş yapılmış mı kontrol et (Hafızadan oku)
         const ad = localStorage.getItem("kullaniciAdi");
+        const bolum = localStorage.getItem("kullaniciBolum");
         
+        // Eğer giriş yapılmamışsa ana sayfaya at (Güvenlik)
         if (!ad) {
-            // Eğer giriş yapmadan direkt linke tıkladıysa geri at
-            alert("Lütfen önce giriş yapınız!");
-            window.location.href = "index.html";
-            return;
+            // Test için bu satırı yorum satırı yapabilirsin:
+            // window.location.href = "index.html";
+            // alert("Lütfen önce giriş yapınız!");
         }
 
-        // 2. İsimleri yerleştir
-        document.getElementById("userName").innerText = ad;
-        
-        // (Eğer dijital kartın içinde isim alanı varsa orayı da güncelleyebiliriz)
-        // Karttaki isim alanını bulup güncelleme:
-        const cardName = document.querySelector(".id-card div:nth-child(3) div:first-child");
-        if(cardName) cardName.innerText = ad.toUpperCase() + " [SOYAD]";
+        // 2. İsimleri Panele Yaz
+        if(ad) {
+            document.getElementById("userName").innerText = ad;
+            document.getElementById("cardNameArea").innerText = ad.toUpperCase() + " [SOYAD]";
+        }
+        if(bolum) {
+            document.getElementById("cardDeptArea").innerText = bolum;
+        }
     });
-    
+
     // Kart Açma/Kapama
     function openCard() { document.getElementById('idCardModal').style.display = 'flex'; }
     function closeCard() { document.getElementById('idCardModal').style.display = 'none'; }
-</script>
+    
+    // Çıkış Yapma
+    function logout() {
+        localStorage.removeItem("kullaniciAdi");
+        localStorage.removeItem("kullaniciBolum");
+    }
 </script>
 
 </body>
