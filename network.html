@@ -6,11 +6,11 @@
 <title>Mezun Ağı - Hatay ODTÜ MD</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
-    /* --- ORTAK TASARIM --- */
+    /* ORTAK */
     :root { --odtu-red: #E31E24; --odtu-dark: #2c3e50; --bg-light: #f4f6f9; --white: #ffffff; --navbar-height: 70px; }
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
     body { background-color: var(--bg-light); display: block; min-height: 100vh; }
-
+    
     /* NAVBAR */
     .navbar { width: 100%; height: var(--navbar-height); background-color: var(--odtu-dark); display: flex; align-items: center; justify-content: space-between; padding: 0 30px; position: fixed; top: 0; left: 0; z-index: 1000; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
     .nav-left { display: flex; align-items: center; gap: 15px; }
@@ -24,59 +24,36 @@
     .logout-btn { color: #e74c3c; text-decoration: none; font-size: 0.9rem; border: 1px solid #e74c3c; padding: 6px 15px; border-radius: 20px; transition: 0.3s; }
     .logout-btn:hover { background: #e74c3c; color: white; }
 
-    /* İÇERİK */
     .main-content { margin-top: var(--navbar-height); padding: 40px; width: 100%; max-width: 1200px; margin-left: auto; margin-right: auto; }
-
-    /* ARAMA KUTUSU */
     .filter-box { background: white; padding: 20px; border-radius: 12px; margin-bottom: 20px; display: flex; gap: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
-    .filter-box input, .filter-box select { flex: 1; padding: 12px; border: 1px solid #ddd; border-radius: 6px; outline: none; transition: 0.3s; }
-    .filter-box input:focus { border-color: var(--odtu-red); }
+    .filter-box input { flex: 1; padding: 12px; border: 1px solid #ddd; border-radius: 6px; outline: none; }
     .btn-search { background: var(--odtu-dark); color: white; border: none; padding: 0 30px; border-radius: 6px; cursor: pointer; font-weight: bold; }
-    .btn-search:hover { background: #1a252f; }
-
-    /* ÜYE KARTLARI (GRID) */
+    
     .network-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 25px; }
-    
-    .member-card { 
-        background: white; padding: 30px 20px; border-radius: 12px; 
-        display: flex; flex-direction: column; align-items: center; text-align: center; 
-        box-shadow: 0 2px 15px rgba(0,0,0,0.05); transition: transform 0.3s; border: 1px solid transparent;
-        position: relative;
-    }
-    .member-card:hover { transform: translateY(-5px); border-color: #eee; }
-
-    .member-avatar { 
-        width: 80px; height: 80px; background: #ecf0f1; border-radius: 50%; 
-        margin-bottom: 15px; display: flex; justify-content: center; align-items: center;
-        font-size: 1.5rem; font-weight: bold; color: #7f8c8d;
-    }
-    
-    .member-card h4 { color: var(--odtu-dark); margin-bottom: 5px; font-size: 1.1rem; }
-    .member-card p { color: #777; font-size: 0.85rem; margin-bottom: 15px; min-height: 40px; }
-    
-    .member-btn { 
-        margin-top: auto; padding: 8px 25px; background: transparent; 
-        border: 1px solid var(--odtu-red); color: var(--odtu-red); border-radius: 20px; 
-        cursor: pointer; transition: 0.3s; font-size: 0.85rem;
-    }
+    .member-card { background: white; padding: 30px 20px; border-radius: 12px; display: flex; flex-direction: column; align-items: center; text-align: center; box-shadow: 0 2px 15px rgba(0,0,0,0.05); position: relative; }
+    .member-avatar { width: 80px; height: 80px; background: #ecf0f1; border-radius: 50%; margin-bottom: 15px; display: flex; justify-content: center; align-items: center; font-size: 1.5rem; font-weight: bold; }
+    .member-btn { margin-top: auto; padding: 8px 25px; background: transparent; border: 1px solid var(--odtu-red); color: var(--odtu-red); border-radius: 20px; cursor: pointer; transition: 0.3s; }
     .member-btn:hover { background: var(--odtu-red); color: white; }
-    .member-btn.sent { background: #eee; border-color: #eee; color: #999; cursor: default; }
+    .me-badge { position: absolute; top: 10px; right: 10px; background: #e8f5e9; color: #2e7d32; font-size: 0.7rem; padding: 2px 8px; border-radius: 4px; font-weight: bold; }
 
-    /* Kendim etiketi */
-    .me-badge {
-        position: absolute; top: 10px; right: 10px;
-        background: #e8f5e9; color: #2e7d32; font-size: 0.7rem;
-        padding: 2px 8px; border-radius: 4px; font-weight: bold;
+    /* MOBİL */
+    @media (max-width: 900px) {
+        .navbar { height: auto; flex-direction: column; padding: 15px; position: relative; }
+        .nav-left { margin-bottom: 15px; width: 100%; justify-content: center; }
+        .nav-links { flex-wrap: wrap; justify-content: center; gap: 10px; width: 100%; }
+        .nav-links a { background-color: rgba(255,255,255,0.05); padding: 10px 15px; border-radius: 20px; font-size: 0.85rem; flex: 1 1 auto; justify-content: center; }
+        .nav-right { margin-top: 15px; width: 100%; justify-content: center; }
+        .logout-btn { width: 100%; justify-content: center; }
+        .main-content { margin-top: 0; padding: 20px; }
+        .filter-box { flex-direction: column; }
+        .btn-search { width: 100%; padding: 12px; }
+        .network-grid { grid-template-columns: 1fr; }
     }
 </style>
 </head>
 <body>
-
     <nav class="navbar">
-        <div class="nav-left">
-            <img src="logo.png" class="nav-logo" onerror="this.onerror=null; this.src='https://upload.wikimedia.org/wikipedia/tr/a/a6/Odt%C3%BC_logo.png';">
-            <div class="nav-title">Hatay ODTÜ MD <span>Üye Portalı</span></div>
-        </div>
+        <div class="nav-left"><img src="logo.png" class="nav-logo"><div class="nav-title">Hatay ODTÜ MD <span>Üye Portalı</span></div></div>
         <div class="nav-links">
             <a href="dashboard.html"><i class="fa-solid fa-layer-group"></i> Panel</a>
             <a href="mentor.html"><i class="fa-solid fa-handshake-angle"></i> Mentorluk</a>
@@ -84,130 +61,58 @@
             <a href="network.html" class="active"><i class="fa-solid fa-users-viewfinder"></i> Mezun Ağı</a>
             <a href="settings.html"><i class="fa-solid fa-gear"></i> Ayarlar</a>
         </div>
-        <div class="nav-right">
-            <a href="index.html" class="logout-btn" onclick="localStorage.clear()"><i class="fa-solid fa-right-from-bracket"></i> Çıkış</a>
-        </div>
+        <div class="nav-right"><a href="#" class="logout-btn" onclick="logout()"><i class="fa-solid fa-right-from-bracket"></i> Çıkış</a></div>
     </nav>
 
     <div class="main-content">
-        <h2>🔍 Mezun Ağı</h2>
-        <p style="color: #666; margin-bottom: 20px;">Dernek üyeleri arasında arama yapın ve profesyonel ağınızı genişletin.</p>
-
-        <div class="filter-box">
-            <input type="text" id="searchInput" placeholder="İsim ara..." onkeypress="handleEnter(event)">
-            <button class="btn-search" onclick="searchMembers()">Ara</button>
-        </div>
-
+        <h2>🔍 Mezun Ağı</h2><br>
+        <div class="filter-box"><input type="text" id="searchInput" placeholder="İsim ara..." onkeypress="if(event.key==='Enter') searchMembers()"><button class="btn-search" onclick="searchMembers()">Ara</button></div>
         <div class="network-grid" id="memberList">
-            <div style="grid-column: 1/-1; text-align:center; padding:40px; color:#999;">
-                <i class="fa-solid fa-spinner fa-spin" style="font-size: 2rem;"></i><br><br>Üyeler yükleniyor...
-            </div>
+            <div style="grid-column: 1/-1; text-align:center; padding:40px; color:#999;"><i class="fa-solid fa-spinner fa-spin"></i> Yükleniyor...</div>
         </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
     <script>
-        // --- 1. AYARLAR (Senin Anahtarların) ---
         const supabaseUrl = 'https://hftrmiiacxgtkarsvupn.supabase.co';
         const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhmdHJtaWlhY3hndGthcnN2dXBuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ3ODUzNzIsImV4cCI6MjA4MDM2MTM3Mn0.BgCk5xuZx6AZuxzfBHcQqg8j8BtxU9FbupDgoFecG_k';
-        
-        let supabase;
-        try { supabase = window.supabase.createClient(supabaseUrl, supabaseKey); } catch(e) { console.error(e); }
-
+        let supabase; try { supabase = window.supabase.createClient(supabaseUrl, supabaseKey); } catch(e){}
         let currentUser = null;
 
-        // --- 2. BAŞLANGIÇ ---
         document.addEventListener("DOMContentLoaded", async () => {
             const { data: { session } } = await supabase.auth.getSession();
             if (!session) { window.location.href = 'index.html'; return; }
             currentUser = session.user;
-
-            // İlk açılışta tüm üyeleri getir
-            searchMembers(''); 
+            searchMembers('');
         });
 
-        // --- 3. ÜYELERİ ARAMA VE LİSTELEME ---
         async function searchMembers(query) {
             const list = document.getElementById('memberList');
+            if (query === undefined) query = document.getElementById('searchInput').value;
             
-            // Eğer parametre gelmediyse input'tan al
-            if (query === undefined) {
-                query = document.getElementById('searchInput').value;
-            }
-
-            // Veritabanı Sorgusu
-            // DÜZELTME: .neq('id', currentUser.id) satırı kaldırıldı.
-            // Artık kendimizi de çekiyoruz.
-            let queryBuilder = supabase
-                .from('profiles')
-                .select('*');
-
-            // Eğer arama metni varsa filtrele (Büyük/Küçük harf duyarsız - ilike)
-            if (query && query.trim() !== "") {
-                queryBuilder = queryBuilder.ilike('full_name', `%${query}%`);
-            }
-
+            let queryBuilder = supabase.from('profiles').select('*');
+            if (query && query.trim() !== "") queryBuilder = queryBuilder.ilike('full_name', `%${query}%`);
+            
             const { data, error } = await queryBuilder;
-
-            if (error) {
-                console.error(error);
-                list.innerHTML = '<div style="color:red; text-align:center; grid-column:1/-1;">Veri çekilemedi.</div>';
-                return;
-            }
-
-            if (!data || data.length === 0) {
-                list.innerHTML = '<div style="text-align:center; color:#777; grid-column:1/-1;">Aradığınız kriterde üye bulunamadı.</div>';
-                return;
-            }
-
-            // Listeyi Temizle ve Doldur
+            if (!data || data.length === 0) { list.innerHTML = '<div style="text-align:center; grid-column:1/-1;">Üye bulunamadı.</div>'; return; }
+            
             list.innerHTML = '';
             data.forEach(m => {
-                // İsimlerin baş harfleri (Avatar için)
-                const initials = m.full_name ? m.full_name.split(' ').map(n=>n[0]).join('').substring(0,2).toUpperCase() : 'ÜY';
-                
-                // Bilgiler (Boşsa varsayılan yaz)
-                const dept = m.department || 'Bölüm bilgisi yok';
-                const comp = m.company ? `<br><small style="color:#2c3e50; font-weight:bold;">${m.company}</small>` : '';
-
-                // Bu kart benim mi?
                 const isMe = (m.id === currentUser.id);
                 const meBadge = isMe ? '<div class="me-badge">SEN</div>' : '';
                 const btnState = isMe ? 'disabled style="opacity:0.5; cursor:default;"' : '';
-                const btnText = isMe ? 'Profilim' : 'Bağlantı Kur';
-
-                const html = `
+                list.insertAdjacentHTML('beforeend', `
                 <div class="member-card">
                     ${meBadge}
-                    <div class="member-avatar">${initials}</div>
+                    <div class="member-avatar">${m.full_name ? m.full_name.substring(0,2).toUpperCase() : 'ÜY'}</div>
                     <h4>${m.full_name}</h4>
-                    <p>${dept} ${comp}</p>
-                    <button class="member-btn" onclick="connectRequest(this)" ${btnState}>${btnText}</button>
-                </div>`;
-                
-                list.insertAdjacentHTML('beforeend', html);
+                    <p>${m.department || ''}<br><small>${m.company || ''}</small></p>
+                    <button class="member-btn" ${btnState}>${isMe ? 'Profilim' : 'Bağlantı Kur'}</button>
+                </div>`);
             });
         }
-
-        // --- 4. ENTER TUŞU İLE ARAMA ---
-        function handleEnter(e) {
-            if (e.key === 'Enter') searchMembers();
-        }
-
-        // --- 5. BAĞLANTI İSTEĞİ (Simülasyon) ---
-        function connectRequest(btn) {
-            btn.innerText = "İstek Gönderildi ✓";
-            btn.classList.add("sent");
-            btn.disabled = true;
-        }
         
-        async function logout() {
-            await supabase.auth.signOut();
-            localStorage.clear();
-            window.location.href = "index.html";
-        }
+        async function logout() { await supabase.auth.signOut(); window.location.href = "index.html"; }
     </script>
-
 </body>
 </html>
