@@ -270,13 +270,31 @@
 </div>
 
 <script>
-    // Kart Açma/Kapama İşlemleri
-    function openCard() {
-        document.getElementById('idCardModal').style.display = 'flex';
-    }
-    function closeCard() {
-        document.getElementById('idCardModal').style.display = 'none';
-    }
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        // 1. Giriş yapılmış mı kontrol et (Güvenlik simülasyonu)
+        const ad = localStorage.getItem("kullaniciAdi");
+        
+        if (!ad) {
+            // Eğer giriş yapmadan direkt linke tıkladıysa geri at
+            alert("Lütfen önce giriş yapınız!");
+            window.location.href = "index.html";
+            return;
+        }
+
+        // 2. İsimleri yerleştir
+        document.getElementById("userName").innerText = ad;
+        
+        // (Eğer dijital kartın içinde isim alanı varsa orayı da güncelleyebiliriz)
+        // Karttaki isim alanını bulup güncelleme:
+        const cardName = document.querySelector(".id-card div:nth-child(3) div:first-child");
+        if(cardName) cardName.innerText = ad.toUpperCase() + " [SOYAD]";
+    });
+    
+    // Kart Açma/Kapama
+    function openCard() { document.getElementById('idCardModal').style.display = 'flex'; }
+    function closeCard() { document.getElementById('idCardModal').style.display = 'none'; }
+</script>
 </script>
 
 </body>
