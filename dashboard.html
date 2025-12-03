@@ -48,6 +48,98 @@
     /* Modal */
     #idCardModal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); justify-content: center; align-items: center; z-index: 2000; }
     .id-card { width: 320px; height: 200px; background: linear-gradient(135deg, #E31E24 0%, #900e12 100%); border-radius: 15px; padding: 20px; color: white; position: relative; box-shadow: 0 10px 30px rgba(0,0,0,0.3); display: flex; flex-direction: column; justify-content: space-between; }
+/* --- MOBİL UYUMLULUK (RESPONSIVE) --- */
+    @media (max-width: 900px) {
+        
+        /* 1. Navbar'ı Dikey Yap */
+        .navbar {
+            height: auto; /* Sabit yüksekliği kaldır */
+            flex-direction: column; /* Yan yana değil alt alta olsun */
+            padding: 15px;
+            position: relative; /* Sayfa akışına girsin, üstte yapışmasın */
+        }
+        
+        .nav-left { margin-bottom: 15px; width: 100%; justify-content: center; }
+        
+        .nav-links {
+            flex-wrap: wrap; /* Sığmazsa alt satıra geçsin */
+            justify-content: center;
+            gap: 10px;
+            width: 100%;
+        }
+        
+        .nav-links a {
+            background-color: rgba(255,255,255,0.05); /* Mobilde buton gibi görünsün */
+            padding: 10px 15px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            flex: 1 1 auto; /* Eşit dağılsın */
+            justify-content: center;
+        }
+        
+        .nav-right {
+            margin-top: 15px;
+            width: 100%;
+            justify-content: center;
+        }
+        .logout-btn { width: 100%; justify-content: center; }
+
+        /* 2. İçerik Alanını Düzelt */
+        .main-content {
+            margin-top: 0; /* Navbar artık relative olduğu için boşluğa gerek yok */
+            padding: 20px; /* Mobilde kenar boşluğunu azalt */
+        }
+
+        .top-header {
+            flex-direction: column;
+            text-align: center;
+            gap: 15px;
+        }
+        
+        .digital-card-btn { width: 100%; justify-content: center; }
+
+        /* 3. Gridleri Tek Sütun Yap */
+        .dashboard-grid, .mentor-grid, .network-grid {
+            grid-template-columns: 1fr; /* Yan yana değil tek sütun */
+        }
+
+        /* 4. İş İlanları ve Listeleri Düzenle */
+        .job-row, .member-item {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 15px;
+            text-align: left;
+        }
+        
+        .job-main { width: 100%; }
+        
+        .job-row > div:last-child, 
+        .member-item > button {
+            width: 100%;
+            text-align: center;
+        }
+        
+        .btn-apply, .connect-btn {
+            width: 100%; /* Butonlar tam genişlik olsun */
+            display: block;
+            margin-top: 10px;
+        }
+
+        /* 5. Formlar ve Modallar */
+        .modal-content {
+            width: 95%; /* Ekrana tam sığsın */
+            margin: 20px auto;
+            padding: 20px;
+        }
+        
+        .form-row { flex-direction: column; gap: 0; }
+        
+        /* 6. Filtre Kutuları */
+        .filter-box {
+            flex-direction: column;
+        }
+        .btn-search { width: 100%; margin-top: 10px; padding: 12px; }
+    }
 </style>
 </head>
 <body>
