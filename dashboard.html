@@ -25,26 +25,20 @@
         display: flex; flex-direction: column;
     }
     
-    /* GÜNCELLENMİŞ SIDEBAR HEADER */
     .sidebar-header { 
-        padding: 15px;  /* Boşluk azaltıldı */
+        padding: 20px 10px; 
         border-bottom: 1px solid rgba(255,255,255,0.1); 
         text-align: center;
     }
     
-    /* GÜNCELLENMİŞ LOGO STİLİ */
+    /* GÜNCELLENMİŞ LOGO AYARLARI */
     .logo-img {
         width: auto;
-        height: 160px;   /* Yükseklik artırıldı */
+        height: 140px;   /* Yükseklik idealleştirildi */
         object-fit: contain;
-        
-        background-color: white;
-        padding: 5px;    /* Minimal boşluk */
-        border-radius: 8px; /* Daire yerine hafif yuvarlak köşe */
-        
-        /* Çerçeve kaldırıldı */
-        /* border: 3px solid rgba(255,255,255,0.2); */
-        
+        background-color: white; /* JPG olduğu için arkası beyaz kalsın */
+        padding: 5px;
+        border-radius: 8px;
         margin-bottom: 10px;
     }
 
@@ -52,6 +46,8 @@
     .sidebar-header p { font-size: 0.8rem; color: #bdc3c7; }
     
     .menu-items { flex: 1; padding-top: 20px; }
+    
+    /* MENÜ LİNKLERİ */
     .menu-items a {
         display: flex; align-items: center;
         padding: 15px 25px;
@@ -62,6 +58,7 @@
         background-color: rgba(255,255,255,0.05); color: var(--white); border-left-color: var(--odtu-red);
     }
     .menu-items i { width: 25px; font-size: 1.1rem; margin-right: 10px; }
+    
     .badge { background: var(--odtu-red); color: white; padding: 2px 6px; border-radius: 4px; font-size: 0.7rem; margin-left: auto; }
     
     .logout-box { padding: 20px; border-top: 1px solid rgba(255,255,255,0.1); }
@@ -143,18 +140,20 @@
 
 <div class="sidebar">
     <div class="sidebar-header">
-        <img src="image_0.png" alt="Hatay ODTÜ MD Logo" class="logo-img" onerror="this.style.display='none';">
+        <img src="logo.jpg" alt="Hatay ODTÜ MD Logo" class="logo-img" onerror="this.style.display='none';">
         
         <h3>Hatay ODTÜ MD</h3>
         <p>Üye Portalı</p>
     </div>
+    
     <div class="menu-items">
-        <a href="#" class="active"><i class="fa-solid fa-layer-group"></i> Panel</a>
-        <a href="#"><i class="fa-solid fa-handshake-angle"></i> Mentorluk Programı</a>
-        <a href="#"><i class="fa-solid fa-briefcase"></i> Kariyer Fırsatları</a>
-        <a href="#"><i class="fa-solid fa-users-viewfinder"></i> Mezun Ağı (Güvenli)</a>
-        <a href="#"><i class="fa-solid fa-gear"></i> Ayarlar</a>
+        <a href="dashboard.html" class="active"><i class="fa-solid fa-layer-group"></i> Panel</a>
+        <a href="mentor.html"><i class="fa-solid fa-handshake-angle"></i> Mentorluk Programı <span class="badge">1</span></a>
+        <a href="career.html"><i class="fa-solid fa-briefcase"></i> Kariyer Fırsatları</a>
+        <a href="network.html"><i class="fa-solid fa-users-viewfinder"></i> Mezun Ağı (Güvenli)</a>
+        <a href="settings.html"><i class="fa-solid fa-gear"></i> Ayarlar</a>
     </div>
+    
     <div class="logout-box">
         <a href="index.html" class="logout-btn" onclick="logout()"><i class="fa-solid fa-right-from-bracket"></i> Çıkış Yap</a>
     </div>
@@ -218,13 +217,6 @@
                 </div>
                 <button class="connect-btn" onclick="sendRequest(this)">Bağlantı İste</button>
             </div>
-             <div class="member-item">
-                <div class="member-info">
-                    <h4>Canan A. <span class="member-badge">2005</span></h4>
-                    <p>Kurucu @ EcoSpire Start-up</p>
-                </div>
-                <button class="connect-btn" onclick="sendRequest(this)">Bağlantı İste</button>
-            </div>
         </div>
 
         <div class="panel-card">
@@ -236,7 +228,7 @@
                 <div style="margin-top: 5px;">Ahmet K. (ASELSAN)</div>
                 <small style="color: #777;">Yazılım Mimarı</small>
             </div>
-            <button class="btn-action">Mesaj Gönder</button>
+            <button class="btn-action" onclick="window.location.href='mentor.html'">Programa Git</button>
         </div>
 
     </div>
