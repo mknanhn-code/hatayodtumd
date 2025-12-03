@@ -6,7 +6,7 @@
 <title>Giriş - Hatay ODTÜ MD</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
-    /* CSS STİLLERİ */
+    /* TASARIM AYNEN KORUNDU */
     :root { --odtu-red: #E31E24; --odtu-dark: #333333; --bg-color: #f4f4f9; --white: #ffffff; }
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
     body { background: linear-gradient(135deg, #ece9e6 0%, #ffffff 100%); display: flex; justify-content: center; align-items: center; min-height: 100vh; }
@@ -23,10 +23,10 @@
     .input-group input { width: 100%; padding: 12px 40px; border: 1px solid #ddd; border-radius: 6px; outline: none; transition: 0.3s; }
     .input-icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #888; }
     .btn-submit { width: 100%; padding: 12px; background-color: var(--odtu-red); color: var(--white); border: none; border-radius: 6px; font-size: 1rem; cursor: pointer; transition: 0.3s; margin-top: 10px; }
-    .btn-submit:disabled { background-color: #ccc; cursor: not-allowed; }
     .message-box { padding: 10px; margin-bottom: 15px; border-radius: 5px; font-size: 0.85rem; display: none; }
     .msg-success { background-color: #e8f5e9; color: #2e7d32; border: 1px solid #a5d6a7; }
     .msg-error { background-color: #ffebee; color: #c62828; border: 1px solid #ef9a9a; }
+    .msg-warning { background-color: #fff3e0; color: #ef6c00; border: 1px solid #ffe0b2; }
 </style>
 </head>
 <body>
@@ -76,30 +76,16 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <script>
-    // --- 1. SUPABASE AYARLARI (SENİN BİLGİLERİNİ GİRDİM) ---
+    // --- SUPABASE AYARLARI ---
     const supabaseUrl = 'https://hftrmiiacxgtkarsvupn.supabase.co';
     const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhmdHJtaWlhY3hndGthcnN2dXBuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ3ODUzNzIsImV4cCI6MjA4MDM2MTM3Mn0.BgCk5xuZx6AZuxzfBHcQqg8j8BtxU9FbupDgoFecG_k';
-
+    
     let supabase;
+    try {
+        supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+    } catch(e) { console.error(e); }
 
-    // --- Sayfa Tamamen Yüklendiğinde Çalışacak ---
-    document.addEventListener("DOMContentLoaded", function() {
-        try {
-            // Supabase başlatma
-            if (typeof window.supabase !== 'undefined') {
-                const { createClient } = window.supabase;
-                supabase = createClient(supabaseUrl, supabaseKey);
-                console.log("Supabase başarıyla başlatıldı.");
-            } else {
-                throw new Error("Supabase kütüphanesi yüklenemedi. İnternet bağlantınızı kontrol edin.");
-            }
-        } catch (err) {
-            alert("Bağlantı Hatası: " + err.message);
-            console.error(err);
-        }
-    });
-
-    // --- 2. GÖRSEL FONKSİYONLAR ---
+    // --- GÖRSEL FONKSİYONLAR ---
     function switchForm(type) {
         document.getElementById('systemMessage').style.display = 'none';
         const loginForm = document.getElementById('loginForm');
@@ -123,15 +109,9 @@
         msgBox.style.display = 'block';
     }
 
-    // --- 3. KAYIT OLMA İŞLEMİ ---
+    // --- KAYIT OLMA İŞLEMİ (Onaysız Başlar) ---
     document.getElementById('registerForm').addEventListener('submit', async function(e) {
         e.preventDefault();
-        
-        if (!supabase) {
-            alert("Sistem henüz hazır değil, lütfen sayfayı yenileyin.");
-            return;
-        }
-
         const btn = this.querySelector('button');
         const originalText = btn.innerText;
         btn.innerText = 'İşleniyor...';
@@ -142,27 +122,24 @@
         const fullName = document.getElementById('regName').value;
 
         try {
-            // Supabase'e gönder
             const { data, error } = await supabase.auth.signUp({
                 email: email,
                 password: password,
                 options: { data: { full_name: fullName } }
             });
 
-            if (error) {
-                throw error; // Hatayı yakala
-            }
+            if (error) throw error;
 
-            console.log("Kayıt Başarılı:", data);
-            showMessage("Kayıt Başarılı! Şimdi giriş yapabilirsiniz.", "msg-success");
+            // BAŞARILI KAYIT
+            showMessage("Kaydınız başarıyla alındı! YÖNETİCİ ONAYINDAN SONRA giriş yapabilirsiniz.", "msg-warning");
             btn.innerText = originalText;
             btn.disabled = false;
             
-            // Formu temizle ve Giriş sekmesine geç
+            // Temizlik
             document.getElementById('regEmail').value = "";
             document.getElementById('regPassword').value = "";
             document.getElementById('regName').value = "";
-            setTimeout(() => { switchForm('login'); }, 2000);
+            setTimeout(() => { switchForm('login'); }, 3000);
 
         } catch (error) {
             console.error("Kayıt Hatası:", error);
@@ -172,15 +149,9 @@
         }
     });
 
-    // --- 4. GİRİŞ YAPMA İŞLEMİ ---
+    // --- GİRİŞ YAPMA İŞLEMİ (Onay Kontrollü) ---
     document.getElementById('loginForm').addEventListener('submit', async function(e) {
         e.preventDefault();
-
-        if (!supabase) {
-            alert("Sistem henüz hazır değil, lütfen sayfayı yenileyin.");
-            return;
-        }
-
         const btn = this.querySelector('button');
         const originalText = btn.innerText;
         btn.innerText = 'Kontrol ediliyor...';
@@ -190,19 +161,39 @@
         const password = document.getElementById('loginPassword').value;
 
         try {
+            // 1. Önce e-posta ve şifre doğru mu?
             const { data, error } = await supabase.auth.signInWithPassword({
                 email: email,
                 password: password
             });
 
             if (error) {
-                throw error;
+                // Şifre yanlışsa
+                throw new Error("E-posta veya şifre hatalı.");
             }
 
-            console.log("Giriş Başarılı:", data);
-            showMessage("Giriş Başarılı! Yönlendiriliyorsunuz...", "msg-success");
+            // 2. Şifre doğru, şimdi 'PROFILES' tablosundan ONAY DURUMUNA bak
+            const userId = data.user.id;
             
-            // İsmi hafızaya al
+            const { data: profile, error: profileError } = await supabase
+                .from('profiles')
+                .select('is_verified')
+                .eq('id', userId)
+                .single();
+
+            if (profileError) throw profileError;
+
+            // 3. Eğer onaylı değilse (is_verified: false)
+            if (!profile.is_verified) {
+                await supabase.auth.signOut(); // Hemen çıkış yaptır
+                showMessage("Üyeliğiniz henüz yönetici tarafından ONAYLANMAMIŞTIR.", "msg-warning");
+                btn.innerText = originalText;
+                btn.disabled = false;
+                return;
+            }
+
+            // 4. Her şey tamam, onaylı üye
+            showMessage("Giriş Başarılı! Yönlendiriliyorsunuz...", "msg-success");
             const userName = data.user.user_metadata.full_name || "Üye";
             localStorage.setItem("kullaniciAdi", userName);
             
@@ -212,7 +203,9 @@
 
         } catch (error) {
             console.error("Giriş Hatası:", error);
-            showMessage("Giriş Başarısız: " + error.message, "msg-error");
+            // Oturumu temizle ne olur ne olmaz
+            await supabase.auth.signOut();
+            showMessage(error.message, "msg-error");
             btn.innerText = originalText;
             btn.disabled = false;
         }
