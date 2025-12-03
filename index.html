@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hatay ODTÜ MD - Giriş & Kayıt</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+    :root {
+        --odtu-red: #E31E24;
+        --odtu-dark: #333333;
+        --bg-color: #f4f4f9;
+        --white: #ffffff;
+        --shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+
+    body {
+        background: linear-gradient(135deg, #ece9e6 0%, #ffffff 100%);
+        display: flex; justify-content: center; align-items: center; min-height: 100vh;
+    }
+
+    .container {
+        background-color: var(--white);
+        padding: 2rem;
+        border-radius: 12px;
+        box-shadow: var(--shadow);
+        width: 100%; max-width: 420px;
+        text-align: center;
+        border-top: 5px solid var(--odtu-red);
+        position: relative;
+        overflow: hidden;
+    }
+
+    /* SEKME (TAB) YAPISI */
+    .toggle-box {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 2rem;
+        background: #f0f0f0;
+        border-radius: 30px;
+        padding: 5px;
+        position: relative;
+    }
+
+    .toggle-btn {
+        flex: 1;
+        padding: 10px;
+        border: none;
+        background: transparent;
+        cursor: pointer;
+        border-radius: 25px;
+        font-weight: bold;
+        color: #777;
+        transition: 0.3s;
+        z-index: 1;
+    }
+
+    .toggle-btn.active {
+        color: var(--white);
+    }
+
+    /* Kayan Kırmızı Arka Plan */
+    #btn-bg {
+        position: absolute;
+        top: 5px; left: 5px;
+        width: 50%; height: calc(100% - 10px);
+        background: var(--odtu-red);
+        border-radius: 25px;
+        transition: 0.3s;
+    }
+
+    /* HEADER */
+    .header-icon {
+        width: 50px; height: 50px;
+        background-color: var(--odtu-red);
+        color: var(--white);
+        border-radius: 50%;
+        display: flex; justify-content: center; align-items: center;
+        font-size: 1.2rem; margin: 0 auto 1rem auto;
+    }
+
+    h2 { color: var(--odtu-dark); margin-bottom: 0.5rem; }
+    p { color: #666; font-size: 0.85rem; margin-bottom: 1.5rem; }
+
+    /* FORMLAR */
+    .form-box {
+        display: none; /* Varsayılan olarak gizli */
+        animation: fadeIn 0.5s;
+    }
+    
+    .form-box.active-form {
+        display: block; /* Sadece aktif olan görünür */
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .input-group { position: relative; margin-bottom: 1rem; }
+    
+    .input-group input {
+        width: 100%; padding: 12px 40px;
+        border: 1px solid #ddd; border-radius: 6px; outline: none; transition: 0.3s;
+    }
+
+    .input-group input:focus { border-color: var(--odtu-red); box-shadow: 0 0 5px rgba(227, 30, 36, 0.2); }
+    .input-icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #888; }
+
+    .btn-submit {
+        width: 100%; padding: 12px;
+        background-color: var(--odtu-red); color: var(--white);
+        border: none; border-radius: 6px; font-size: 1rem; cursor: pointer; transition: 0.3s;
+        margin-top: 10px;
+    }
+    .btn-submit:hover { background-color: #c0151a; }
+    
+    .footer-text { margin-top: 1.5rem; font-size: 0.8rem; color: #999; }
+</style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header-icon"><i class="fa-solid fa-graduation-cap"></i></div>
+    <h2>Hatay ODTÜ MD</h2>
+    <p>Mezunlar Platformu</p>
+
+    <div class="toggle-box">
+        <div id="btn-bg"></div>
+        <button class="toggle-btn active" onclick="switchForm('login')">Giriş Yap</button>
+        <button class="toggle-btn" onclick="switchForm('register')">Kayıt Ol</button>
+    </div>
+
+    <form id="loginForm" class="form-box active-form">
+        <div class="input-group">
+            <i class="fa-solid fa-envelope input-icon"></i>
+            <input type="email" placeholder="E-posta Adresiniz" required>
+        </div>
+        <div class="input-group">
+            <i class="fa-solid fa-lock input-icon"></i>
+            <input type="password" placeholder="Şifreniz" required>
+        </div>
+        <button type="submit" class="btn-submit">Giriş Yap</button>
+    </form>
+
+    <form id="registerForm" class="form-box">
+        <div class="input-group">
+            <i class="fa-solid fa-user input-icon"></i>
+            <input type="text" placeholder="Ad Soyad" required>
+        </div>
+        <div class="input-group">
+            <i class="fa-solid fa-calendar-days input-icon"></i>
+            <input type="number" placeholder="Mezuniyet Yılı (Örn: 2015)" required>
+        </div>
+        <div class="input-group">
+            <i class="fa-solid fa-envelope input-icon"></i>
+            <input type="email" placeholder="E-posta Adresiniz" required>
+        </div>
+        <div class="input-group">
+            <i class="fa-solid fa-lock input-icon"></i>
+            <input type="password" placeholder="Şifre Belirle" required>
+        </div>
+        <button type="submit" class="btn-submit">Kayıt Ol</button>
+    </form>
+
+    <div class="footer-text">&copy; 2025 Hatay ODTÜ Mezunları Derneği</div>
+</div>
+
+<script>
+    // Sekmeler Arası Geçiş JavaScript'i
+    function switchForm(type) {
+        const loginForm = document.getElementById('loginForm');
+        const registerForm = document.getElementById('registerForm');
+        const bg = document.getElementById('btn-bg');
+        const buttons = document.querySelectorAll('.toggle-btn');
+
+        if (type === 'login') {
+            loginForm.classList.add('active-form');
+            registerForm.classList.remove('active-form');
+            
+            // Kırmızı kutuyu sola kaydır
+            bg.style.left = '5px';
+            
+            // Yazı renklerini ayarla
+            buttons[0].classList.add('active');
+            buttons[1].classList.remove('active');
+        } else {
+            loginForm.classList.remove('active-form');
+            registerForm.classList.add('active-form');
+            
+            // Kırmızı kutuyu sağa kaydır
+            bg.style.left = '50%';
+            
+            // Yazı renklerini ayarla
+            buttons[0].classList.remove('active');
+            buttons[1].classList.add('active');
+        }
+    }
+
+    // Demo Amaçlı Form Gönderimi
+    document.querySelectorAll('form').forEach(form => {
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const btn = form.querySelector('button');
+            const originalText = btn.innerText;
+            
+            btn.innerText = 'İşleniyor...';
+            btn.style.opacity = '0.7';
+
+            setTimeout(() => {
+                alert(originalText + " işlemi simüle edildi!");
+                btn.innerText = originalText;
+                btn.style.opacity = '1';
+            }, 1000);
+        });
+    });
+</script>
+
+</body>
+</html>
