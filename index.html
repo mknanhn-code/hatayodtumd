@@ -103,9 +103,10 @@
 </div>
 
 <script>
-    // Sekme Geçişi
+   <script>
+    // Sekme Geçiş Fonksiyonu
     function switchForm(type) {
-        document.getElementById('systemMessage').style.display = 'none'; // Mesajları temizle
+        document.getElementById('systemMessage').style.display = 'none';
         const loginForm = document.getElementById('loginForm');
         const registerForm = document.getElementById('registerForm');
         const bg = document.getElementById('btn-bg');
@@ -130,13 +131,43 @@
     function showMessage(msg, type) {
         const msgBox = document.getElementById('systemMessage');
         msgBox.innerText = msg;
-        msgBox.className = 'message-box ' + type; // msg-error, msg-success vb.
+        msgBox.className = 'message-box ' + type;
         msgBox.style.display = 'block';
     }
 
-    // --- SİMÜLASYON ---
-    
-    // 1. Kayıt Olma Senaryosu
+    // --- SENARYOLAR ---
+
+    // 1. Giriş Yapma İşlemi (BAĞLAMA KISMI BURASI)
+    document.getElementById('loginForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const email = document.getElementById('loginEmail').value;
+        const password = document.getElementById('loginPassword').value;
+
+        // ONAYLI KULLANICI SENARYOSU
+        if (email === 'admin@odtu.edu.tr') {
+            showMessage("Giriş Başarılı! Panele yönlendiriliyorsunuz...", "msg-success");
+            
+            // BONUS: İsmi panele taşımak için tarayıcı hafızasına kaydedelim
+            localStorage.setItem("kullaniciAdi", "Alperen"); 
+            localStorage.setItem("kullaniciBolum", "Moleküler Biyoloji ve Genetik");
+
+            // --> İŞTE SAYFAYI BAĞLAYAN KOD <--
+            setTimeout(() => {
+                window.location.href = "dashboard.html"; 
+            }, 1500); // 1.5 saniye mesajı gösterip yönlendirir
+        } 
+        // ONAYSIZ KULLANICI SENARYOSU
+        else if (email === 'yeni@odtu.edu.tr') {
+            showMessage("HATA: Üyeliğiniz henüz yönetici tarafından onaylanmamış. Lütfen bekleyiniz.", "msg-error");
+        } 
+        // HATALI GİRİŞ
+        else {
+            showMessage("HATA: Kullanıcı bulunamadı veya şifre yanlış.", "msg-error");
+        }
+    });
+
+    // 2. Kayıt Olma İşlemi
     document.getElementById('registerForm').addEventListener('submit', function(e) {
         e.preventDefault();
         const btn = this.querySelector('button');
@@ -146,36 +177,13 @@
         btn.style.opacity = '0.7';
 
         setTimeout(() => {
-            // Kayıt başarılı ama onay yok
             showMessage("Kaydınız başarıyla alındı! Yönetici onayından sonra giriş yapabileceksiniz.", "msg-warning");
-            
             btn.innerText = originalText;
             btn.style.opacity = '1';
-            
-            // Giriş ekranına yönlendir
             setTimeout(() => { switchForm('login'); }, 3000);
         }, 1000);
     });
-
-    // 2. Giriş Yapma Senaryosu (Onay Kontrolü)
-    document.getElementById('loginForm').addEventListener('submit', function(e) {
-        e.preventDefault();
-        
-        const email = document.getElementById('loginEmail').value;
-        const password = document.getElementById('loginPassword').value;
-
-        // Backend Simülasyonu
-        if (email === 'admin@odtu.edu.tr') {
-            // ONAYLI KULLANICI SENARYOSU
-            showMessage("Giriş Başarılı! Yönlendiriliyorsunuz...", "msg-success");
-        } else if (email === 'yeni@odtu.edu.tr') {
-            // ONAYSIZ KULLANICI SENARYOSU
-            showMessage("HATA: Üyeliğiniz henüz yönetici tarafından onaylanmamış.", "msg-error");
-        } else {
-            // KAYITSIZ KULLANICI
-            showMessage("HATA: Böyle bir kullanıcı bulunamadı veya şifre yanlış.", "msg-error");
-        }
-    });
+</script>
 </script>
 
 </body>
