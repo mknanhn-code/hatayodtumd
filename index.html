@@ -6,122 +6,57 @@
 <title>Giriş - Hatay ODTÜ MD</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
-    /* CSS STİLLERİ */
     :root { --odtu-red: #E31E24; --odtu-dark: #333333; --bg-color: #f4f4f9; --white: #ffffff; }
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
-    body { background: linear-gradient(135deg, #ece9e6 0%, #ffffff 100%); display: flex; justify-content: center; align-items: center; min-height: 100vh; }
-    .container { background-color: var(--white); padding: 2rem; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); width: 100%; max-width: 420px; text-align: center; border-top: 5px solid var(--odtu-red); position: relative; overflow: hidden; }
+    
+    body { 
+        background: linear-gradient(135deg, #ece9e6 0%, #ffffff 100%); 
+        display: flex; justify-content: center; align-items: center; 
+        min-height: 100vh; padding: 20px; /* Mobilde kenarlara yapışmasın */
+    }
+
+    .container { 
+        background-color: var(--white); padding: 2rem; border-radius: 12px; 
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1); width: 100%; max-width: 420px; 
+        text-align: center; border-top: 5px solid var(--odtu-red); 
+        position: relative; overflow: hidden; 
+    }
+
     .header-icon { width: 50px; height: 50px; background-color: var(--odtu-red); color: var(--white); border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 1.2rem; margin: 0 auto 1rem auto; }
+    
+    /* Toggle (Geçiş) Butonları */
     .toggle-box { display: flex; justify-content: center; margin-bottom: 2rem; background: #f0f0f0; border-radius: 30px; padding: 5px; position: relative; }
     .toggle-btn { flex: 1; padding: 10px; border: none; background: transparent; cursor: pointer; border-radius: 25px; font-weight: bold; color: #777; transition: 0.3s; z-index: 1; }
     .toggle-btn.active { color: var(--white); }
     #btn-bg { position: absolute; top: 5px; left: 5px; width: 50%; height: calc(100% - 10px); background: var(--odtu-red); border-radius: 25px; transition: 0.3s; }
+    
+    /* Formlar */
     .form-box { display: none; animation: fadeIn 0.5s; }
     .form-box.active-form { display: block; }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    
     .input-group { position: relative; margin-bottom: 1rem; }
     .input-group input { width: 100%; padding: 12px 40px; border: 1px solid #ddd; border-radius: 6px; outline: none; transition: 0.3s; }
+    .input-group input:focus { border-color: var(--odtu-red); box-shadow: 0 0 5px rgba(227, 30, 36, 0.2); }
     .input-icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #888; }
+    
     .btn-submit { width: 100%; padding: 12px; background-color: var(--odtu-red); color: var(--white); border: none; border-radius: 6px; font-size: 1rem; cursor: pointer; transition: 0.3s; margin-top: 10px; }
     .btn-submit:disabled { background-color: #ccc; cursor: not-allowed; }
     
-    /* Mesaj Kutusu Stili */
+    /* Mesaj Kutusu */
     .message-box { padding: 15px; margin-bottom: 20px; border-radius: 8px; font-size: 0.9rem; display: none; line-height: 1.5; text-align: left;}
     .msg-success { background-color: #e8f5e9; color: #2e7d32; border: 1px solid #a5d6a7; }
     .msg-error { background-color: #ffebee; color: #c62828; border: 1px solid #ef9a9a; }
     .msg-warning { background-color: #fff3e0; color: #e65100; border: 1px solid #ffe0b2; }
     .message-box a { color: inherit; text-decoration: underline; font-weight: bold; }
-    /* --- MOBİL UYUMLULUK (RESPONSIVE) --- */
-    @media (max-width: 900px) {
-        
-        /* 1. Navbar'ı Dikey Yap */
-        .navbar {
-            height: auto; /* Sabit yüksekliği kaldır */
-            flex-direction: column; /* Yan yana değil alt alta olsun */
-            padding: 15px;
-            position: relative; /* Sayfa akışına girsin, üstte yapışmasın */
-        }
-        
-        .nav-left { margin-bottom: 15px; width: 100%; justify-content: center; }
-        
-        .nav-links {
-            flex-wrap: wrap; /* Sığmazsa alt satıra geçsin */
-            justify-content: center;
-            gap: 10px;
-            width: 100%;
-        }
-        
-        .nav-links a {
-            background-color: rgba(255,255,255,0.05); /* Mobilde buton gibi görünsün */
-            padding: 10px 15px;
-            border-radius: 20px;
-            font-size: 0.85rem;
-            flex: 1 1 auto; /* Eşit dağılsın */
-            justify-content: center;
-        }
-        
-        .nav-right {
-            margin-top: 15px;
-            width: 100%;
-            justify-content: center;
-        }
-        .logout-btn { width: 100%; justify-content: center; }
 
-        /* 2. İçerik Alanını Düzelt */
-        .main-content {
-            margin-top: 0; /* Navbar artık relative olduğu için boşluğa gerek yok */
-            padding: 20px; /* Mobilde kenar boşluğunu azalt */
+    /* --- MOBİL UYUMLULUK --- */
+    @media (max-width: 480px) {
+        .container {
+            padding: 1.5rem; /* Mobilde iç boşluğu azalt */
+            max-width: 100%; /* Tam genişlik */
         }
-
-        .top-header {
-            flex-direction: column;
-            text-align: center;
-            gap: 15px;
-        }
-        
-        .digital-card-btn { width: 100%; justify-content: center; }
-
-        /* 3. Gridleri Tek Sütun Yap */
-        .dashboard-grid, .mentor-grid, .network-grid {
-            grid-template-columns: 1fr; /* Yan yana değil tek sütun */
-        }
-
-        /* 4. İş İlanları ve Listeleri Düzenle */
-        .job-row, .member-item {
-            flex-direction: column;
-            align-items: flex-start;
-            gap: 15px;
-            text-align: left;
-        }
-        
-        .job-main { width: 100%; }
-        
-        .job-row > div:last-child, 
-        .member-item > button {
-            width: 100%;
-            text-align: center;
-        }
-        
-        .btn-apply, .connect-btn {
-            width: 100%; /* Butonlar tam genişlik olsun */
-            display: block;
-            margin-top: 10px;
-        }
-
-        /* 5. Formlar ve Modallar */
-        .modal-content {
-            width: 95%; /* Ekrana tam sığsın */
-            margin: 20px auto;
-            padding: 20px;
-        }
-        
-        .form-row { flex-direction: column; gap: 0; }
-        
-        /* 6. Filtre Kutuları */
-        .filter-box {
-            flex-direction: column;
-        }
-        .btn-search { width: 100%; margin-top: 10px; padding: 12px; }
+        .toggle-btn { font-size: 0.9rem; } /* Buton yazılarını küçült */
     }
 </style>
 </head>
@@ -172,27 +107,23 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <script>
-    // --- 1. SUPABASE AYARLARI (Senin Bilgilerin) ---
+    // --- 1. SUPABASE AYARLARI ---
     const supabaseUrl = 'https://hftrmiiacxgtkarsvupn.supabase.co';
     const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhmdHJtaWlhY3hndGthcnN2dXBuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ3ODUzNzIsImV4cCI6MjA4MDM2MTM3Mn0.BgCk5xuZx6AZuxzfBHcQqg8j8BtxU9FbupDgoFecG_k';
 
     let supabase;
 
-    // --- Sayfa Tamamen Yüklendiğinde Çalışacak ---
     document.addEventListener("DOMContentLoaded", function() {
         try {
             if (typeof window.supabase !== 'undefined') {
-                const { createClient } = window.supabase;
-                supabase = createClient(supabaseUrl, supabaseKey);
+                supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
             } else {
                 throw new Error("Supabase kütüphanesi yüklenemedi.");
             }
-        } catch (err) {
-            console.error(err);
-        }
+        } catch (err) { console.error(err); }
     });
 
-    // --- 2. GÖRSEL FONKSİYONLAR ---
+    // --- 2. FONKSİYONLAR ---
     function switchForm(type) {
         document.getElementById('systemMessage').style.display = 'none';
         const loginForm = document.getElementById('loginForm');
@@ -209,7 +140,6 @@
         }
     }
 
-    // HTML İçeriği destekleyen mesaj kutusu
     function showMessage(msg, type) {
         const msgBox = document.getElementById('systemMessage');
         msgBox.innerHTML = msg; 
@@ -217,11 +147,10 @@
         msgBox.style.display = 'block';
     }
 
-    // --- 3. KAYIT OLMA İŞLEMİ ---
+    // --- 3. KAYIT OLMA ---
     document.getElementById('registerForm').addEventListener('submit', async function(e) {
         e.preventDefault();
-        
-        if (!supabase) { alert("Sistem henüz hazır değil."); return; }
+        if (!supabase) return;
 
         const btn = this.querySelector('button');
         const originalText = btn.innerText;
@@ -233,7 +162,6 @@
         const fullName = document.getElementById('regName').value;
 
         try {
-            // Supabase'e gönder
             const { data, error } = await supabase.auth.signUp({
                 email: email,
                 password: password,
@@ -242,7 +170,6 @@
 
             if (error) throw error;
 
-            // ÖZEL MESAJ BURADA
             showMessage(`
                 <b>Kaydınız alındı!</b> 🎉 <br><br>
                 Yönetici onayı sürecini hızlandırmak için 
@@ -254,23 +181,20 @@
             btn.innerText = originalText;
             btn.disabled = false;
             
-            // Formu temizle ama hemen yönlendirme yapma ki mesajı okusunlar
             document.getElementById('regEmail').value = "";
             document.getElementById('regPassword').value = "";
             document.getElementById('regName').value = "";
             
-            // 7 Saniye sonra giriş formuna at
-            setTimeout(() => { switchForm('login'); }, 7000);
+            setTimeout(() => { switchForm('login'); }, 8000);
 
         } catch (error) {
-            console.error("Kayıt Hatası:", error);
             showMessage("Hata: " + error.message, "msg-error");
             btn.innerText = originalText;
             btn.disabled = false;
         }
     });
 
-    // --- 4. GİRİŞ YAPMA İŞLEMİ (Onay Kontrollü) ---
+    // --- 4. GİRİŞ YAPMA ---
     document.getElementById('loginForm').addEventListener('submit', async function(e) {
         e.preventDefault();
         if (!supabase) return;
@@ -284,33 +208,32 @@
         const password = document.getElementById('loginPassword').value;
 
         try {
-            // 1. Giriş denemesi
             const { data, error } = await supabase.auth.signInWithPassword({
-                email: email,
-                password: password
+                email: email, password: password
             });
 
             if (error) throw new Error("E-posta veya şifre hatalı.");
 
-            // 2. Onay Durumu Kontrolü
+            // Onay Kontrolü
             const userId = data.user.id;
             const { data: profile, error: profileError } = await supabase
-                .from('profiles')
-                .select('is_verified')
-                .eq('id', userId)
-                .single();
+                .from('profiles').select('is_verified').eq('id', userId).single();
 
             if (profileError) throw profileError;
 
             if (!profile.is_verified) {
                 await supabase.auth.signOut();
-                showMessage("Üyeliğiniz henüz <b>YÖNETİCİ ONAYI</b> almamıştır. Lütfen bekleyiniz veya iletişime geçiniz.", "msg-warning");
+                showMessage(`
+                <b>Kaydınız başarıyla alındı!</b> 🎉 <br><br>
+                Yönetici onayı sürecini hızlandırmak ve Hatay ODTÜ MD topluluğuna hemen dahil olmak için lütfen: <br>
+                👉 <b><a href="mailto:hatayodtumd@gmail.com">hatayodtumd@gmail.com</a></b> <br>
+                adresi ile iletişime geçiniz.
+            `, "msg-warning");
                 btn.innerText = originalText;
                 btn.disabled = false;
                 return;
             }
 
-            // 3. Başarılı
             showMessage("Giriş Başarılı! Yönlendiriliyorsunuz...", "msg-success");
             const userName = data.user.user_metadata.full_name || "Üye";
             localStorage.setItem("kullaniciAdi", userName);
@@ -318,7 +241,6 @@
             setTimeout(() => { window.location.href = "dashboard.html"; }, 1000);
 
         } catch (error) {
-            console.error("Giriş Hatası:", error);
             await supabase.auth.signOut();
             showMessage(error.message, "msg-error");
             btn.innerText = originalText;
@@ -326,6 +248,5 @@
         }
     });
 </script>
-
 </body>
 </html>
