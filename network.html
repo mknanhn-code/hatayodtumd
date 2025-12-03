@@ -41,6 +41,7 @@
         background: white; padding: 30px 20px; border-radius: 12px; 
         display: flex; flex-direction: column; align-items: center; text-align: center; 
         box-shadow: 0 2px 15px rgba(0,0,0,0.05); transition: transform 0.3s; border: 1px solid transparent;
+        position: relative;
     }
     .member-card:hover { transform: translateY(-5px); border-color: #eee; }
 
@@ -60,13 +61,20 @@
     }
     .member-btn:hover { background: var(--odtu-red); color: white; }
     .member-btn.sent { background: #eee; border-color: #eee; color: #999; cursor: default; }
+
+    /* Kendim etiketi */
+    .me-badge {
+        position: absolute; top: 10px; right: 10px;
+        background: #e8f5e9; color: #2e7d32; font-size: 0.7rem;
+        padding: 2px 8px; border-radius: 4px; font-weight: bold;
+    }
 </style>
 </head>
 <body>
 
     <nav class="navbar">
         <div class="nav-left">
-            <img src="logo.png" class="nav-logo" onerror="this.onerror=null; this.src='https://upload.wikimedia.org/wikipedia/tr/a/a6/Odt%C3%BC_logo.png';">
+            <img src="logo.jpg" class="nav-logo" onerror="this.onerror=null; this.src='https://upload.wikimedia.org/wikipedia/tr/a/a6/Odt%C3%BC_logo.png';">
             <div class="nav-title">Hatay ODTÜ MD <span>Üye Portalı</span></div>
         </div>
         <div class="nav-links">
@@ -129,10 +137,11 @@
             }
 
             // Veritabanı Sorgusu
+            // DÜZELTME: .neq('id', currentUser.id) satırı kaldırıldı.
+            // Artık kendimizi de çekiyoruz.
             let queryBuilder = supabase
                 .from('profiles')
-                .select('*')
-                .neq('id', currentUser.id); // Kendini listede gösterme
+                .select('*');
 
             // Eğer arama metni varsa filtrele (Büyük/Küçük harf duyarsız - ilike)
             if (query && query.trim() !== "") {
@@ -162,12 +171,19 @@
                 const dept = m.department || 'Bölüm bilgisi yok';
                 const comp = m.company ? `<br><small style="color:#2c3e50; font-weight:bold;">${m.company}</small>` : '';
 
+                // Bu kart benim mi?
+                const isMe = (m.id === currentUser.id);
+                const meBadge = isMe ? '<div class="me-badge">SEN</div>' : '';
+                const btnState = isMe ? 'disabled style="opacity:0.5; cursor:default;"' : '';
+                const btnText = isMe ? 'Profilim' : 'Bağlantı Kur';
+
                 const html = `
                 <div class="member-card">
+                    ${meBadge}
                     <div class="member-avatar">${initials}</div>
                     <h4>${m.full_name}</h4>
                     <p>${dept} ${comp}</p>
-                    <button class="member-btn" onclick="connectRequest(this)">Bağlantı Kur</button>
+                    <button class="member-btn" onclick="connectRequest(this)" ${btnState}>${btnText}</button>
                 </div>`;
                 
                 list.insertAdjacentHTML('beforeend', html);
@@ -184,7 +200,6 @@
             btn.innerText = "İstek Gönderildi ✓";
             btn.classList.add("sent");
             btn.disabled = true;
-            // İleride buraya 'notifications' tablosuna kayıt atma kodu eklenebilir.
         }
         
         async function logout() {
