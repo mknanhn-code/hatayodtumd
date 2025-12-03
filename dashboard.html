@@ -25,22 +25,27 @@
         display: flex; flex-direction: column;
     }
     
+    /* GÜNCELLENMİŞ SIDEBAR HEADER */
     .sidebar-header { 
-        padding: 25px; 
+        padding: 15px;  /* Boşluk azaltıldı */
         border-bottom: 1px solid rgba(255,255,255,0.1); 
-        text-align: center; /* Ortala */
+        text-align: center;
     }
     
-    /* LOGO STİLİ */
+    /* GÜNCELLENMİŞ LOGO STİLİ */
     .logo-img {
-        width: 90px;
-        height: 90px;
+        width: auto;
+        height: 160px;   /* Yükseklik artırıldı */
         object-fit: contain;
+        
         background-color: white;
-        border-radius: 50%;
-        padding: 8px;
+        padding: 5px;    /* Minimal boşluk */
+        border-radius: 8px; /* Daire yerine hafif yuvarlak köşe */
+        
+        /* Çerçeve kaldırıldı */
+        /* border: 3px solid rgba(255,255,255,0.2); */
+        
         margin-bottom: 10px;
-        border: 3px solid rgba(255,255,255,0.2);
     }
 
     .sidebar-header h3 { font-size: 1.1rem; color: var(--white); margin-top: 5px;}
@@ -138,7 +143,7 @@
 
 <div class="sidebar">
     <div class="sidebar-header">
-        <img src="logo.png" alt="Hatay ODTÜ MD Logo" class="logo-img" onerror="this.style.display='none';">
+        <img src="image_0.png" alt="Hatay ODTÜ MD Logo" class="logo-img" onerror="this.style.display='none';">
         
         <h3>Hatay ODTÜ MD</h3>
         <p>Üye Portalı</p>
