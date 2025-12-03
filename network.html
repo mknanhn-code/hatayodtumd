@@ -6,26 +6,28 @@
 <title>Mezun Ağı - Hatay ODTÜ MD</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
-    :root { --odtu-red: #E31E24; --odtu-dark: #2c3e50; --bg-light: #f4f6f9; --white: #ffffff; }
+    /* --- ORTAK TASARIM --- */
+    :root { --odtu-red: #E31E24; --odtu-dark: #2c3e50; --bg-light: #f4f6f9; --white: #ffffff; --navbar-height: 70px; }
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
-    body { background-color: var(--bg-light); display: flex; min-height: 100vh; }
-    .sidebar { width: 260px; background-color: var(--odtu-dark); color: #ecf0f1; display: flex; flex-direction: column; }
-    .sidebar-header { padding: 15px 5px; border-bottom: 1px solid rgba(255,255,255,0.1); text-align: center; }
-    
-    /* GÜNCELLENMİŞ KÜÇÜK LOGO AYARI */
-    .logo-img { 
-        width: auto; height: auto; max-width: 70px; /* Logo Boyutu Burada Ayarlandı */
-        object-fit: contain; padding: 0; background-color: white; border-radius: 8px; margin-bottom: 10px; display: block; margin-left: auto; margin-right: auto; 
-    }
+    body { background-color: var(--bg-light); display: block; min-height: 100vh; }
 
-    .sidebar-header h3 { font-size: 1.1rem; color: var(--white); margin-top: 10px; }
-    .sidebar-header p { font-size: 0.8rem; color: #bdc3c7; }
-    .menu-items { flex: 1; padding-top: 20px; }
-    .menu-items a { display: flex; align-items: center; padding: 15px 25px; color: #bdc3c7; text-decoration: none; transition: 0.3s; border-left: 4px solid transparent; }
-    .menu-items a:hover, .menu-items a.active { background-color: rgba(255,255,255,0.05); color: var(--white); border-left-color: var(--odtu-red); }
-    .menu-items i { width: 25px; font-size: 1.1rem; margin-right: 10px; }
-    .main-content { flex: 1; padding: 30px; overflow-y: auto; }
+    /* NAVBAR */
+    .navbar { width: 100%; height: var(--navbar-height); background-color: var(--odtu-dark); display: flex; align-items: center; justify-content: space-between; padding: 0 30px; position: fixed; top: 0; left: 0; z-index: 1000; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+    .nav-left { display: flex; align-items: center; gap: 15px; }
+    .nav-logo { height: 50px; width: auto; background: white; padding: 2px; border-radius: 5px; object-fit: contain; }
+    .nav-title { color: white; font-size: 1.1rem; font-weight: bold; }
+    .nav-title span { display: block; font-size: 0.75rem; color: #bdc3c7; font-weight: normal; }
+    .nav-links { display: flex; gap: 20px; }
+    .nav-links a { color: #bdc3c7; text-decoration: none; font-size: 0.95rem; display: flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 6px; transition: 0.3s; }
+    .nav-links a:hover, .nav-links a.active { background-color: rgba(255,255,255,0.1); color: white; }
+    .nav-right { display: flex; align-items: center; gap: 20px; }
+    .logout-btn { color: #e74c3c; text-decoration: none; font-size: 0.9rem; border: 1px solid #e74c3c; padding: 6px 15px; border-radius: 20px; transition: 0.3s; }
+    .logout-btn:hover { background: #e74c3c; color: white; }
 
+    /* İÇERİK */
+    .main-content { margin-top: var(--navbar-height); padding: 40px; width: 100%; max-width: 1200px; margin-left: auto; margin-right: auto; }
+
+    /* --- SAYFAYA ÖZEL STİLLER (AĞ) --- */
     .filter-box { background: white; padding: 20px; border-radius: 12px; margin-bottom: 20px; display: flex; gap: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
     .filter-box input, .filter-box select { flex: 1; padding: 10px; border: 1px solid #ddd; border-radius: 6px; outline: none; }
     .btn-search { background: var(--odtu-dark); color: white; border: none; padding: 0 25px; border-radius: 6px; cursor: pointer; }
@@ -38,34 +40,52 @@
 </head>
 <body>
 
-<div class="sidebar">
-    <div class="sidebar-header">
-        <img src="logo.jpg" class="logo-img" onerror="this.onerror=null; this.src='https://upload.wikimedia.org/wikipedia/tr/a/a6/Odt%C3%BC_logo.png';">
-        <h3>Hatay ODTÜ MD</h3>
-        <p>Üye Portalı</p>
-    </div>
-    <div class="menu-items">
-        <a href="dashboard.html"><i class="fa-solid fa-layer-group"></i> Panel</a>
-        <a href="mentor.html"><i class="fa-solid fa-handshake-angle"></i> Mentorluk Programı</a>
-        <a href="career.html"><i class="fa-solid fa-briefcase"></i> Kariyer Fırsatları</a>
-        <a href="network.html" class="active"><i class="fa-solid fa-users-viewfinder"></i> Mezun Ağı</a>
-        <a href="settings.html"><i class="fa-solid fa-gear"></i> Ayarlar</a>
-    </div>
-</div>
+    <nav class="navbar">
+        <div class="nav-left">
+            <img src="logo.jpg" class="nav-logo" onerror="this.onerror=null; this.src='https://upload.wikimedia.org/wikipedia/tr/a/a6/Odt%C3%BC_logo.png';">
+            <div class="nav-title">Hatay ODTÜ MD <span>Üye Portalı</span></div>
+        </div>
+        <div class="nav-links">
+            <a href="dashboard.html"><i class="fa-solid fa-layer-group"></i> Panel</a>
+            <a href="mentor.html"><i class="fa-solid fa-handshake-angle"></i> Mentorluk</a>
+            <a href="career.html"><i class="fa-solid fa-briefcase"></i> Kariyer</a>
+            <a href="network.html" class="active"><i class="fa-solid fa-users-viewfinder"></i> Mezun Ağı</a>
+            <a href="settings.html"><i class="fa-solid fa-gear"></i> Ayarlar</a>
+        </div>
+        <div class="nav-right">
+            <a href="index.html" class="logout-btn" onclick="localStorage.clear()"><i class="fa-solid fa-right-from-bracket"></i> Çıkış</a>
+        </div>
+    </nav>
 
-<div class="main-content">
-    <h2>🔍 Mezun Ağı</h2>
-    <p style="color: #666; margin-bottom: 20px;">Dernek üyeleri arasında arama yapın ve bağlantı kurun.</p>
-    <div class="filter-box">
-        <input type="text" placeholder="İsim veya Şirket ara...">
-        <select><option>Tüm Bölümler</option></select>
-        <button class="btn-search">Ara</button>
+    <div class="main-content">
+        <h2>🔍 Mezun Ağı</h2>
+        <p style="color: #666; margin-bottom: 20px;">Dernek üyeleri arasında arama yapın ve bağlantı kurun.</p>
+        <div class="filter-box">
+            <input type="text" placeholder="İsim veya Şirket ara...">
+            <select><option>Tüm Bölümler</option></select>
+            <button class="btn-search">Ara</button>
+        </div>
+        <div class="network-grid">
+            <div class="member-card">
+                <div class="member-avatar"></div>
+                <h4>Zeynep Y.</h4>
+                <p style="color:#777; font-size:0.9rem">Şehir Plancısı @ Hatay BB</p>
+                <button class="member-btn">Bağlantı Kur</button>
+            </div>
+            <div class="member-card">
+                <div class="member-avatar"></div>
+                <h4>Mehmet T.</h4>
+                <p style="color:#777; font-size:0.9rem">Makine Müh. @ İsdemir</p>
+                <button class="member-btn">Bağlantı Kur</button>
+            </div>
+            <div class="member-card">
+                <div class="member-avatar"></div>
+                <h4>Canan A.</h4>
+                <p style="color:#777; font-size:0.9rem">Girişimci @ EcoSpire</p>
+                <button class="member-btn">Bağlantı Kur</button>
+            </div>
+        </div>
     </div>
-    <div class="network-grid">
-        <div class="member-card"><div class="member-avatar"></div><h4>Zeynep Y.</h4><p style="color:#777; font-size:0.9rem">Şehir Plancısı @ Hatay BB</p><button class="member-btn">Bağlantı Kur</button></div>
-        <div class="member-card"><div class="member-avatar"></div><h4>Mehmet T.</h4><p style="color:#777; font-size:0.9rem">Makine Müh. @ İsdemir</p><button class="member-btn">Bağlantı Kur</button></div>
-        <div class="member-card"><div class="member-avatar"></div><h4>Canan A.</h4><p style="color:#777; font-size:0.9rem">Girişimci @ EcoSpire</p><button class="member-btn">Bağlantı Kur</button></div>
-    </div>
-</div>
+
 </body>
 </html>
