@@ -11,8 +11,14 @@
     body { background-color: var(--bg-light); display: flex; min-height: 100vh; }
     
     .sidebar { width: 260px; background-color: var(--odtu-dark); color: #ecf0f1; display: flex; flex-direction: column; }
-    .sidebar-header { padding: 10px 5px; border-bottom: 1px solid rgba(255,255,255,0.1); text-align: center; }
-    .logo-img { width: 100%; height: auto; max-width: 240px; object-fit: contain; padding: 0; background-color: white; border-radius: 8px; margin-bottom: 5px; display: block; margin-left: auto; margin-right: auto; }
+    .sidebar-header { padding: 15px 5px; border-bottom: 1px solid rgba(255,255,255,0.1); text-align: center; }
+    
+    /* GÜNCELLENMİŞ KÜÇÜK LOGO AYARI */
+    .logo-img { 
+        width: auto; height: auto; max-width: 70px; /* Logo Boyutu Burada Ayarlandı */
+        object-fit: contain; padding: 0; background-color: white; border-radius: 8px; margin-bottom: 10px; display: block; margin-left: auto; margin-right: auto; 
+    }
+    
     .sidebar-header h3 { font-size: 1.1rem; color: var(--white); margin-top: 10px; }
     .sidebar-header p { font-size: 0.8rem; color: #bdc3c7; }
 
@@ -40,7 +46,7 @@
 
 <div class="sidebar">
     <div class="sidebar-header">
-        <img src="logo.png" class="logo-img" onerror="this.onerror=null; this.src='https://upload.wikimedia.org/wikipedia/tr/a/a6/Odt%C3%BC_logo.png';">
+        <img src="logo.jpg" class="logo-img" onerror="this.onerror=null; this.src='https://upload.wikimedia.org/wikipedia/tr/a/a6/Odt%C3%BC_logo.png';">
         <h3>Hatay ODTÜ MD</h3>
         <p>Üye Portalı</p>
     </div>
