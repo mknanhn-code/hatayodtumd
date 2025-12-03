@@ -11,13 +11,13 @@
         --odtu-dark: #2c3e50;
         --bg-light: #f4f6f9;
         --white: #ffffff;
-        --gold: #f1c40f;
+        --green: #27ae60;
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
     body { background-color: var(--bg-light); display: flex; min-height: 100vh; }
 
-    /* SOL MENÜ */
+    /* --- SIDEBAR --- */
     .sidebar {
         width: 260px;
         background-color: var(--odtu-dark);
@@ -39,72 +39,91 @@
         background-color: rgba(255,255,255,0.05); color: var(--white); border-left-color: var(--odtu-red);
     }
     .menu-items i { width: 25px; font-size: 1.1rem; margin-right: 10px; }
-    
     .badge { background: var(--odtu-red); color: white; padding: 2px 6px; border-radius: 4px; font-size: 0.7rem; margin-left: auto; }
     
-    /* Çıkış Butonu */
     .logout-box { padding: 20px; border-top: 1px solid rgba(255,255,255,0.1); }
     .logout-btn { color: #e74c3c; text-decoration: none; display: flex; align-items: center; gap: 10px; transition: 0.3s; }
     .logout-btn:hover { color: #ff6b6b; }
 
-    /* ANA İÇERİK */
+    /* --- MAIN CONTENT --- */
     .main-content { flex: 1; padding: 30px; overflow-y: auto; }
 
     /* Header */
     .top-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
     .welcome-text h2 { color: var(--odtu-dark); }
-    .welcome-text p { color: #7f8c8d; }
-
     .digital-card-btn {
         background: linear-gradient(135deg, var(--odtu-dark), #34495e);
         color: white; padding: 10px 20px; border-radius: 8px;
         display: flex; align-items: center; gap: 10px; cursor: pointer;
-        box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        box-shadow: 0 4px 10px rgba(0,0,0,0.2); transition: transform 0.2s;
     }
+    .digital-card-btn:active { transform: scale(0.98); }
 
-    /* GRID YAPISI */
+    /* Grid Layout */
     .dashboard-grid {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
         gap: 25px;
     }
 
+    /* Cards */
     .panel-card {
-        background: var(--white);
-        border-radius: 12px;
-        padding: 25px;
-        box-shadow: 0 2px 15px rgba(0,0,0,0.05);
-        position: relative;
+        background: var(--white); border-radius: 12px; padding: 25px;
+        box-shadow: 0 2px 15px rgba(0,0,0,0.05); position: relative;
     }
     .card-header { display: flex; justify-content: space-between; margin-bottom: 20px; align-items: center; }
     .card-title { font-size: 1.1rem; font-weight: bold; color: var(--odtu-dark); display: flex; align-items: center; gap: 10px; }
-    
-    /* Mentorluk */
-    .mentor-status { background: #e8f6f3; border: 1px solid #d1f2eb; padding: 15px; border-radius: 8px; margin-bottom: 15px; }
-    .mentor-profile { display: flex; align-items: center; gap: 15px; }
-    .mentor-img { width: 50px; height: 50px; border-radius: 50%; background: #bdc3c7; display:flex; align-items:center; justify-content:center; color:white; font-weight:bold; }
-    
-    .btn-action { width: 100%; padding: 10px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; transition: 0.3s; }
-    .btn-primary { background-color: var(--odtu-red); color: white; }
-    .btn-outline { background-color: transparent; border: 1px solid var(--odtu-red); color: var(--odtu-red); }
-    .btn-primary:hover { background-color: #c0151a; }
 
-    /* İş İlanları */
-    .job-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid #eee; }
-    .job-item:last-child { border-bottom: none; }
-    .job-company { font-weight: bold; font-size: 0.95rem; }
-    .job-role { font-size: 0.85rem; color: #7f8c8d; }
-    .job-tag { font-size: 0.75rem; background: #eee; padding: 3px 8px; border-radius: 4px; color: #555; }
+    /* --- GİZLİLİK AYARI (TOGGLE SWITCH) --- */
+    .privacy-box {
+        background-color: #f8f9fa; border: 1px solid #eee; padding: 15px; border-radius: 8px;
+        display: flex; justify-content: space-between; align-items: center;
+    }
+    .switch { position: relative; display: inline-block; width: 50px; height: 26px; }
+    .switch input { opacity: 0; width: 0; height: 0; }
+    .slider {
+        position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0;
+        background-color: #ccc; transition: .4s; border-radius: 34px;
+    }
+    .slider:before {
+        position: absolute; content: ""; height: 20px; width: 20px; left: 3px; bottom: 3px;
+        background-color: white; transition: .4s; border-radius: 50%;
+    }
+    input:checked + .slider { background-color: var(--green); }
+    input:checked + .slider:before { transform: translateX(24px); }
+    
+    .privacy-status-text { font-size: 0.85rem; font-weight: bold; margin-top: 5px; display: block;}
 
-    /* Mezun Arama */
-    .search-bar { display: flex; gap: 10px; margin-bottom: 15px; }
+    /* --- NETWORKING LIST (GÜVENLİ ARAMA) --- */
+    .search-bar { display: flex; gap: 10px; margin-bottom: 20px; }
     .search-bar input { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; outline: none; }
-    .member-list-item { display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px; }
-    .connect-btn { background: #3498db; color: white; border: none; padding: 5px 10px; border-radius: 4px; font-size: 0.8rem; cursor: pointer; }
+    
+    .member-item {
+        display: flex; align-items: center; justify-content: space-between;
+        padding: 15px 0; border-bottom: 1px solid #eee;
+    }
+    .member-item:last-child { border-bottom: none; }
+    .member-info h4 { font-size: 0.95rem; margin-bottom: 3px; }
+    .member-info p { font-size: 0.8rem; color: #777; }
+    .member-badge { font-size: 0.7rem; background: #e0e0e0; padding: 2px 6px; border-radius: 4px; color: #555; margin-left: 5px; }
 
-    /* Modal */
-    #idCardModal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); justify-content: center; align-items: center; z-index: 1000; }
-    .id-card { width: 320px; height: 200px; background: linear-gradient(135deg, #E31E24 0%, #a81216 100%); border-radius: 15px; padding: 20px; color: white; position: relative; box-shadow: 0 10px 30px rgba(0,0,0,0.3); display: flex; flex-direction: column; justify-content: space-between; }
+    .connect-btn {
+        background-color: transparent; border: 1px solid var(--odtu-dark); color: var(--odtu-dark);
+        padding: 6px 12px; border-radius: 6px; font-size: 0.8rem; cursor: pointer; transition: 0.3s;
+    }
+    .connect-btn:hover { background-color: var(--odtu-dark); color: white; }
+    .connect-btn.sent {
+        background-color: #eee; border-color: #eee; color: #999; cursor: default;
+    }
+
+    /* --- MENTORLUK & İLANLAR --- */
+    .mentor-status { background: #e8f6f3; border: 1px solid #d1f2eb; padding: 15px; border-radius: 8px; }
+    .job-item { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #eee; }
+    .btn-action { width: 100%; padding: 10px; border: none; border-radius: 6px; cursor: pointer; background: var(--odtu-red); color: white; margin-top: 10px; }
+
+    /* --- MODAL (KİMLİK KARTI) --- */
+    #idCardModal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); justify-content: center; align-items: center; z-index: 1000; }
+    .id-card { width: 320px; height: 200px; background: linear-gradient(135deg, #E31E24 0%, #900e12 100%); border-radius: 15px; padding: 20px; color: white; position: relative; box-shadow: 0 10px 30px rgba(0,0,0,0.3); display: flex; flex-direction: column; justify-content: space-between; }
 </style>
 </head>
 <body>
@@ -116,10 +135,10 @@
     </div>
     <div class="menu-items">
         <a href="#" class="active"><i class="fa-solid fa-layer-group"></i> Panel</a>
-        <a href="#"><i class="fa-solid fa-handshake-angle"></i> Mentorluk Programı <span class="badge">1</span></a>
-        <a href="#"><i class="fa-solid fa-briefcase"></i> Özel İlanlar <span class="badge">Yeni</span></a>
-        <a href="#"><i class="fa-solid fa-users-viewfinder"></i> Üye Arama</a>
-        <a href="#"><i class="fa-solid fa-percent"></i> İndirim & Avantajlar</a>
+        <a href="#"><i class="fa-solid fa-handshake-angle"></i> Mentorluk Programı</a>
+        <a href="#"><i class="fa-solid fa-briefcase"></i> Kariyer Fırsatları</a>
+        <a href="#"><i class="fa-solid fa-users-viewfinder"></i> Mezun Ağı (Güvenli)</a>
+        <a href="#"><i class="fa-solid fa-gear"></i> Ayarlar</a>
     </div>
     <div class="logout-box">
         <a href="index.html" class="logout-btn" onclick="logout()"><i class="fa-solid fa-right-from-bracket"></i> Çıkış Yap</a>
@@ -131,10 +150,10 @@
     <div class="top-header">
         <div class="welcome-text">
             <h2>Merhaba, <span id="userName">Üye</span></h2>
-            <p>Bugün topluluğun için ne yapmak istersin?</p>
+            <p>Hatay ODTÜ MD Ailesine Hoş Geldin.</p>
         </div>
         <div class="digital-card-btn" onclick="openCard()">
-            <i class="fa-solid fa-id-card"></i> Dijital Üye Kartım
+            <i class="fa-solid fa-id-card"></i> Dijital Kimlik Kartım
         </div>
     </div>
 
@@ -142,66 +161,67 @@
         
         <div class="panel-card">
             <div class="card-header">
-                <div class="card-title"><i class="fa-solid fa-handshake-angle" style="color: #27ae60;"></i> Mentorluk Durumu</div>
-                <small style="color: #27ae60; font-weight: bold;">Aktif Eşleşme</small>
+                <div class="card-title"><i class="fa-solid fa-shield-halved" style="color: #27ae60;"></i> Gizlilik ve Görünürlük</div>
+            </div>
+            <p style="font-size: 0.85rem; color: #666; margin-bottom: 15px;">
+                Profilinizin "Mezun Ağı" aramalarında diğer üyeler tarafından görünüp görünmeyeceğini buradan yönetebilirsiniz.
+            </p>
+            <div class="privacy-box">
+                <div>
+                    <strong>Aramalarda Görün</strong>
+                    <span class="privacy-status-text" id="privacyText" style="color: #27ae60;">Açık</span>
+                </div>
+                <label class="switch">
+                    <input type="checkbox" id="privacyToggle" checked onchange="togglePrivacy()">
+                    <span class="slider"></span>
+                </label>
+            </div>
+        </div>
+
+        <div class="panel-card">
+            <div class="card-header">
+                <div class="card-title"><i class="fa-solid fa-magnifying-glass" style="color: #2980b9;"></i> Mezun Bul & Bağlan</div>
             </div>
             
-            <div class="mentor-status">
-                <p style="font-size: 0.85rem; color: #555; margin-bottom: 10px;">Atanan Mentorun:</p>
-                <div class="mentor-profile">
-                    <div class="mentor-img">AK</div>
-                    <div>
-                        <h4 style="color: #333;">Ahmet K.</h4>
-                        <p style="font-size: 0.8rem; color: #777;">Yazılım Mimarı @ ASELSAN</p>
-                    </div>
-                </div>
-            </div>
-            <p style="font-size: 0.9rem; margin-bottom: 15px;">📅 <b>Sıradaki Görüşme:</b> 14 Aralık, 20:00</p>
-            <div style="display: flex; gap: 10px;">
-                <button class="btn-action btn-primary">Toplantıya Katıl</button>
-            </div>
-        </div>
-
-        <div class="panel-card">
-            <div class="card-header">
-                <div class="card-title"><i class="fa-solid fa-briefcase" style="color: #f39c12;"></i> Mezun Ağı İlanları</div>
-                <a href="#" style="font-size: 0.8rem; text-decoration: none; color: var(--odtu-red);">Tümü ></a>
-            </div>
-            <div class="job-item">
-                <div>
-                    <div class="job-company">Roketsan</div>
-                    <div class="job-role">Sistem Mühendisi (3+ Yıl)</div>
-                </div>
-                <div class="job-tag">Ref: ODTUMD</div>
-            </div>
-            <div class="job-item">
-                <div>
-                    <div class="job-company">Ankara Start-up</div>
-                    <div class="job-role">Full Stack Developer</div>
-                </div>
-                <div class="job-tag">Hybrid</div>
-            </div>
-            <button class="btn-action btn-outline" style="margin-top: 15px; width: 100%;">İlan Oluştur (Ücretsiz)</button>
-        </div>
-
-        <div class="panel-card">
-            <div class="card-header">
-                <div class="card-title"><i class="fa-solid fa-magnifying-glass" style="color: #2980b9;"></i> Mezun Bul</div>
-            </div>
             <div class="search-bar">
-                <input type="text" placeholder="Şirket, Şehir veya Bölüm ara...">
+                <input type="text" placeholder="İsim, Şirket veya Bölüm ara...">
                 <button style="background: var(--odtu-dark); color: white; border: none; padding: 0 15px; border-radius: 6px;"><i class="fa-solid fa-search"></i></button>
             </div>
-            <div class="member-list-item">
-                <div style="display: flex; align-items: center; gap: 10px;">
-                    <div style="width: 35px; height: 35px; background: #eee; border-radius: 50%;"></div>
-                    <div>
-                        <div style="font-size: 0.9rem; font-weight: bold;">Zeynep Y.</div>
-                        <div style="font-size: 0.75rem; color: #777;">Şehir Plancısı @ Hatay BB</div>
-                    </div>
+
+            <div class="member-item">
+                <div class="member-info">
+                    <h4>Zeynep Y. <span class="member-badge">2015</span></h4>
+                    <p>Şehir Plancısı @ Hatay BB</p>
                 </div>
-                <button class="connect-btn">Bağlan</button>
+                <button class="connect-btn" onclick="sendRequest(this)">Bağlantı İste</button>
             </div>
+
+            <div class="member-item">
+                <div class="member-info">
+                    <h4>Mehmet T. <span class="member-badge">2018</span></h4>
+                    <p>Makine Müh. @ İskenderun Demir Çelik</p>
+                </div>
+                <button class="connect-btn" onclick="sendRequest(this)">Bağlantı İste</button>
+            </div>
+             <div class="member-item">
+                <div class="member-info">
+                    <h4>Canan A. <span class="member-badge">2005</span></h4>
+                    <p>Kurucu @ EcoSpire Start-up</p>
+                </div>
+                <button class="connect-btn" onclick="sendRequest(this)">Bağlantı İste</button>
+            </div>
+        </div>
+
+        <div class="panel-card">
+            <div class="card-header">
+                <div class="card-title"><i class="fa-solid fa-handshake-angle" style="color: #f39c12;"></i> Mentorluk Programı</div>
+            </div>
+            <div class="mentor-status">
+                <strong style="color: #2c3e50;">Aktif Mentorunuz:</strong>
+                <div style="margin-top: 5px;">Ahmet K. (ASELSAN)</div>
+                <small style="color: #777;">Yazılım Mimarı</small>
+            </div>
+            <button class="btn-action">Mesaj Gönder</button>
         </div>
 
     </div>
@@ -209,18 +229,18 @@
 
 <div id="idCardModal" onclick="closeCard()">
     <div class="id-card" onclick="event.stopPropagation()">
-        <div style="display: flex; justify-content: space-between; align-items: flex-start;">
-            <i class="fa-solid fa-graduation-cap" style="font-size: 30px; opacity: 0.8;"></i>
+        <div style="display: flex; justify-content: space-between;">
+            <i class="fa-solid fa-graduation-cap" style="font-size: 30px; opacity: 0.9;"></i>
             <div style="text-align: right;">
                 <div style="font-weight: bold;">HATAY ODTÜ MD</div>
-                <div style="font-size: 0.7rem; opacity: 0.8;">Üye No: #1956</div>
+                <div style="font-size: 0.7rem; opacity: 0.8;">Üye No: #1092</div>
             </div>
         </div>
-        <div style="text-align: center; margin: 20px 0;">
-            <i class="fa-solid fa-qrcode" style="font-size: 60px;"></i>
+        <div style="text-align: center;">
+            <i class="fa-solid fa-qrcode" style="font-size: 70px;"></i>
         </div>
         <div>
-            <div id="cardNameArea" style="font-size: 1.1rem; font-weight: bold;">ÜYE İSMİ</div>
+            <div id="cardNameArea" style="font-weight: bold; font-size: 1.1rem;">ÜYE İSMİ</div>
             <div id="cardDeptArea" style="font-size: 0.8rem; opacity: 0.9;">Bölüm Bilgisi</div>
         </div>
     </div>
@@ -228,18 +248,10 @@
 
 <script>
     document.addEventListener("DOMContentLoaded", () => {
-        // 1. Giriş yapılmış mı kontrol et (Hafızadan oku)
+        // 1. İsim Çekme (Local Storage)
         const ad = localStorage.getItem("kullaniciAdi");
         const bolum = localStorage.getItem("kullaniciBolum");
         
-        // Eğer giriş yapılmamışsa ana sayfaya at (Güvenlik)
-        if (!ad) {
-            // Test için bu satırı yorum satırı yapabilirsin:
-            // window.location.href = "index.html";
-            // alert("Lütfen önce giriş yapınız!");
-        }
-
-        // 2. İsimleri Panele Yaz
         if(ad) {
             document.getElementById("userName").innerText = ad;
             document.getElementById("cardNameArea").innerText = ad.toUpperCase() + " [SOYAD]";
@@ -247,16 +259,63 @@
         if(bolum) {
             document.getElementById("cardDeptArea").innerText = bolum;
         }
+
+        // 2. Gizlilik Ayarını Hatırla
+        const isPrivacyOn = localStorage.getItem("privacySetting");
+        if (isPrivacyOn === "false") {
+            document.getElementById("privacyToggle").checked = false;
+            updatePrivacyText(false);
+        }
     });
 
-    // Kart Açma/Kapama
+    // --- FONKSİYONLAR ---
+
+    // 1. Gizlilik Toggle İşlemi
+    function togglePrivacy() {
+        const toggle = document.getElementById("privacyToggle");
+        const status = toggle.checked;
+        
+        // Durumu kaydet
+        localStorage.setItem("privacySetting", status);
+        updatePrivacyText(status);
+
+        // Kullanıcıya bilgi ver
+        if(!status) {
+            alert("Profiliniz aramalarda gizlendi (Hayalet Mod).");
+        } else {
+            alert("Profiliniz artık diğer üyeler tarafından aranabilir.");
+        }
+    }
+
+    function updatePrivacyText(status) {
+        const text = document.getElementById("privacyText");
+        if(status) {
+            text.innerText = "Açık";
+            text.style.color = "#27ae60"; // Yeşil
+        } else {
+            text.innerText = "Gizli";
+            text.style.color = "#e74c3c"; // Kırmızı
+        }
+    }
+
+    // 2. Bağlantı İsteği Gönderme (Simülasyon)
+    function sendRequest(btn) {
+        // Butonu "Gönderildi" moduna al
+        btn.innerText = "İstek Gönderildi";
+        btn.classList.add("sent");
+        btn.disabled = true; // Tekrar basılamasın
+        
+        // Gerçek hayatta burada veritabanına bildirim gider.
+        console.log("Bağlantı isteği gönderildi.");
+    }
+
+    // 3. Kart Aç/Kapa
     function openCard() { document.getElementById('idCardModal').style.display = 'flex'; }
     function closeCard() { document.getElementById('idCardModal').style.display = 'none'; }
     
-    // Çıkış Yapma
+    // 4. Çıkış
     function logout() {
-        localStorage.removeItem("kullaniciAdi");
-        localStorage.removeItem("kullaniciBolum");
+        localStorage.clear();
     }
 </script>
 
