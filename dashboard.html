@@ -24,8 +24,26 @@
         color: #ecf0f1;
         display: flex; flex-direction: column;
     }
-    .sidebar-header { padding: 25px; border-bottom: 1px solid rgba(255,255,255,0.1); }
-    .sidebar-header h3 { font-size: 1.1rem; color: var(--white); }
+    
+    .sidebar-header { 
+        padding: 25px; 
+        border-bottom: 1px solid rgba(255,255,255,0.1); 
+        text-align: center; /* Ortala */
+    }
+    
+    /* LOGO STİLİ */
+    .logo-img {
+        width: 90px;
+        height: 90px;
+        object-fit: contain;
+        background-color: white;
+        border-radius: 50%;
+        padding: 8px;
+        margin-bottom: 10px;
+        border: 3px solid rgba(255,255,255,0.2);
+    }
+
+    .sidebar-header h3 { font-size: 1.1rem; color: var(--white); margin-top: 5px;}
     .sidebar-header p { font-size: 0.8rem; color: #bdc3c7; }
     
     .menu-items { flex: 1; padding-top: 20px; }
@@ -74,7 +92,7 @@
     .card-header { display: flex; justify-content: space-between; margin-bottom: 20px; align-items: center; }
     .card-title { font-size: 1.1rem; font-weight: bold; color: var(--odtu-dark); display: flex; align-items: center; gap: 10px; }
 
-    /* --- GİZLİLİK AYARI (TOGGLE SWITCH) --- */
+    /* Gizlilik Switch */
     .privacy-box {
         background-color: #f8f9fa; border: 1px solid #eee; padding: 15px; border-radius: 8px;
         display: flex; justify-content: space-between; align-items: center;
@@ -91,17 +109,12 @@
     }
     input:checked + .slider { background-color: var(--green); }
     input:checked + .slider:before { transform: translateX(24px); }
-    
     .privacy-status-text { font-size: 0.85rem; font-weight: bold; margin-top: 5px; display: block;}
 
-    /* --- NETWORKING LIST (GÜVENLİ ARAMA) --- */
+    /* List & Search */
     .search-bar { display: flex; gap: 10px; margin-bottom: 20px; }
     .search-bar input { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; outline: none; }
-    
-    .member-item {
-        display: flex; align-items: center; justify-content: space-between;
-        padding: 15px 0; border-bottom: 1px solid #eee;
-    }
+    .member-item { display: flex; align-items: center; justify-content: space-between; padding: 15px 0; border-bottom: 1px solid #eee; }
     .member-item:last-child { border-bottom: none; }
     .member-info h4 { font-size: 0.95rem; margin-bottom: 3px; }
     .member-info p { font-size: 0.8rem; color: #777; }
@@ -112,16 +125,11 @@
         padding: 6px 12px; border-radius: 6px; font-size: 0.8rem; cursor: pointer; transition: 0.3s;
     }
     .connect-btn:hover { background-color: var(--odtu-dark); color: white; }
-    .connect-btn.sent {
-        background-color: #eee; border-color: #eee; color: #999; cursor: default;
-    }
+    .connect-btn.sent { background-color: #eee; border-color: #eee; color: #999; cursor: default; }
 
-    /* --- MENTORLUK & İLANLAR --- */
     .mentor-status { background: #e8f6f3; border: 1px solid #d1f2eb; padding: 15px; border-radius: 8px; }
-    .job-item { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #eee; }
     .btn-action { width: 100%; padding: 10px; border: none; border-radius: 6px; cursor: pointer; background: var(--odtu-red); color: white; margin-top: 10px; }
 
-    /* --- MODAL (KİMLİK KARTI) --- */
     #idCardModal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); justify-content: center; align-items: center; z-index: 1000; }
     .id-card { width: 320px; height: 200px; background: linear-gradient(135deg, #E31E24 0%, #900e12 100%); border-radius: 15px; padding: 20px; color: white; position: relative; box-shadow: 0 10px 30px rgba(0,0,0,0.3); display: flex; flex-direction: column; justify-content: space-between; }
 </style>
@@ -130,6 +138,8 @@
 
 <div class="sidebar">
     <div class="sidebar-header">
+        <img src="logo.png" alt="Hatay ODTÜ MD Logo" class="logo-img" onerror="this.style.display='none';">
+        
         <h3>Hatay ODTÜ MD</h3>
         <p>Üye Portalı</p>
     </div>
@@ -164,7 +174,7 @@
                 <div class="card-title"><i class="fa-solid fa-shield-halved" style="color: #27ae60;"></i> Gizlilik ve Görünürlük</div>
             </div>
             <p style="font-size: 0.85rem; color: #666; margin-bottom: 15px;">
-                Profilinizin "Mezun Ağı" aramalarında diğer üyeler tarafından görünüp görünmeyeceğini buradan yönetebilirsiniz.
+                Profilinizin "Mezun Ağı" aramalarında görünürlüğünü yönetin.
             </p>
             <div class="privacy-box">
                 <div>
@@ -248,7 +258,6 @@
 
 <script>
     document.addEventListener("DOMContentLoaded", () => {
-        // 1. İsim Çekme (Local Storage)
         const ad = localStorage.getItem("kullaniciAdi");
         const bolum = localStorage.getItem("kullaniciBolum");
         
@@ -260,7 +269,6 @@
             document.getElementById("cardDeptArea").innerText = bolum;
         }
 
-        // 2. Gizlilik Ayarını Hatırla
         const isPrivacyOn = localStorage.getItem("privacySetting");
         if (isPrivacyOn === "false") {
             document.getElementById("privacyToggle").checked = false;
@@ -268,55 +276,34 @@
         }
     });
 
-    // --- FONKSİYONLAR ---
-
-    // 1. Gizlilik Toggle İşlemi
     function togglePrivacy() {
         const toggle = document.getElementById("privacyToggle");
         const status = toggle.checked;
-        
-        // Durumu kaydet
         localStorage.setItem("privacySetting", status);
         updatePrivacyText(status);
-
-        // Kullanıcıya bilgi ver
-        if(!status) {
-            alert("Profiliniz aramalarda gizlendi (Hayalet Mod).");
-        } else {
-            alert("Profiliniz artık diğer üyeler tarafından aranabilir.");
-        }
+        if(!status) alert("Profiliniz aramalarda gizlendi (Hayalet Mod).");
     }
 
     function updatePrivacyText(status) {
         const text = document.getElementById("privacyText");
         if(status) {
             text.innerText = "Açık";
-            text.style.color = "#27ae60"; // Yeşil
+            text.style.color = "#27ae60"; 
         } else {
             text.innerText = "Gizli";
-            text.style.color = "#e74c3c"; // Kırmızı
+            text.style.color = "#e74c3c";
         }
     }
 
-    // 2. Bağlantı İsteği Gönderme (Simülasyon)
     function sendRequest(btn) {
-        // Butonu "Gönderildi" moduna al
         btn.innerText = "İstek Gönderildi";
         btn.classList.add("sent");
-        btn.disabled = true; // Tekrar basılamasın
-        
-        // Gerçek hayatta burada veritabanına bildirim gider.
-        console.log("Bağlantı isteği gönderildi.");
+        btn.disabled = true;
     }
 
-    // 3. Kart Aç/Kapa
     function openCard() { document.getElementById('idCardModal').style.display = 'flex'; }
     function closeCard() { document.getElementById('idCardModal').style.display = 'none'; }
-    
-    // 4. Çıkış
-    function logout() {
-        localStorage.clear();
-    }
+    function logout() { localStorage.clear(); }
 </script>
 
 </body>
