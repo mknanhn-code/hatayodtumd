@@ -10,14 +10,30 @@
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
     body { background-color: var(--bg-light); display: flex; min-height: 100vh; }
 
-    /* SIDEBAR & LOGO GÜNCELLEMESİ */
+    /* --- SIDEBAR --- */
     .sidebar { width: 260px; background-color: var(--odtu-dark); color: #ecf0f1; display: flex; flex-direction: column; }
-    .sidebar-header { padding: 10px 5px; border-bottom: 1px solid rgba(255,255,255,0.1); text-align: center; }
+    .sidebar-header { padding: 15px 5px; border-bottom: 1px solid rgba(255,255,255,0.1); text-align: center; }
     
+    /* --- GÜNCELLENMİŞ LOGO AYARI (KÜÇÜLTÜLDÜ) --- */
     .logo-img {
-        width: 100%; height: auto; max-width: 240px; object-fit: contain;
-        padding: 0; background-color: white; border-radius: 8px;
-        margin-bottom: 5px; display: block; margin-left: auto; margin-right: auto;
+        /* width: 100%;  <- BU KALDIRILDI */
+        width: auto;      /* Kendi boyutunu korumaya çalışsın */
+        height: auto;     /* Oranı bozma */
+        
+        /* İŞTE KİLİT NOKTA: Maksimum genişliği 70px ile sınırladık. */
+        /* Bu sayede çözünürlük bozulmadan küçük görünecek. */
+        max-width: 70px;  
+
+        object-fit: contain;
+        padding: 0;
+        background-color: white;
+        border-radius: 8px;
+        margin-bottom: 10px;
+        
+        /* Ortalamak için: */
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
     }
 
     .sidebar-header h3 { font-size: 1.1rem; color: var(--white); margin-top: 10px; }
@@ -31,6 +47,7 @@
     .logout-box { padding: 20px; border-top: 1px solid rgba(255,255,255,0.1); }
     .logout-btn { color: #e74c3c; text-decoration: none; display: flex; align-items: center; gap: 10px; transition: 0.3s; }
     
+    /* --- MAIN CONTENT --- */
     .main-content { flex: 1; padding: 30px; overflow-y: auto; }
     .top-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
     .digital-card-btn { background: linear-gradient(135deg, var(--odtu-dark), #34495e); color: white; padding: 10px 20px; border-radius: 8px; display: flex; align-items: center; gap: 10px; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
@@ -64,7 +81,7 @@
 
 <div class="sidebar">
     <div class="sidebar-header">
-        <img src="logo.jpg" alt="Hatay ODTÜ MD Logo" class="logo-img" onerror="this.onerror=null; this.src='https://upload.wikimedia.org/wikipedia/tr/a/a6/Odt%C3%BC_logo.png';">
+        <img src="logo.png" alt="Hatay ODTÜ MD Logo" class="logo-img" onerror="this.onerror=null; this.src='https://upload.wikimedia.org/wikipedia/tr/a/a6/Odt%C3%BC_logo.png';">
         <h3>Hatay ODTÜ MD</h3>
         <p>Üye Portalı</p>
     </div>
@@ -126,11 +143,23 @@
         const bolum = localStorage.getItem("kullaniciBolum");
         if(ad) { document.getElementById("userName").innerText = ad; document.getElementById("cardNameArea").innerText = ad.toUpperCase() + " [SOYAD]"; }
         if(bolum) document.getElementById("cardDeptArea").innerText = bolum;
+        
+        const isPrivacyOn = localStorage.getItem("privacySetting");
+        if (isPrivacyOn === "false") {
+            document.getElementById("privacyToggle").checked = false;
+            updatePrivacyText(false);
+        }
     });
     function togglePrivacy() {
         const status = document.getElementById("privacyToggle").checked;
-        document.getElementById("privacyText").innerText = status ? "Açık" : "Gizli";
-        document.getElementById("privacyText").style.color = status ? "#27ae60" : "#e74c3c";
+        localStorage.setItem("privacySetting", status);
+        updatePrivacyText(status);
+        if(!status) alert("Profiliniz aramalarda gizlendi.");
+    }
+    function updatePrivacyText(status) {
+        const text = document.getElementById("privacyText");
+        text.innerText = status ? "Açık" : "Gizli";
+        text.style.color = status ? "#27ae60" : "#e74c3c";
     }
 </script>
 </body>
