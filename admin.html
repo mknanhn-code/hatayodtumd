@@ -70,8 +70,16 @@
                 <div class="form-group"><input type="text" id="evtSpeaker" class="form-control" placeholder="Konuşmacı (Opsiyonel)"></div>
                 <button class="btn btn-dark" onclick="addEvent()">Etkinliği Oluştur</button>
             </div>
-            <h3>Yaklaşan Etkinlikler</h3>
-            <div class="card"><table id="evtTable"><tbody id="evtBody"></tbody></table></div>
+            
+            <h3>Tüm Etkinlikler</h3>
+            <div class="card">
+                <table>
+                    <thead><tr><th>Tarih</th><th>Etkinlik</th><th>Yer</th><th>İşlem</th></tr></thead>
+                    <tbody id="evtBody">
+                        <tr><td colspan="4" style="text-align:center;">Yükleniyor...</td></tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 
@@ -85,10 +93,10 @@
             const { data: { session } } = await supabase.auth.getSession();
             if(!session) { window.location.href='index.html'; return; }
             
-            // Admin Kontrolü
             const { data: profile } = await supabase.from('profiles').select('role').eq('id', session.user.id).single();
-            if(profile.role !== 'admin') { alert("Yetkisiz!"); window.location.href='dashboard.html'; return; }
+            if(!profile || profile.role !== 'admin') { alert("Yetkisiz!"); window.location.href='dashboard.html'; return; }
 
+            // Verileri Yükle
             loadPendingUsers();
             loadAnnouncements();
             loadEvents();
@@ -105,8 +113,8 @@
         async function loadPendingUsers() {
             const tbody = document.getElementById('usersBody');
             const { data } = await supabase.from('profiles').select('*').eq('is_verified', false);
-            tbody.innerHTML = data.length ? '' : '<tr><td colspan="4" style="text-align:center;">Bekleyen yok.</td></tr>';
-            data.forEach(u => tbody.innerHTML += `<tr><td>${u.full_name}</td><td>${u.email}</td><td>${u.department||'-'}</td><td><button class="btn btn-green" onclick="approve('${u.id}')">✓</button> <button class="btn btn-red" onclick="delUser('${u.id}')">✗</button></td></tr>`);
+            tbody.innerHTML = (data && data.length) ? '' : '<tr><td colspan="4" style="text-align:center; color:#999;">Bekleyen yok.</td></tr>';
+            if(data) data.forEach(u => tbody.innerHTML += `<tr><td>${u.full_name}</td><td>${u.email}</td><td>${u.department||'-'}</td><td><button class="btn btn-green" onclick="approve('${u.id}')">✓</button> <button class="btn btn-red" onclick="delUser('${u.id}')">✗</button></td></tr>`);
         }
         async function approve(id) { if(confirm('Onayla?')) { await supabase.from('profiles').update({is_verified:true}).eq('id',id); loadPendingUsers(); } }
         async function delUser(id) { if(confirm('Sil?')) { await supabase.from('profiles').delete().eq('id',id); loadPendingUsers(); } }
@@ -115,8 +123,8 @@
         async function loadAnnouncements() {
             const tbody = document.getElementById('annBody');
             const { data } = await supabase.from('announcements').select('*').order('created_at', {ascending:false});
-            tbody.innerHTML = data.length ? '' : '<tr><td colspan="2">Duyuru yok.</td></tr>';
-            data.forEach(a => tbody.innerHTML += `<tr><td><span style="color:${a.color}">•</span> ${a.title}</td><td><button class="btn btn-red" onclick="delAnn(${a.id})">Sil</button></td></tr>`);
+            tbody.innerHTML = (data && data.length) ? '' : '<tr><td colspan="2" style="text-align:center;">Duyuru yok.</td></tr>';
+            if(data) data.forEach(a => tbody.innerHTML += `<tr><td><span style="color:${a.color}">•</span> ${a.title}</td><td><button class="btn btn-red" onclick="delAnn(${a.id})">Sil</button></td></tr>`);
         }
         async function addAnnouncement() {
             const title = document.getElementById('annText').value;
@@ -127,13 +135,43 @@
         }
         async function delAnn(id) { if(confirm('Sil?')) { await supabase.from('announcements').delete().eq('id',id); loadAnnouncements(); } }
 
-        // --- 3. ETKİNLİK İŞLEMLERİ (YENİ) ---
+        // --- 3. ETKİNLİK İŞLEMLERİ (DÜZELTİLDİ) ---
         async function loadEvents() {
             const tbody = document.getElementById('evtBody');
-            const { data } = await supabase.from('events').select('*').order('event_date', {ascending:true});
-            tbody.innerHTML = data.length ? '' : '<tr><td colspan="4">Etkinlik yok.</td></tr>';
-            data.forEach(e => tbody.innerHTML += `<tr><td><b>${e.title}</b><br><small>${e.event_date}</small></td><td>${e.location}</td><td><button class="btn btn-red" onclick="delEvent(${e.id})">Sil</button></td></tr>`);
+            
+            // Veriyi çek (Hata yakalama ile)
+            const { data, error } = await supabase
+                .from('events')
+                .select('*')
+                .order('event_date', {ascending:true});
+
+            if (error) {
+                console.error("Etkinlik Çekme Hatası:", error);
+                tbody.innerHTML = '<tr><td colspan="4" style="color:red; text-align:center;">Hata: Veri çekilemedi. (Konsola bakınız)</td></tr>';
+                return;
+            }
+
+            if (!data || data.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; color:#999;">Hiç etkinlik yok.</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = '';
+            data.forEach(e => {
+                // Tarihi Güzelleştir (2025-12-01 -> 01.12.2025)
+                const dateParts = e.event_date.split('-');
+                const formattedDate = `${dateParts[2]}.${dateParts[1]}.${dateParts[0]}`;
+                
+                tbody.insertAdjacentHTML('beforeend', `
+                <tr>
+                    <td><b>${formattedDate}</b><br><small>${e.event_time.substring(0,5)}</small></td>
+                    <td>${e.title}</td>
+                    <td>${e.location}</td>
+                    <td><button class="btn btn-red" onclick="delEvent(${e.id})">Sil</button></td>
+                </tr>`);
+            });
         }
+
         async function addEvent() {
             const title = document.getElementById('evtTitle').value;
             const loc = document.getElementById('evtLoc').value;
@@ -141,14 +179,34 @@
             const time = document.getElementById('evtTime').value;
             const spk = document.getElementById('evtSpeaker').value;
 
-            if(!title || !date) { alert("Başlık ve Tarih zorunludur."); return; }
+            if(!title || !date || !time) { alert("Başlık, Tarih ve Saat zorunludur."); return; }
             
-            await supabase.from('events').insert({ title: title, location: loc, event_date: date, event_time: time, speaker: spk });
-            alert("Etkinlik eklendi!");
-            document.getElementById('evtTitle').value = "";
-            loadEvents();
+            const { error } = await supabase.from('events').insert({ 
+                title: title, location: loc, event_date: date, event_time: time, speaker: spk 
+            });
+
+            if (error) {
+                alert("Hata: " + error.message);
+                console.error(error);
+            } else {
+                alert("Etkinlik eklendi!");
+                // Formu Temizle
+                document.getElementById('evtTitle').value = "";
+                document.getElementById('evtLoc').value = "";
+                document.getElementById('evtDate').value = "";
+                document.getElementById('evtTime').value = "";
+                document.getElementById('evtSpeaker').value = "";
+                // Listeyi Yenile
+                loadEvents();
+            }
         }
-        async function delEvent(id) { if(confirm('Sil?')) { await supabase.from('events').delete().eq('id',id); loadEvents(); } }
+
+        async function delEvent(id) { 
+            if(confirm('Bu etkinliği silmek istiyor musunuz?')) { 
+                await supabase.from('events').delete().eq('id',id); 
+                loadEvents(); 
+            } 
+        }
 
     </script>
 </body>
