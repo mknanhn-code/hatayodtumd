@@ -6,247 +6,304 @@
 <title>Giriş - Hatay ODTÜ MD</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
-    :root { --odtu-red: #E31E24; --odtu-dark: #333333; --bg-color: #f4f4f9; --white: #ffffff; }
+    /* GENEL AYARLAR */
+    :root { --odtu-red: #E31E24; --odtu-dark: #333333; --bg-color: #f4f4f9; --white: #ffffff; --student-color: #f39c12; --grad-color: #27ae60; }
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
     
     body { 
         background: linear-gradient(135deg, #ece9e6 0%, #ffffff 100%); 
         display: flex; justify-content: center; align-items: center; 
-        min-height: 100vh; padding: 20px; /* Mobilde kenarlara yapışmasın */
+        min-height: 100vh; padding: 20px;
     }
 
-    .container { 
-        background-color: var(--white); padding: 2rem; border-radius: 12px; 
-        box-shadow: 0 4px 15px rgba(0,0,0,0.1); width: 100%; max-width: 420px; 
-        text-align: center; border-top: 5px solid var(--odtu-red); 
-        position: relative; overflow: hidden; 
+    /* ANA KONTEYNER */
+    .main-wrapper {
+        background-color: var(--white); padding: 40px; border-radius: 20px; 
+        box-shadow: 0 10px 40px rgba(0,0,0,0.1); width: 100%; max-width: 900px; 
+        text-align: center; border-top: 6px solid var(--odtu-red); 
+        min-height: 550px; display: flex; flex-direction: column; justify-content: center; position: relative;
     }
 
-    .header-icon { width: 50px; height: 50px; background-color: var(--odtu-red); color: var(--white); border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 1.2rem; margin: 0 auto 1rem auto; }
+    /* 1. SEÇİM EKRANI STİLLERİ */
+    #selectionScreen h1 { color: var(--odtu-red); margin-bottom: 10px; }
+    #selectionScreen p { color: #666; margin-bottom: 40px; }
     
-    /* Toggle (Geçiş) Butonları */
-    .toggle-box { display: flex; justify-content: center; margin-bottom: 2rem; background: #f0f0f0; border-radius: 30px; padding: 5px; position: relative; }
-    .toggle-btn { flex: 1; padding: 10px; border: none; background: transparent; cursor: pointer; border-radius: 25px; font-weight: bold; color: #777; transition: 0.3s; z-index: 1; }
-    .toggle-btn.active { color: var(--white); }
-    #btn-bg { position: absolute; top: 5px; left: 5px; width: 50%; height: calc(100% - 10px); background: var(--odtu-red); border-radius: 25px; transition: 0.3s; }
+    .cards-container { display: flex; gap: 30px; justify-content: center; flex-wrap: wrap; }
     
-    /* Formlar */
-    .form-box { display: none; animation: fadeIn 0.5s; }
-    .form-box.active-form { display: block; }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    .role-card {
+        background: #fff; border: 2px solid #eee; border-radius: 15px; padding: 40px 20px;
+        width: 300px; cursor: pointer; transition: 0.3s; position: relative; overflow: hidden;
+    }
     
-    .input-group { position: relative; margin-bottom: 1rem; }
-    .input-group input { width: 100%; padding: 12px 40px; border: 1px solid #ddd; border-radius: 6px; outline: none; transition: 0.3s; }
-    .input-group input:focus { border-color: var(--odtu-red); box-shadow: 0 0 5px rgba(227, 30, 36, 0.2); }
-    .input-icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #888; }
+    .role-card:hover { transform: translateY(-10px); box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
     
-    .btn-submit { width: 100%; padding: 12px; background-color: var(--odtu-red); color: var(--white); border: none; border-radius: 6px; font-size: 1rem; cursor: pointer; transition: 0.3s; margin-top: 10px; }
-    .btn-submit:disabled { background-color: #ccc; cursor: not-allowed; }
+    .role-icon { font-size: 4rem; margin-bottom: 20px; color: #ccc; transition: 0.3s; }
+    .role-title { font-size: 1.5rem; font-weight: bold; color: var(--odtu-dark); margin-bottom: 10px; }
+    .role-desc { font-size: 0.9rem; color: #888; }
+
+    /* Hover Efektleri */
+    .card-student:hover { border-color: var(--student-color); }
+    .card-student:hover .role-icon { color: var(--student-color); }
     
+    .card-grad:hover { border-color: var(--grad-color); }
+    .card-grad:hover .role-icon { color: var(--grad-color); }
+
+    /* 2. FORM EKRANI STİLLERİ */
+    #authScreen { display: none; animation: fadeIn 0.4s ease-in-out; max-width: 400px; margin: 0 auto; width: 100%; }
+    
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+    .back-btn { 
+        position: absolute; top: 30px; left: 30px; border: none; background: none; 
+        font-size: 1.2rem; color: #999; cursor: pointer; transition: 0.3s;
+    }
+    .back-btn:hover { color: var(--odtu-dark); }
+
+    .auth-header i { font-size: 3rem; margin-bottom: 15px; display: block; }
+    .auth-header h2 { margin-bottom: 5px; }
+    .auth-header p { color: #888; margin-bottom: 25px; font-size: 0.9rem; }
+
+    /* Form Elemanları */
+    .toggle-box { display: flex; background: #f0f0f0; border-radius: 30px; padding: 5px; margin-bottom: 25px; position: relative; }
+    .toggle-btn { flex: 1; padding: 10px; border: none; background: transparent; cursor: pointer; border-radius: 25px; font-weight: bold; color: #777; z-index: 1; transition: 0.3s; }
+    .toggle-btn.active { color: white; }
+    #btn-bg { position: absolute; top: 5px; left: 5px; width: 50%; height: calc(100% - 10px); background: var(--odtu-dark); border-radius: 25px; transition: 0.3s; }
+
+    .input-group { position: relative; margin-bottom: 15px; }
+    .input-group input { width: 100%; padding: 12px 45px; border: 1px solid #ddd; border-radius: 8px; outline: none; transition: 0.3s; font-size: 0.95rem; }
+    .input-group i { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #aaa; }
+    .input-group input:focus { border-color: var(--odtu-dark); }
+
+    .btn-submit { width: 100%; padding: 12px; background: var(--odtu-dark); color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 1rem; font-weight: bold; transition: 0.3s; }
+    .btn-submit:hover { opacity: 0.9; }
+    .btn-submit:disabled { background: #ccc; cursor: not-allowed; }
+
     /* Mesaj Kutusu */
-    .message-box { padding: 15px; margin-bottom: 20px; border-radius: 8px; font-size: 0.9rem; display: none; line-height: 1.5; text-align: left;}
-    .msg-success { background-color: #e8f5e9; color: #2e7d32; border: 1px solid #a5d6a7; }
-    .msg-error { background-color: #ffebee; color: #c62828; border: 1px solid #ef9a9a; }
-    .msg-warning { background-color: #fff3e0; color: #e65100; border: 1px solid #ffe0b2; }
+    .message-box { padding: 15px; margin-bottom: 20px; border-radius: 8px; font-size: 0.9rem; display: none; text-align: left; line-height: 1.5; }
+    .msg-warning { background: #fff3e0; color: #e65100; border: 1px solid #ffe0b2; }
+    .msg-error { background: #ffebee; color: #c62828; border: 1px solid #ef9a9a; }
+    .msg-success { background: #e8f5e9; color: #2e7d32; border: 1px solid #c8e6c9; }
     .message-box a { color: inherit; text-decoration: underline; font-weight: bold; }
 
-    /* --- MOBİL UYUMLULUK --- */
-    @media (max-width: 480px) {
-        .container {
-            padding: 1.5rem; /* Mobilde iç boşluğu azalt */
-            max-width: 100%; /* Tam genişlik */
-        }
-        .toggle-btn { font-size: 0.9rem; } /* Buton yazılarını küçült */
+    /* Form Geçişi */
+    .form-content { display: none; }
+    .form-content.active-form { display: block; animation: fadeIn 0.3s; }
+
+    /* Mobil */
+    @media (max-width: 700px) {
+        .main-wrapper { padding: 20px; }
+        .role-card { width: 100%; }
     }
 </style>
 </head>
 <body>
 
-<div class="container">
-    <div class="header-icon"><i class="fa-solid fa-graduation-cap"></i></div>
-    <h2>Hatay ODTÜ MD</h2>
-    <p>Mezunlar Platformu</p>
-
-    <div id="systemMessage" class="message-box"></div>
-
-    <div class="toggle-box">
-        <div id="btn-bg"></div>
-        <button class="toggle-btn active" onclick="switchForm('login')">Giriş Yap</button>
-        <button class="toggle-btn" onclick="switchForm('register')">Kayıt Ol</button>
+<div class="main-wrapper">
+    
+    <div id="selectionScreen">
+        <i class="fa-solid fa-graduation-cap" style="font-size: 3rem; color: #E31E24; margin-bottom: 10px;"></i>
+        <h1>Hatay ODTÜ MD</h1>
+        <p>Lütfen giriş yapmak istediğiniz portalı seçiniz.</p>
+        
+        <div class="cards-container">
+            <div class="role-card card-student" onclick="selectRole('student')">
+                <i class="fa-solid fa-book-open-reader role-icon"></i>
+                <div class="role-title">Öğrenci Girişi</div>
+                <div class="role-desc">Staj imkanları, mentorluk ve öğrenci topluluğu için.</div>
+            </div>
+            
+            <div class="role-card card-grad" onclick="selectRole('grad')">
+                <i class="fa-solid fa-user-tie role-icon"></i>
+                <div class="role-title">Mezun Girişi</div>
+                <div class="role-desc">Profesyonel ağ, iş ilanları ve dernek faaliyetleri için.</div>
+            </div>
+        </div>
     </div>
 
-    <form id="loginForm" class="form-box active-form">
-        <div class="input-group">
-            <i class="fa-solid fa-envelope input-icon"></i>
-            <input type="email" id="loginEmail" placeholder="E-posta Adresiniz" required>
+    <div id="authScreen">
+        <button class="back-btn" onclick="goBack()"><i class="fa-solid fa-arrow-left"></i> Geri</button>
+        
+        <div class="auth-header">
+            <i id="headerIcon" class="fa-solid fa-user"></i>
+            <h2 id="headerTitle">Giriş Yap</h2>
+            <p id="headerDesc">Hesabınıza erişmek için bilgilerinizi girin.</p>
         </div>
-        <div class="input-group">
-            <i class="fa-solid fa-lock input-icon"></i>
-            <input type="password" id="loginPassword" placeholder="Şifreniz" required>
-        </div>
-        <button type="submit" class="btn-submit">Giriş Yap</button>
-    </form>
 
-    <form id="registerForm" class="form-box">
-        <div class="input-group">
-            <i class="fa-solid fa-user input-icon"></i>
-            <input type="text" id="regName" placeholder="Ad Soyad" required>
+        <div id="systemMessage" class="message-box"></div>
+
+        <div class="toggle-box">
+            <div id="btn-bg"></div>
+            <button class="toggle-btn active" onclick="switchTab('login')">Giriş Yap</button>
+            <button class="toggle-btn" onclick="switchTab('register')">Kayıt Ol</button>
         </div>
-        <div class="input-group">
-            <i class="fa-solid fa-envelope input-icon"></i>
-            <input type="email" id="regEmail" placeholder="E-posta Adresiniz" required>
-        </div>
-        <div class="input-group">
-            <i class="fa-solid fa-lock input-icon"></i>
-            <input type="password" id="regPassword" placeholder="Şifre Belirle" required>
-        </div>
-        <button type="submit" class="btn-submit">Kayıt Ol</button>
-    </form>
+
+        <form id="loginForm" class="form-content active-form">
+            <div class="input-group"><i class="fa-solid fa-envelope"></i><input type="email" id="loginEmail" placeholder="E-posta Adresi" required></div>
+            <div class="input-group"><i class="fa-solid fa-lock"></i><input type="password" id="loginPassword" placeholder="Şifre" required></div>
+            <button type="submit" class="btn-submit">Giriş Yap</button>
+        </form>
+
+        <form id="registerForm" class="form-content">
+            <div class="input-group"><i class="fa-solid fa-user"></i><input type="text" id="regName" placeholder="Ad Soyad" required></div>
+            <div class="input-group"><i class="fa-solid fa-envelope"></i><input type="email" id="regEmail" placeholder="E-posta Adresi" required></div>
+            
+            <div class="input-group">
+                <i class="fa-solid fa-calendar-days"></i>
+                <input type="number" id="regYear" placeholder="Mezuniyet Yılı" required>
+            </div>
+            
+            <div class="input-group"><i class="fa-solid fa-lock"></i><input type="password" id="regPassword" placeholder="Şifre Belirle" required></div>
+            <button type="submit" class="btn-submit">Kayıt Ol</button>
+        </form>
+    </div>
+
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
 <script>
-    // --- 1. SUPABASE AYARLARI ---
     const supabaseUrl = 'https://hftrmiiacxgtkarsvupn.supabase.co';
     const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhmdHJtaWlhY3hndGthcnN2dXBuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ3ODUzNzIsImV4cCI6MjA4MDM2MTM3Mn0.BgCk5xuZx6AZuxzfBHcQqg8j8BtxU9FbupDgoFecG_k';
+    
+    let supabase; try { supabase = window.supabase.createClient(supabaseUrl, supabaseKey); } catch(e){}
 
-    let supabase;
+    let currentRole = ''; // 'student' veya 'grad'
 
-    document.addEventListener("DOMContentLoaded", function() {
-        try {
-            if (typeof window.supabase !== 'undefined') {
-                supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
-            } else {
-                throw new Error("Supabase kütüphanesi yüklenemedi.");
-            }
-        } catch (err) { console.error(err); }
-    });
+    // --- EKRAN YÖNETİMİ ---
+    function selectRole(role) {
+        currentRole = role;
+        document.getElementById('selectionScreen').style.display = 'none';
+        document.getElementById('authScreen').style.display = 'block';
+        updateUI(role);
+    }
 
-    // --- 2. FONKSİYONLAR ---
-    function switchForm(type) {
+    function goBack() {
+        document.getElementById('selectionScreen').style.display = 'block';
+        document.getElementById('authScreen').style.display = 'none';
+        document.getElementById('systemMessage').style.display = 'none';
+    }
+
+    function updateUI(role) {
+        const title = document.getElementById('headerTitle');
+        const desc = document.getElementById('headerDesc');
+        const icon = document.getElementById('headerIcon');
+        const yearInput = document.getElementById('regYear');
+        const btnBg = document.getElementById('btn-bg');
+        const submits = document.querySelectorAll('.btn-submit');
+
+        if (role === 'student') {
+            title.innerText = "Öğrenci Portalı";
+            desc.innerText = "Geleceğin mezunu, hoş geldin!";
+            icon.className = "fa-solid fa-book-open-reader";
+            icon.style.color = "#f39c12";
+            yearInput.placeholder = "Tahmini Mezuniyet Yılı (Örn: 2026)";
+            
+            // Renkleri Turuncu Yap
+            btnBg.style.backgroundColor = "#f39c12";
+            submits.forEach(btn => btn.style.backgroundColor = "#f39c12");
+        } else {
+            title.innerText = "Mezun Portalı";
+            desc.innerText = "Tekrar hoş geldiniz hocam!";
+            icon.className = "fa-solid fa-user-tie";
+            icon.style.color = "#27ae60";
+            yearInput.placeholder = "Mezuniyet Yılı (Örn: 2015)";
+            
+            // Renkleri Yeşil Yap
+            btnBg.style.backgroundColor = "#27ae60";
+            submits.forEach(btn => btn.style.backgroundColor = "#27ae60");
+        }
+    }
+
+    function switchTab(tab) {
         document.getElementById('systemMessage').style.display = 'none';
         const loginForm = document.getElementById('loginForm');
-        const registerForm = document.getElementById('registerForm');
+        const regForm = document.getElementById('registerForm');
         const bg = document.getElementById('btn-bg');
-        const buttons = document.querySelectorAll('.toggle-btn');
+        const btns = document.querySelectorAll('.toggle-btn');
 
-        if (type === 'login') {
-            loginForm.classList.add('active-form'); registerForm.classList.remove('active-form');
-            bg.style.left = '5px'; buttons[0].classList.add('active'); buttons[1].classList.remove('active');
+        if (tab === 'login') {
+            loginForm.classList.add('active-form'); regForm.classList.remove('active-form');
+            bg.style.left = '5px'; btns[0].classList.add('active'); btns[1].classList.remove('active');
         } else {
-            loginForm.classList.remove('active-form'); registerForm.classList.add('active-form');
-            bg.style.left = '50%'; buttons[0].classList.remove('active'); buttons[1].classList.add('active');
+            loginForm.classList.remove('active-form'); regForm.classList.add('active-form');
+            bg.style.left = '50%'; btns[0].classList.remove('active'); btns[1].classList.add('active');
         }
     }
 
     function showMessage(msg, type) {
-        const msgBox = document.getElementById('systemMessage');
-        msgBox.innerHTML = msg; 
-        msgBox.className = 'message-box ' + type;
-        msgBox.style.display = 'block';
+        const box = document.getElementById('systemMessage');
+        box.innerHTML = msg; box.className = 'message-box ' + type; box.style.display = 'block';
     }
 
-    // --- 3. KAYIT OLMA ---
+    // --- KAYIT ---
     document.getElementById('registerForm').addEventListener('submit', async function(e) {
         e.preventDefault();
-        if (!supabase) return;
-
         const btn = this.querySelector('button');
         const originalText = btn.innerText;
-        btn.innerText = 'İşleniyor...';
-        btn.disabled = true;
+        btn.innerText = 'İşleniyor...'; btn.disabled = true;
 
         const email = document.getElementById('regEmail').value;
         const password = document.getElementById('regPassword').value;
-        const fullName = document.getElementById('regName').value;
+        const name = document.getElementById('regName').value;
+        const year = document.getElementById('regYear').value;
 
         try {
             const { data, error } = await supabase.auth.signUp({
-                email: email,
-                password: password,
-                options: { data: { full_name: fullName } }
+                email, password, options: { data: { full_name: name } }
             });
 
             if (error) throw error;
 
-            showMessage(`
-                <b>Kaydınız alındı!</b> 🎉 <br><br>
-                Yönetici onayı sürecini hızlandırmak için 
-                <a href="mailto:hatayodtumd@gmail.com">hatayodtumd@gmail.com</a>'a mail atabilir, 
-                Hatay ODTÜ MD topluluğuna hemen dahil olabilirsiniz.<br><br>
-                Şimdiden hoş geldiniz!
-            `, "msg-warning");
+            if (data.user) {
+                // Profil tablosunu güncelle (Yılı ekle)
+                await supabase.from('profiles').update({ grad_year: year }).eq('id', data.user.id);
+            }
 
-            btn.innerText = originalText;
-            btn.disabled = false;
+            showMessage(`<b>Kaydınız alındı!</b> 🎉<br>Yönetici onayı için <a href="mailto:hatayodtumd@gmail.com">hatayodtumd@gmail.com</a> ile iletişime geçiniz.`, "msg-warning");
             
-            document.getElementById('regEmail').value = "";
-            document.getElementById('regPassword').value = "";
-            document.getElementById('regName').value = "";
-            
-            setTimeout(() => { switchForm('login'); }, 8000);
+            this.reset();
+            setTimeout(() => { switchTab('login'); }, 6000);
 
         } catch (error) {
             showMessage("Hata: " + error.message, "msg-error");
-            btn.innerText = originalText;
-            btn.disabled = false;
+        } finally {
+            btn.innerText = originalText; btn.disabled = false;
         }
     });
 
-    // --- 4. GİRİŞ YAPMA ---
+    // --- GİRİŞ ---
     document.getElementById('loginForm').addEventListener('submit', async function(e) {
         e.preventDefault();
-        if (!supabase) return;
-
         const btn = this.querySelector('button');
         const originalText = btn.innerText;
-        btn.innerText = 'Kontrol ediliyor...';
-        btn.disabled = true;
-        
+        btn.innerText = 'Kontrol ediliyor...'; btn.disabled = true;
+
         const email = document.getElementById('loginEmail').value;
         const password = document.getElementById('loginPassword').value;
 
         try {
-            const { data, error } = await supabase.auth.signInWithPassword({
-                email: email, password: password
-            });
+            const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+            if (error) throw new Error("Bilgiler hatalı.");
 
-            if (error) throw new Error("E-posta veya şifre hatalı.");
-
-            // Onay Kontrolü
-            const userId = data.user.id;
-            const { data: profile, error: profileError } = await supabase
-                .from('profiles').select('is_verified').eq('id', userId).single();
-
-            if (profileError) throw profileError;
+            const { data: profile } = await supabase.from('profiles').select('is_verified').eq('id', data.user.id).single();
 
             if (!profile.is_verified) {
                 await supabase.auth.signOut();
-                showMessage(`
-                <b>Kaydınız başarıyla alındı!</b> 🎉 <br><br>
-                Yönetici onayı sürecini hızlandırmak ve Hatay ODTÜ MD topluluğuna hemen dahil olmak için lütfen: <br>
-                👉 <b><a href="mailto:hatayodtumd@gmail.com">hatayodtumd@gmail.com</a></b> <br>
-                adresi ile iletişime geçiniz.
-            `, "msg-warning");
-                btn.innerText = originalText;
-                btn.disabled = false;
+                showMessage("Üyeliğiniz henüz <b>YÖNETİCİ ONAYI</b> almamıştır.", "msg-warning");
                 return;
             }
 
+            // Başarılı
             showMessage("Giriş Başarılı! Yönlendiriliyorsunuz...", "msg-success");
-            const userName = data.user.user_metadata.full_name || "Üye";
-            localStorage.setItem("kullaniciAdi", userName);
-            
+            localStorage.setItem("kullaniciAdi", data.user.user_metadata.full_name);
             setTimeout(() => { window.location.href = "dashboard.html"; }, 1000);
 
         } catch (error) {
-            await supabase.auth.signOut();
             showMessage(error.message, "msg-error");
-            btn.innerText = originalText;
-            btn.disabled = false;
+        } finally {
+            btn.innerText = originalText; btn.disabled = false;
         }
     });
 </script>
+
 </body>
 </html>
