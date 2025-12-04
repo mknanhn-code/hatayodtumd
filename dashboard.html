@@ -11,7 +11,7 @@
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
     body { background-color: var(--bg-light); display: block; min-height: 100vh; }
 
-    /* --- NAVBAR (MENÜ) --- */
+    /* --- NAVBAR --- */
     .navbar { width: 100%; height: var(--navbar-height); background-color: var(--odtu-dark); display: flex; align-items: center; justify-content: space-between; padding: 0 30px; position: fixed; top: 0; left: 0; z-index: 1000; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
     .nav-left { display: flex; align-items: center; gap: 15px; }
     .nav-logo { height: 50px; width: auto; background: white; padding: 2px; border-radius: 5px; object-fit: contain; }
@@ -22,26 +22,26 @@
     .nav-links a { color: #bdc3c7; text-decoration: none; font-size: 0.95rem; display: flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 6px; transition: 0.3s; }
     .nav-links a:hover, .nav-links a.active { background-color: rgba(255,255,255,0.1); color: white; }
     
-    /* Admin Butonu Özel Stili */
-    #adminBtn:hover { background-color: rgba(231, 76, 60, 0.2); color: #ff6b6b; }
+    #adminBtn:hover { background-color: rgba(231, 76, 60, 0.2); color: #ff6b6b; } /* Admin butonu efekti */
 
     .nav-right { display: flex; align-items: center; gap: 20px; }
     .logout-btn { color: #e74c3c; text-decoration: none; font-size: 0.9rem; border: 1px solid #e74c3c; padding: 6px 15px; border-radius: 20px; transition: 0.3s; }
     .logout-btn:hover { background: #e74c3c; color: white; }
 
-    /* --- İÇERİK ALANI --- */
+    /* --- İÇERİK --- */
     .main-content { margin-top: var(--navbar-height); padding: 40px; width: 100%; max-width: 1200px; margin-left: auto; margin-right: auto; }
     .top-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
     
-    /* Hoşgeldin Badge */
     .status-badge { display: inline-block; padding: 5px 10px; border-radius: 15px; font-size: 0.75rem; font-weight: bold; margin-left: 10px; vertical-align: middle; }
     .badge-student { background-color: #fff3e0; color: #f57c00; border: 1px solid #ffe0b2; }
     .badge-grad { background-color: #e8f5e9; color: #2e7d32; border: 1px solid #c8e6c9; }
 
     .digital-card-btn { background: linear-gradient(135deg, var(--odtu-dark), #34495e); color: white; padding: 10px 20px; border-radius: 8px; display: flex; align-items: center; gap: 10px; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
     
-    /* KARTLAR */
-    .dashboard-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 25px; }
+    /* Grid Yapısı */
+    .dashboard-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 25px; margin-bottom: 30px; }
+    
+    /* Kart Stilleri */
     .panel-card { background: var(--white); border-radius: 12px; padding: 25px; box-shadow: 0 2px 15px rgba(0,0,0,0.05); transition: 0.3s; display: flex; flex-direction: column; }
     .panel-card:hover { transform: translateY(-3px); box-shadow: 0 5px 20px rgba(0,0,0,0.1); }
     
@@ -49,19 +49,27 @@
     .card-title { font-size: 1.1rem; font-weight: bold; color: var(--odtu-dark); display: flex; align-items: center; gap: 10px; }
     .card-body { flex: 1; color: #666; font-size: 0.9rem; margin-bottom: 15px; }
     
+    /* Butonlar */
     .btn-action { width: 100%; padding: 10px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; transition: 0.3s; margin-top: auto; }
     .btn-red { background: var(--odtu-red); color: white; } .btn-red:hover { background: #c0151a; }
     .btn-blue { background: #3498db; color: white; } .btn-blue:hover { background: #2980b9; }
     .btn-dark { background: var(--odtu-dark); color: white; }
     
     /* Gizli Bölümler */
-    #studentSection, #gradSection, #genericSection { display: none; }
+    #studentSection, #gradSection, #commonSection, #genericSection { display: none; }
+
+    /* Yeni İçerik Stilleri (Takvim, Liste vb.) */
+    .calendar-box { background: #e74c3c; color: white; padding: 10px; border-radius: 8px; text-align: center; min-width: 60px; }
+    .notice-list { list-style: none; padding: 0; margin: 0; }
+    .notice-item { padding: 10px 0; border-bottom: 1px solid #eee; display: flex; gap: 10px; font-size: 0.9rem; color: #555; }
+    .notice-item:last-child { border-bottom: none; }
+    .stat-number { font-size: 1.8rem; font-weight: bold; }
 
     /* Modal */
     #idCardModal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); justify-content: center; align-items: center; z-index: 2000; }
     .id-card { width: 320px; height: 200px; background: linear-gradient(135deg, #E31E24 0%, #900e12 100%); border-radius: 15px; padding: 20px; color: white; position: relative; box-shadow: 0 10px 30px rgba(0,0,0,0.3); display: flex; flex-direction: column; justify-content: space-between; }
 
-    /* --- MOBİL UYUMLULUK --- */
+    /* MOBİL */
     @media (max-width: 900px) {
         .navbar { height: auto; flex-direction: column; padding: 15px; position: relative; }
         .nav-links { flex-wrap: wrap; justify-content: center; gap: 10px; width: 100%; }
@@ -76,10 +84,7 @@
 <body>
 
     <nav class="navbar">
-        <div class="nav-left">
-            <img src="logo.jpg" class="nav-logo" onerror="this.onerror=null; this.src='https://upload.wikimedia.org/wikipedia/tr/a/a6/Odt%C3%BC_logo.png';">
-            <div class="nav-title">Hatay ODTÜ MD <span>Üye Portalı</span></div>
-        </div>
+        <div class="nav-left"><img src="logo.jpg" class="nav-logo"><div class="nav-title">Hatay ODTÜ MD <span>Üye Portalı</span></div></div>
         <div class="nav-links">
             <a href="dashboard.html" class="active"><i class="fa-solid fa-layer-group"></i> Panel</a>
             <a href="mentor.html"><i class="fa-solid fa-handshake-angle"></i> Mentorluk</a>
@@ -91,9 +96,7 @@
                 <i class="fa-solid fa-user-shield"></i> Yönetim
             </a>
         </div>
-        <div class="nav-right">
-            <a href="#" class="logout-btn" onclick="logout()"><i class="fa-solid fa-right-from-bracket"></i> Çıkış</a>
-        </div>
+        <div class="nav-right"><a href="#" class="logout-btn" onclick="logout()"><i class="fa-solid fa-right-from-bracket"></i> Çıkış</a></div>
     </nav>
 
     <div class="main-content">
@@ -147,10 +150,45 @@
             </div>
         </div>
 
+        <div id="commonSection" class="dashboard-grid">
+            
+            <div class="panel-card">
+                <div class="card-header"><div class="card-title"><i class="fa-solid fa-calendar-day" style="color: #e74c3c;"></i> Etkinlik</div></div>
+                <div style="display: flex; gap: 15px; align-items: center;">
+                    <div class="calendar-box"><div>15</div><div style="font-size: 0.8rem;">TEM</div></div>
+                    <div>
+                        <h4 style="margin: 0; color: var(--odtu-dark);">Vişnelik Buluşması</h4>
+                        <p style="margin: 5px 0 0 0; font-size: 0.85rem; color: #777;">📍 ODTÜ Mezunları Derneği</p>
+                    </div>
+                </div>
+                <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #eee; font-size: 0.85rem; color: #555;">📅 15 Temmuz - 19.00 <br> 🎤 Konuşmacı: Rektör Danışmanı</div>
+                <button class="btn-action btn-dark">Katılıyorum</button>
+            </div>
+
+            <div class="panel-card">
+                <div class="card-header"><div class="card-title"><i class="fa-solid fa-bullhorn" style="color: #f39c12;"></i> Duyurular</div></div>
+                <ul class="notice-list">
+                    <li class="notice-item"><span style="color:#e74c3c;">•</span> 2025 Burs Başvuruları başladı.</li>
+                    <li class="notice-item"><span style="color:#27ae60;">•</span> Hatay Konteyner Kütüphane açıldı.</li>
+                    <li class="notice-item"><span style="color:#3498db;">•</span> Yeni mentorluk dönemi kayıtları.</li>
+                </ul>
+                <button class="btn-action" style="background:transparent; color:#777; border:1px solid #ddd;">Tümünü Gör</button>
+            </div>
+
+            <div class="panel-card" style="background: linear-gradient(135deg, #2c3e50, #34495e); color: white;">
+                <div class="card-header"><div class="card-title" style="color:white;"><i class="fa-solid fa-chart-pie"></i> Topluluk</div></div>
+                <div style="display: flex; justify-content: space-around; text-align: center; margin: 10px 0;">
+                    <div><div class="stat-number" style="color:#f1c40f;">142</div><div style="font-size:0.8rem; opacity:0.8;">Aktif Üye</div></div>
+                    <div><div class="stat-number" style="color:#2ecc71;">56</div><div style="font-size:0.8rem; opacity:0.8;">Mentorluk</div></div>
+                </div>
+                <p style="font-size: 0.8rem; text-align: center; opacity: 0.9;">Senin desteğinle büyüyoruz. 🌿</p>
+                <button class="btn-action" style="background: rgba(255,255,255,0.2); color: white;">Destek Ol</button>
+            </div>
+        </div>
+
         <div id="genericSection" style="text-align:center; background:white; padding:40px; border-radius:12px;">
             <h3>👋 Profilini Tamamla</h3>
-            <p>Sana özel içerikleri gösterebilmemiz için mezuniyet yılını bilmemiz gerekiyor.</p>
-            <br>
+            <p>Sana özel içerikleri gösterebilmemiz için mezuniyet yılını bilmemiz gerekiyor.</p><br>
             <button class="btn-action btn-red" style="max-width:200px;" onclick="window.location.href='settings.html'">Ayarlara Git</button>
         </div>
     </div>
@@ -165,14 +203,10 @@
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
-        // --- AYARLAR ---
         const supabaseUrl = 'https://hftrmiiacxgtkarsvupn.supabase.co';
         const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhmdHJtaWlhY3hndGthcnN2dXBuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ3ODUzNzIsImV4cCI6MjA4MDM2MTM3Mn0.BgCk5xuZx6AZuxzfBHcQqg8j8BtxU9FbupDgoFecG_k';
-        
-        let supabase;
-        try { supabase = window.supabase.createClient(supabaseUrl, supabaseKey); } catch(e){}
+        let supabase; try { supabase = window.supabase.createClient(supabaseUrl, supabaseKey); } catch(e){}
 
-        // --- SAYFA YÜKLENİNCE ---
         document.addEventListener("DOMContentLoaded", async () => {
             if(!supabase) return;
             const { data: { session } } = await supabase.auth.getSession();
@@ -181,7 +215,6 @@
             const user = session.user;
             const { data: profile } = await supabase.from('profiles').select('*').eq('id', user.id).single();
 
-            // Spinner'ı gizle
             document.getElementById('loadingSpinner').style.display = 'none';
 
             let displayName = user.user_metadata.full_name || "Değerli Üye";
@@ -192,21 +225,13 @@
                 displayName = profile.full_name || displayName;
                 displayDept = profile.department || displayDept;
                 gradYear = profile.grad_year ? parseInt(profile.grad_year) : null;
-
-                // --- YÖNETİCİ BUTONU MANTIĞI ---
-                // Eğer rol 'admin' ise butonu görünür yap
-                if (profile.role === 'admin') {
-                    const adminBtn = document.getElementById('adminBtn');
-                    adminBtn.style.display = 'flex';
-                }
+                if (profile.role === 'admin') document.getElementById('adminBtn').style.display = 'flex';
             }
 
-            // Bilgileri yerleştir
             document.getElementById("userName").innerText = displayName;
             document.getElementById("cardNameArea").innerText = displayName.toUpperCase();
             document.getElementById("cardDeptArea").innerText = displayDept;
 
-            // --- AKILLI PANEL GÖSTERİMİ ---
             const currentYear = new Date().getFullYear();
             const badge = document.getElementById('userBadge');
             const msg = document.getElementById('welcomeMsg');
@@ -214,16 +239,19 @@
             if (!gradYear) {
                 document.getElementById('genericSection').style.display = 'block';
                 msg.innerText = "Lütfen profil ayarlarından mezuniyet yılınızı giriniz.";
-            } 
-            else if (gradYear > currentYear) {
-                document.getElementById('studentSection').style.display = 'grid';
-                badge.innerText = "Öğrenci"; badge.className = "status-badge badge-student";
-                msg.innerText = "Kariyer yolculuğunda yanındayız.";
-            } 
-            else {
-                document.getElementById('gradSection').style.display = 'grid';
-                badge.innerText = "Mezun"; badge.className = "status-badge badge-grad";
-                msg.innerText = "Topluluğa değer kattığın için teşekkürler.";
+            } else {
+                // Hem öğrenciye hem mezuna Ortak Alanı göster
+                document.getElementById('commonSection').style.display = 'grid';
+                
+                if (gradYear > currentYear) {
+                    document.getElementById('studentSection').style.display = 'grid';
+                    badge.innerText = "Öğrenci"; badge.className = "status-badge badge-student";
+                    msg.innerText = "Kariyer yolculuğunda yanındayız.";
+                } else {
+                    document.getElementById('gradSection').style.display = 'grid';
+                    badge.innerText = "Mezun"; badge.className = "status-badge badge-grad";
+                    msg.innerText = "Topluluğa değer kattığın için teşekkürler.";
+                }
             }
         });
 
