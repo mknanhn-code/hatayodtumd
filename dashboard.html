@@ -6,48 +6,73 @@
 <title>Panel - Hatay ODTÜ MD</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
-    /* TEMEL TASARIM (Öncekiyle Aynı) */
+    /* --- TASARIM AYARLARI --- */
     :root { --odtu-red: #E31E24; --odtu-dark: #2c3e50; --bg-light: #f4f6f9; --white: #ffffff; --green: #27ae60; --navbar-height: 70px; }
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
     body { background-color: var(--bg-light); display: block; min-height: 100vh; }
-    
+
+    /* NAVBAR */
     .navbar { width: 100%; height: var(--navbar-height); background-color: var(--odtu-dark); display: flex; align-items: center; justify-content: space-between; padding: 0 30px; position: fixed; top: 0; left: 0; z-index: 1000; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-    .nav-left { display: flex; align-items: center; gap: 15px; } .nav-logo { height: 50px; }
-    .nav-title { color: white; font-size: 1.1rem; font-weight: bold; } .nav-title span { display: block; font-size: 0.75rem; color: #bdc3c7; }
+    .nav-left { display: flex; align-items: center; gap: 15px; }
+    .nav-logo { height: 50px; width: auto; background: white; padding: 2px; border-radius: 5px; object-fit: contain; }
+    .nav-title { color: white; font-size: 1.1rem; font-weight: bold; }
+    .nav-title span { display: block; font-size: 0.75rem; color: #bdc3c7; font-weight: normal; }
+    
     .nav-links { display: flex; gap: 20px; }
     .nav-links a { color: #bdc3c7; text-decoration: none; font-size: 0.95rem; display: flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 6px; transition: 0.3s; }
     .nav-links a:hover, .nav-links a.active { background-color: rgba(255,255,255,0.1); color: white; }
-    #adminBtn:hover { background-color: rgba(231, 76, 60, 0.2); color: #ff6b6b; }
-    .logout-btn { color: #e74c3c; border: 1px solid #e74c3c; padding: 6px 15px; border-radius: 20px; transition: 0.3s; text-decoration: none; }
+    #adminBtn:hover { background-color: rgba(231, 76, 60, 0.2); color: #ff6b6b; } /* Admin butonu efekti */
+
+    .nav-right { display: flex; align-items: center; gap: 20px; }
+    .logout-btn { color: #e74c3c; text-decoration: none; font-size: 0.9rem; border: 1px solid #e74c3c; padding: 6px 15px; border-radius: 20px; transition: 0.3s; }
     .logout-btn:hover { background: #e74c3c; color: white; }
 
+    /* İÇERİK */
     .main-content { margin-top: var(--navbar-height); padding: 40px; width: 100%; max-width: 1200px; margin-left: auto; margin-right: auto; }
     .top-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
-    .status-badge { display: inline-block; padding: 5px 10px; border-radius: 15px; font-size: 0.75rem; font-weight: bold; margin-left: 10px; }
-    .badge-student { background: #fff3e0; color: #f57c00; } .badge-grad { background: #e8f5e9; color: #2e7d32; }
     
+    .status-badge { display: inline-block; padding: 5px 10px; border-radius: 15px; font-size: 0.75rem; font-weight: bold; margin-left: 10px; vertical-align: middle; }
+    .badge-student { background-color: #fff3e0; color: #f57c00; border: 1px solid #ffe0b2; }
+    .badge-grad { background-color: #e8f5e9; color: #2e7d32; border: 1px solid #c8e6c9; }
+
+    .digital-card-btn { background: linear-gradient(135deg, var(--odtu-dark), #34495e); color: white; padding: 10px 20px; border-radius: 8px; display: flex; align-items: center; gap: 10px; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
+    
+    /* Grid ve Kartlar */
     .dashboard-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 25px; margin-bottom: 30px; }
-    .panel-card { background: white; border-radius: 12px; padding: 25px; box-shadow: 0 2px 15px rgba(0,0,0,0.05); display: flex; flex-direction: column; transition: 0.3s; }
+    .panel-card { background: var(--white); border-radius: 12px; padding: 25px; box-shadow: 0 2px 15px rgba(0,0,0,0.05); transition: 0.3s; display: flex; flex-direction: column; }
     .panel-card:hover { transform: translateY(-3px); box-shadow: 0 5px 20px rgba(0,0,0,0.1); }
+    
     .card-header { display: flex; justify-content: space-between; margin-bottom: 15px; align-items: center; }
     .card-title { font-size: 1.1rem; font-weight: bold; color: var(--odtu-dark); display: flex; align-items: center; gap: 10px; }
     .card-body { flex: 1; color: #666; font-size: 0.9rem; margin-bottom: 15px; }
-    .btn-action { width: 100%; padding: 10px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; margin-top: auto; }
-    .btn-red { background: var(--odtu-red); color: white; } .btn-blue { background: #3498db; color: white; } .btn-dark { background: var(--odtu-dark); color: white; }
-
-    /* Takvim ve İstatistik Stilleri */
+    
+    .btn-action { width: 100%; padding: 10px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; transition: 0.3s; margin-top: auto; }
+    .btn-red { background: var(--odtu-red); color: white; } .btn-red:hover { background: #c0151a; }
+    .btn-blue { background: #3498db; color: white; } .btn-blue:hover { background: #2980b9; }
+    .btn-dark { background: var(--odtu-dark); color: white; }
+    
+    /* Liste ve Takvim Stilleri */
     .calendar-box { background: #e74c3c; color: white; padding: 10px; border-radius: 8px; text-align: center; min-width: 60px; }
-    .stat-number { font-size: 1.8rem; font-weight: bold; }
     .notice-list { list-style: none; padding: 0; margin: 0; }
     .notice-item { padding: 10px 0; border-bottom: 1px solid #eee; display: flex; gap: 10px; font-size: 0.9rem; color: #555; }
-    
+    .notice-item:last-child { border-bottom: none; }
+    .stat-number { font-size: 1.8rem; font-weight: bold; }
+
+    /* Gizli Bölümler */
     #studentSection, #gradSection, #commonSection, #genericSection { display: none; }
 
+    /* Modal */
+    #idCardModal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); justify-content: center; align-items: center; z-index: 2000; }
+    .id-card { width: 320px; height: 200px; background: linear-gradient(135deg, #E31E24 0%, #900e12 100%); border-radius: 15px; padding: 20px; color: white; position: relative; box-shadow: 0 10px 30px rgba(0,0,0,0.3); display: flex; flex-direction: column; justify-content: space-between; }
+
+    /* MOBİL UYUMLULUK */
     @media (max-width: 900px) {
-        .navbar { height: auto; flex-direction: column; padding: 15px; }
-        .nav-links { flex-wrap: wrap; justify-content: center; }
+        .navbar { height: auto; flex-direction: column; padding: 15px; position: relative; }
+        .nav-links { flex-wrap: wrap; justify-content: center; gap: 10px; width: 100%; }
+        .nav-links a { flex: 1 1 auto; justify-content: center; }
         .main-content { margin-top: 0; padding: 20px; }
         .top-header { flex-direction: column; text-align: center; gap: 15px; }
+        .digital-card-btn { width: 100%; justify-content: center; }
         .dashboard-grid { grid-template-columns: 1fr; }
     }
 </style>
@@ -55,16 +80,24 @@
 <body>
 
     <nav class="navbar">
-        <div class="nav-left"><img src="logo.png" class="nav-logo" onerror="this.onerror=null; this.src='https://upload.wikimedia.org/wikipedia/tr/a/a6/Odt%C3%BC_logo.png';"><div class="nav-title">Hatay ODTÜ MD <span>Üye Portalı</span></div></div>
+        <div class="nav-left">
+            <img src="logo.jpg" class="nav-logo" onerror="this.onerror=null; this.src='https://upload.wikimedia.org/wikipedia/tr/a/a6/Odt%C3%BC_logo.png';">
+            <div class="nav-title">Hatay ODTÜ MD <span>Üye Portalı</span></div>
+        </div>
         <div class="nav-links">
             <a href="dashboard.html" class="active"><i class="fa-solid fa-layer-group"></i> Panel</a>
             <a href="mentor.html"><i class="fa-solid fa-handshake-angle"></i> Mentorluk</a>
             <a href="career.html"><i class="fa-solid fa-briefcase"></i> Kariyer</a>
             <a href="network.html"><i class="fa-solid fa-users-viewfinder"></i> Mezun Ağı</a>
             <a href="settings.html"><i class="fa-solid fa-gear"></i> Ayarlar</a>
-            <a href="admin.html" id="adminBtn" style="display: none; color: #ff6b6b; font-weight: bold;"><i class="fa-solid fa-user-shield"></i> Yönetim</a>
+            
+            <a href="admin.html" id="adminBtn" style="display: none; color: #ff6b6b; font-weight: bold;">
+                <i class="fa-solid fa-user-shield"></i> Yönetim
+            </a>
         </div>
-        <div class="nav-right"><a href="#" class="logout-btn" onclick="logout()"><i class="fa-solid fa-right-from-bracket"></i> Çıkış</a></div>
+        <div class="nav-right">
+            <a href="#" class="logout-btn" onclick="logout()"><i class="fa-solid fa-right-from-bracket"></i> Çıkış</a>
+        </div>
     </nav>
 
     <div class="main-content">
@@ -73,27 +106,32 @@
                 <h2>Merhaba, <span id="userName">Yükleniyor...</span> <span id="userBadge"></span></h2>
                 <p id="welcomeMsg">Hatay ODTÜ MD Ailesine Hoş Geldin.</p>
             </div>
+            <div class="digital-card-btn" onclick="document.getElementById('idCardModal').style.display='flex'">
+                <i class="fa-solid fa-id-card"></i> Dijital Kimlik Kartım
+            </div>
+        </div>
+
+        <div id="loadingSpinner" style="text-align:center; padding:50px; color:#999;">
+            <i class="fa-solid fa-spinner fa-spin fa-2x"></i><br>Profiliniz inceleniyor...
         </div>
 
         <div id="studentSection" class="dashboard-grid">
-            <div class="panel-card"><div class="card-header"><div class="card-title"><i class="fa-solid fa-graduation-cap" style="color:#f39c12;"></i> Mentor Bul</div></div><div class="card-body">Sektörde deneyimli ODTÜ mezunlarından kariyer rehberliği al.</div><button class="btn-action btn-red" onclick="window.location.href='mentor.html'">Mentorları İncele</button></div>
-            <div class="panel-card"><div class="card-header"><div class="card-title"><i class="fa-solid fa-briefcase" style="color:#3498db;"></i> Staj Fırsatları</div></div><div class="card-body">Referanslı staj ilanlarına göz at.</div><button class="btn-action btn-blue" onclick="window.location.href='career.html'">İlanlara Git</button></div>
-            <div class="panel-card"><div class="card-header"><div class="card-title"><i class="fa-solid fa-book-open" style="color:#27ae60;"></i> Öğrenci Topluluğu</div></div><div class="card-body">Etkinliklerden haberdar ol.</div><button class="btn-action btn-dark">Topluluğa Katıl</button></div>
+            <div class="panel-card"><div class="card-header"><div class="card-title"><i class="fa-solid fa-graduation-cap" style="color: #f39c12;"></i> Mentor Bul</div></div><div class="card-body">Sektörde deneyimli ODTÜ mezunlarından kariyer rehberliği al.</div><button class="btn-action btn-red" onclick="window.location.href='mentor.html'">Mentorları İncele</button></div>
+            <div class="panel-card"><div class="card-header"><div class="card-title"><i class="fa-solid fa-briefcase" style="color: #3498db;"></i> Staj Fırsatları</div></div><div class="card-body">Referanslı staj ilanlarına göz at ve kariyerine hızlı başla.</div><button class="btn-action btn-blue" onclick="window.location.href='career.html'">İlanlara Git</button></div>
+            <div class="panel-card"><div class="card-header"><div class="card-title"><i class="fa-solid fa-book-open" style="color: #27ae60;"></i> Öğrenci Topluluğu</div></div><div class="card-body">Diğer ODTÜ'lü öğrencilerle tanış, not paylaş ve etkinliklerden haberdar ol.</div><button class="btn-action btn-dark">Topluluğa Katıl</button></div>
         </div>
 
         <div id="gradSection" class="dashboard-grid">
-            <div class="panel-card"><div class="card-header"><div class="card-title"><i class="fa-solid fa-handshake-angle" style="color:#27ae60;"></i> Mentor Ol</div></div><div class="card-body">Genç ODTÜ'lülere yol göster.</div><button class="btn-action btn-red" onclick="window.location.href='mentor.html'">Başvur</button></div>
-            <div class="panel-card"><div class="card-header"><div class="card-title"><i class="fa-solid fa-briefcase" style="color:#3498db;"></i> İş İlanı Ver</div></div><div class="card-body">Açık pozisyonları paylaş.</div><button class="btn-action btn-blue" onclick="window.location.href='career.html'">İlan Ekle</button></div>
-            <div class="panel-card"><div class="card-header"><div class="card-title"><i class="fa-solid fa-users" style="color:#f39c12;"></i> Mezun Ağı</div></div><div class="card-body">Profesyonel ağını genişlet.</div><button class="btn-action btn-dark" onclick="window.location.href='network.html'">Aramaya Başla</button></div>
+            <div class="panel-card"><div class="card-header"><div class="card-title"><i class="fa-solid fa-handshake-angle" style="color: #27ae60;"></i> Mentor Ol</div></div><div class="card-body">Deneyimlerini genç ODTÜ'lülerle paylaş. Geleceğin meslektaşlarına yol göster.</div><button class="btn-action btn-red" onclick="window.location.href='mentor.html'">Başvur</button></div>
+            <div class="panel-card"><div class="card-header"><div class="card-title"><i class="fa-solid fa-briefcase" style="color: #3498db;"></i> İş İlanı Ver</div></div><div class="card-body">Şirketindeki açık pozisyonları doğrudan toplulukla paylaş.</div><button class="btn-action btn-blue" onclick="window.location.href='career.html'">İlan Ekle</button></div>
+            <div class="panel-card"><div class="card-header"><div class="card-title"><i class="fa-solid fa-users" style="color: #f39c12;"></i> Mezun Ağı</div></div><div class="card-body">Şehir, sektör veya bölüme göre diğer mezunları bul.</div><button class="btn-action btn-dark" onclick="window.location.href='network.html'">Aramaya Başla</button></div>
         </div>
 
         <div id="commonSection" class="dashboard-grid">
             
             <div class="panel-card" id="eventCard">
                 <div class="card-header"><div class="card-title"><i class="fa-solid fa-calendar-day" style="color: #e74c3c;"></i> Etkinlik</div></div>
-                <div id="eventContent" style="text-align:center; padding:20px; color:#777;">
-                    Yükleniyor...
-                </div>
+                <div id="eventContent" style="text-align:center; padding:20px; color:#777;">Yükleniyor...</div>
             </div>
 
             <div class="panel-card">
@@ -114,10 +152,18 @@
             </div>
         </div>
 
-        <div id="genericSection" style="text-align:center; background:white; padding:40px; border-radius:12px; display:none;">
+        <div id="genericSection" style="text-align:center; background:white; padding:40px; border-radius:12px;">
             <h3>👋 Profilini Tamamla</h3>
             <p>Sana özel içerikleri gösterebilmemiz için mezuniyet yılını bilmemiz gerekiyor.</p><br>
             <button class="btn-action btn-red" style="max-width:200px;" onclick="window.location.href='settings.html'">Ayarlara Git</button>
+        </div>
+    </div>
+
+    <div id="idCardModal" onclick="this.style.display='none'">
+        <div class="id-card" onclick="event.stopPropagation()">
+            <div style="display:flex; justify-content:space-between"><i class="fa-solid fa-graduation-cap" style="font-size:30px"></i><div style="text-align:right; font-weight:bold">HATAY ODTÜ MD</div></div>
+            <div style="text-align:center"><i class="fa-solid fa-qrcode" style="font-size:70px"></i></div>
+            <div><div id="cardNameArea" style="font-weight:bold">YÜKLENİYOR...</div><div id="cardDeptArea" style="font-size:0.8rem">Bölüm Bilgisi</div></div>
         </div>
     </div>
 
@@ -125,6 +171,7 @@
     <script>
         const supabaseUrl = 'https://hftrmiiacxgtkarsvupn.supabase.co';
         const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhmdHJtaWlhY3hndGthcnN2dXBuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ3ODUzNzIsImV4cCI6MjA4MDM2MTM3Mn0.BgCk5xuZx6AZuxzfBHcQqg8j8BtxU9FbupDgoFecG_k';
+        
         let supabase; try { supabase = window.supabase.createClient(supabaseUrl, supabaseKey); } catch(e){}
 
         document.addEventListener("DOMContentLoaded", async () => {
@@ -132,38 +179,55 @@
             const { data: { session } } = await supabase.auth.getSession();
             if (!session) { window.location.href = 'index.html'; return; }
 
-            const { data: profile } = await supabase.from('profiles').select('*').eq('id', session.user.id).single();
+            const user = session.user;
+            const { data: profile } = await supabase.from('profiles').select('*').eq('id', user.id).single();
 
-            // 1. Profil Bilgileri
-            document.getElementById("userName").innerText = profile.full_name || "Değerli Üye";
-            if (profile.role === 'admin') document.getElementById('adminBtn').style.display = 'flex';
+            // Yükleniyor'u gizle
+            document.getElementById('loadingSpinner').style.display = 'none';
 
-            // 2. Akıllı Panel Gösterimi
+            let displayName = user.user_metadata.full_name || "Değerli Üye";
+            let displayDept = "Bölüm Bilgisi Yok";
+            let gradYear = null;
+
+            if (profile) {
+                displayName = profile.full_name || displayName;
+                displayDept = profile.department || displayDept;
+                gradYear = profile.grad_year ? parseInt(profile.grad_year) : null;
+                if (profile.role === 'admin') document.getElementById('adminBtn').style.display = 'flex';
+            }
+
+            document.getElementById("userName").innerText = displayName;
+            document.getElementById("cardNameArea").innerText = displayName.toUpperCase();
+            document.getElementById("cardDeptArea").innerText = displayDept;
+
             const currentYear = new Date().getFullYear();
-            const gradYear = profile.grad_year ? parseInt(profile.grad_year) : null;
+            const badge = document.getElementById('userBadge');
+            const msg = document.getElementById('welcomeMsg');
 
             if (!gradYear) {
                 document.getElementById('genericSection').style.display = 'block';
+                msg.innerText = "Lütfen profil ayarlarından mezuniyet yılınızı giriniz.";
             } else {
                 document.getElementById('commonSection').style.display = 'grid'; // Ortak alanı aç
+                
                 if (gradYear > currentYear) {
                     document.getElementById('studentSection').style.display = 'grid';
-                    document.getElementById('userBadge').innerText = "Öğrenci"; 
-                    document.getElementById('userBadge').className = "status-badge badge-student";
+                    badge.innerText = "Öğrenci"; badge.className = "status-badge badge-student";
+                    msg.innerText = "Kariyer yolculuğunda yanındayız.";
                 } else {
                     document.getElementById('gradSection').style.display = 'grid';
-                    document.getElementById('userBadge').innerText = "Mezun"; 
-                    document.getElementById('userBadge').className = "status-badge badge-grad";
+                    badge.innerText = "Mezun"; badge.className = "status-badge badge-grad";
+                    msg.innerText = "Topluluğa değer kattığın için teşekkürler.";
                 }
             }
 
-            // 3. VERİLERİ ÇEK
+            // Verileri Çek
             fetchStats();
             fetchAnnouncements();
             fetchNextEvent();
         });
 
-        // --- İSTATİSTİKLER ---
+        // --- 1. İSTATİSTİKLER ---
         async function fetchStats() {
             const { count: members } = await supabase.from('profiles').select('*', { count: 'exact', head: true });
             const { count: mentors } = await supabase.from('mentorships').select('*', { count: 'exact', head: true });
@@ -174,7 +238,7 @@
             document.getElementById('countJobs').innerText = jobs || 0;
         }
 
-        // --- DUYURULAR ---
+        // --- 2. DUYURULAR ---
         async function fetchAnnouncements() {
             const { data } = await supabase.from('announcements').select('*').order('created_at', {ascending: false}).limit(3);
             const list = document.getElementById('noticeList');
@@ -187,47 +251,46 @@
             });
         }
 
-        // --- ETKİNLİK (En Yakın Tarihli) ---
+        // --- 3. ETKİNLİK (DÜZELTİLMİŞ) ---
         async function fetchNextEvent() {
-            const today = new Date().toISOString().split('T')[0]; // Bugünün tarihi (YYYY-MM-DD)
+            // Tarihi yerel saate göre al (Bugün için)
+            const today = new Date().toLocaleDateString('en-CA'); 
             
             // Bugünden sonraki ilk etkinliği getir
-            const { data } = await supabase.from('events')
+            const { data, error } = await supabase.from('events')
                 .select('*')
-                .gte('event_date', today) // gte: greater than or equal (tarihi geçmemiş)
+                .gte('event_date', today)
                 .order('event_date', { ascending: true })
-                .limit(1)
-                .single();
+                .limit(1); // Single yerine limit(1) daha güvenli
 
             const container = document.getElementById('eventContent');
 
-            if (!data) {
+            if (!data || data.length === 0) {
                 container.innerHTML = '<div style="padding:20px;">Yaklaşan etkinlik bulunmuyor.</div>';
                 return;
             }
 
-            // Tarihi Formatla (2025-07-15 -> 15 TEM)
-            const dateObj = new Date(data.event_date);
+            const event = data[0]; // İlk etkinliği al
+
+            const dateObj = new Date(event.event_date);
             const day = dateObj.getDate();
             const months = ["OCAK", "ŞUB", "MART", "NİS", "MAY", "HAZ", "TEM", "AĞU", "EYL", "EKİM", "KAS", "ARA"];
             const month = months[dateObj.getMonth()];
+            const time = event.event_time ? event.event_time.substring(0,5) : '';
 
-            // HTML'i Doldur
-            const html = `
+            container.innerHTML = `
             <div style="display: flex; gap: 15px; align-items: center;">
                 <div class="calendar-box"><div>${day}</div><div style="font-size: 0.8rem;">${month}</div></div>
                 <div>
-                    <h4 style="margin: 0; color: var(--odtu-dark);">${data.title}</h4>
-                    <p style="margin: 5px 0 0 0; font-size: 0.85rem; color: #777;">📍 ${data.location}</p>
+                    <h4 style="margin: 0; color: var(--odtu-dark);">${event.title}</h4>
+                    <p style="margin: 5px 0 0 0; font-size: 0.85rem; color: #777;">📍 ${event.location}</p>
                 </div>
             </div>
             <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #eee; font-size: 0.85rem; color: #555;">
-                📅 ${day} ${month} - ${data.event_time.substring(0,5)} <br> 
-                ${data.speaker ? '🎤 ' + data.speaker : ''}
+                📅 ${day} ${month} ${dateObj.getFullYear()} - ${time} <br> 
+                ${event.speaker ? '🎤 ' + event.speaker : ''}
             </div>
             <button class="btn-action btn-dark">Detaylar</button>`;
-            
-            container.innerHTML = html;
         }
 
         async function logout() { await supabase.auth.signOut(); window.location.href = "index.html"; }
