@@ -6,28 +6,23 @@
 <title>Mentorluk - Hatay ODTÜ MD</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
-    /* STİLLER */
     :root { --odtu-red: #E31E24; --odtu-dark: #2c3e50; --bg-light: #f4f6f9; --white: #ffffff; --navbar-height: 70px; }
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
     body { background-color: var(--bg-light); display: block; min-height: 100vh; }
     
-    /* NAVBAR */
     .navbar { width: 100%; height: var(--navbar-height); background-color: var(--odtu-dark); display: flex; align-items: center; justify-content: space-between; padding: 0 30px; position: fixed; top: 0; left: 0; z-index: 1000; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
     .nav-left { display: flex; align-items: center; gap: 15px; }
-    .nav-logo { height: 50px; width: auto; background: white; padding: 2px; border-radius: 5px; object-fit: contain; }
+    .nav-logo { height: 50px; background: white; padding: 2px; border-radius: 5px; }
     .nav-title { color: white; font-size: 1.1rem; font-weight: bold; }
-    .nav-title span { display: block; font-size: 0.75rem; color: #bdc3c7; font-weight: normal; }
     .nav-links { display: flex; gap: 20px; }
     .nav-links a { color: #bdc3c7; text-decoration: none; font-size: 0.95rem; display: flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 6px; transition: 0.3s; }
     .nav-links a:hover, .nav-links a.active { background-color: rgba(255,255,255,0.1); color: white; }
     .nav-right { display: flex; align-items: center; gap: 20px; }
-    .logout-btn { color: #e74c3c; text-decoration: none; font-size: 0.9rem; border: 1px solid #e74c3c; padding: 6px 15px; border-radius: 20px; transition: 0.3s; }
+    .logout-btn { color: #e74c3c; border: 1px solid #e74c3c; padding: 6px 15px; border-radius: 20px; text-decoration: none; transition: 0.3s; }
     .logout-btn:hover { background: #e74c3c; color: white; }
 
-    /* İÇERİK */
     .main-content { margin-top: var(--navbar-height); padding: 40px; width: 100%; max-width: 1200px; margin-left: auto; margin-right: auto; }
     .page-header { margin-bottom: 30px; display: flex; justify-content: space-between; align-items: center; }
-    
     .mentor-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px; }
     .mentor-card { background: white; border-radius: 12px; padding: 25px; text-align: center; box-shadow: 0 2px 15px rgba(0,0,0,0.05); position: relative; overflow: hidden; }
     .mentor-card::before { content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 80px; background: linear-gradient(135deg, #2c3e50, #34495e); z-index: 0; }
@@ -36,17 +31,9 @@
     .tag { background: #f0f2f5; font-size: 0.75rem; padding: 4px 10px; border-radius: 15px; }
     .btn-mentor { background-color: var(--odtu-red); color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; width: 100%; }
 
-    /* BİLDİRİM ANİMASYONU */
-    @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
-
-    /* MOBİL UYUMLULUK */
     @media (max-width: 900px) {
-        .navbar { height: auto; flex-direction: column; padding: 15px; position: relative; }
-        .nav-left { margin-bottom: 15px; width: 100%; justify-content: center; }
+        .navbar { height: auto; flex-direction: column; padding: 15px; }
         .nav-links { flex-wrap: wrap; justify-content: center; gap: 10px; width: 100%; }
-        .nav-links a { background-color: rgba(255,255,255,0.05); padding: 10px 15px; border-radius: 20px; font-size: 0.85rem; flex: 1 1 auto; justify-content: center; }
-        .nav-right { margin-top: 15px; width: 100%; justify-content: center; }
-        .logout-btn { width: 100%; justify-content: center; }
         .main-content { margin-top: 0; padding: 20px; }
         .page-header { flex-direction: column; gap: 15px; text-align: center; }
         .mentor-grid { grid-template-columns: 1fr; }
@@ -58,7 +45,7 @@
         <div class="nav-left"><img src="logo.png" class="nav-logo"><div class="nav-title">Hatay ODTÜ MD <span>Üye Portalı</span></div></div>
         <div class="nav-links">
             <a href="dashboard.html"><i class="fa-solid fa-layer-group"></i> Panel</a>
-            <a href="meeting.html"><i class="fa-solid fa-video"></i> Meeting Hub</a>
+            <a href="meeting.html"><i class="fa-solid fa-video"></i> Etkinlik Üssü </a>
             <a href="mentor.html" class="active"><i class="fa-solid fa-handshake-angle"></i> Mentorluk</a>
             <a href="career.html"><i class="fa-solid fa-briefcase"></i> Kariyer</a>
             <a href="network.html"><i class="fa-solid fa-users-viewfinder"></i> Mezun Ağı</a>
@@ -80,40 +67,29 @@
         </div>
     </div>
 
-    <div id="liveToast" style="position: fixed; top: 20px; right: 20px; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 5px 20px rgba(0,0,0,0.2); border-left: 5px solid #8e44ad; z-index: 9999; display: none; min-width: 300px; animation: slideIn 0.5s;">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-            <strong style="color:#8e44ad; font-size:1.1rem;"><i class="fa-solid fa-tower-broadcast"></i> YÖNETİM DUYURUSU</strong>
-            <span onclick="document.getElementById('liveToast').style.display='none'" style="cursor:pointer; color:#999;">&times;</span>
+    <div id="liveToast" style="position: fixed; top: 20px; right: 20px; background: white; padding: 15px 20px; border-radius: 8px; box-shadow: 0 5px 25px rgba(0,0,0,0.2); border-left: 6px solid #333; z-index: 9999; display: none; min-width: 320px; animation: slideIn 0.4s; font-family: 'Segoe UI', sans-serif;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+            <strong id="toastTitle" style="font-size:1rem; display:flex; align-items:center; gap:8px;"></strong>
+            <span onclick="document.getElementById('liveToast').style.display='none'" style="cursor:pointer; color:#aaa; font-size:1.2rem;">&times;</span>
         </div>
-        <p id="toastMessage" style="color:#333; font-size:0.95rem; margin:0;">Mesaj buraya gelecek...</p>
+        <p id="toastMessage" style="color:#555; font-size:0.9rem; margin:0; line-height:1.4;">...</p>
     </div>
+    <style>@keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }</style>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
         const supabaseUrl = 'https://hftrmiiacxgtkarsvupn.supabase.co';
         const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhmdHJtaWlhY3hndGthcnN2dXBuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ3ODUzNzIsImV4cCI6MjA4MDM2MTM3Mn0.BgCk5xuZx6AZuxzfBHcQqg8j8BtxU9FbupDgoFecG_k';
-        
         let supabase; try { supabase = window.supabase.createClient(supabaseUrl, supabaseKey); } catch(e){}
         let currentUser = null;
 
         document.addEventListener("DOMContentLoaded", async () => {
-            if(!supabase) return;
             const { data: { session } } = await supabase.auth.getSession();
             if (!session) { window.location.href = 'index.html'; return; }
             currentUser = session.user;
             
-            // Verileri Yükle
-            checkIfMentor(); 
-            loadMentors();
-            checkGlobalNotifications();
-
-            // --- REALTIME: CANLI DUYURULARI DİNLE ---
-            supabase
-                .channel('public:broadcasts')
-                .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'broadcasts' }, payload => {
-                    showLiveNotification(payload.new.message);
-                })
-                .subscribe();
+            checkIfMentor(); loadMentors();
+            checkGlobalNotifications(); setupRealtime(session.user.id);
         });
 
         async function loadMentors() {
@@ -123,11 +99,7 @@
             list.innerHTML = '';
             data.forEach(m => {
                 const initials = m.full_name ? m.full_name.substring(0,2).toUpperCase() : 'ME';
-                list.insertAdjacentHTML('beforeend', `
-                <div class="mentor-card">
-                    <div class="mentor-avatar">${initials}</div>
-                    <div class="mentor-info"><h3>${m.full_name}</h3><p>${m.department || ''}</p><div class="tags"><span class="tag">${m.company || ''}</span><span class="tag">Mentor</span></div><button class="btn-mentor" onclick="requestMentorship('${m.id}')">İstek Gönder</button></div>
-                </div>`);
+                list.insertAdjacentHTML('beforeend', `<div class="mentor-card"><div class="mentor-avatar">${initials}</div><div class="mentor-info"><h3>${m.full_name}</h3><p>${m.department || ''}</p><div class="tags"><span class="tag">${m.company || ''}</span><span class="tag">Mentor</span></div><button class="btn-mentor" onclick="requestMentorship('${m.id}')">İstek Gönder</button></div></div>`);
             });
         }
 
@@ -151,27 +123,37 @@
             alert(error ? "Hata" : "Talebiniz iletildi.");
         }
 
-        // --- BİLDİRİM FONKSİYONLARI ---
         async function checkGlobalNotifications() {
             const { data: { session } } = await supabase.auth.getSession();
             if(!session) return;
             const { count } = await supabase.from('direct_messages').select('*', { count: 'exact', head: true }).eq('receiver_id', session.user.id).eq('is_read', false);
             const badge = document.getElementById('globalBadge');
-            if(badge && count > 0) { badge.style.display = 'inline-block'; badge.innerText = count; }
+            if(badge && count > 0) { badge.style.display = 'inline-block'; badge.innerText = count; } else { badge.style.display = 'none'; }
         }
 
-        function showLiveNotification(msg) {
+        function setupRealtime(userId) {
+            const channel = supabase.channel('global-alerts');
+            channel.on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'broadcasts' }, payload => { showNotification("YÖNETİM DUYURUSU", payload.new.message, "admin"); });
+            channel.on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'direct_messages', filter: `receiver_id=eq.${userId}` }, payload => {
+                showNotification(`💬 ${payload.new.sender_name || 'Bir Üye'}`, payload.new.content, "user");
+                checkGlobalNotifications();
+            });
+            channel.subscribe();
+        }
+
+        function showNotification(title, msg, type) {
             const toast = document.getElementById('liveToast');
-            const text = document.getElementById('toastMessage');
-            text.innerText = msg;
+            const titleEl = document.getElementById('toastTitle');
+            const msgEl = document.getElementById('toastMessage');
+            msgEl.innerText = msg;
+            if (type === 'admin') { toast.style.borderLeftColor = "#8e44ad"; titleEl.style.color = "#8e44ad"; titleEl.innerHTML = `<i class="fa-solid fa-tower-broadcast"></i> ${title}`; } 
+            else { toast.style.borderLeftColor = "#3498db"; titleEl.style.color = "#3498db"; titleEl.innerHTML = `${title}`; }
             toast.style.display = 'block';
-            const audio = new Audio('https://actions.google.com/sounds/v1/alarms/beep_short.ogg');
-            audio.play().catch(e => console.log("Ses hatası"));
-            setTimeout(() => { toast.style.display = 'none'; }, 7000);
+            new Audio('https://actions.google.com/sounds/v1/alarms/beep_short.ogg').play().catch(()=>{});
+            setTimeout(() => { toast.style.display = 'none'; }, 6000);
         }
 
         async function logout() { await supabase.auth.signOut(); window.location.href = "index.html"; }
     </script>
-
 </body>
 </html>
