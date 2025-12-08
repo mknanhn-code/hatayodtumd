@@ -23,7 +23,7 @@
     .logout-btn { color: #e74c3c; border: 1px solid #e74c3c; padding: 6px 15px; border-radius: 20px; text-decoration: none; transition: 0.3s; }
     .logout-btn:hover { background: #e74c3c; color: white; }
 
-    /* BİLDİRİM ROZETİ (NAVBAR) */
+    /* BİLDİRİM ROZETİ */
     .badge-count { position: absolute; top: -8px; right: -10px; background: var(--odtu-red); color: white; font-size: 0.7rem; padding: 2px 6px; border-radius: 10px; display: none; border: 1px solid white; }
 
     /* İÇERİK ALANI */
@@ -74,9 +74,23 @@
     .mine { background: var(--odtu-dark); color: white; margin-left: auto; border-bottom-right-radius: 2px; }
     .theirs { background: #e0e0e0; color: #333; margin-right: auto; border-bottom-left-radius: 2px; }
     
-    .send-area { display: flex; gap: 10px; }
-    .send-area input { flex: 1; padding: 12px; border: 1px solid #ddd; border-radius: 25px; outline: none; }
-    .send-btn { background: var(--odtu-red); color: white; border: none; width: 45px; height: 45px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+    /* GÜNCELLENEN MESAJ ALANI STİLİ */
+    .send-area { display: flex; gap: 10px; align-items: center; border-top: 1px solid #eee; padding-top: 10px; }
+    .send-area textarea { 
+        flex: 1; 
+        padding: 12px; 
+        border: 1px solid #ddd; 
+        border-radius: 10px; 
+        outline: none; 
+        resize: none; /* Boyutlandırmayı kapat */
+        height: 50px; /* Yükseklik */
+        font-family: inherit;
+    }
+    .send-area textarea:focus { border-color: var(--odtu-dark); }
+    
+    .send-btn { background: var(--odtu-red); color: white; border: none; width: 50px; height: 50px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.3s; }
+    .send-btn:hover { background: #c0392b; transform: scale(1.05); }
+    
     .new-msg-btn { width: 100%; padding: 12px; background: var(--odtu-dark); color: white; border: none; border-radius: 6px; margin-bottom: 15px; cursor: pointer; font-weight: bold; }
 
     /* YENİ: ÇOKLU SEÇİM MODALI */
@@ -117,7 +131,7 @@
         </div>
         <div class="nav-links">
             <a href="dashboard.html">Panel</a>
-            <a href="meeting.html">Etkinlik Üssü</a>
+            <a href="meeting.html">Meeting Hub</a>
             <a href="mentor.html">Mentorluk</a>
             <a href="career.html">Kariyer</a>
             <a href="network.html">Mezun Ağı</a>
@@ -188,10 +202,12 @@
                             Bir konuşma seçin veya yeni mesaj gönderin.
                         </div>
                     </div>
+                    
                     <div class="send-area" style="display:none;" id="sendArea">
-                        <input type="text" id="msgInput" placeholder="Mesaj yaz..." onkeypress="if(event.key==='Enter') sendMessage()">
+                        <textarea id="msgInput" placeholder="Mesaj yaz... (Enter: Gönder, Shift+Enter: Alt Satır)"></textarea>
                         <button class="send-btn" onclick="sendMessage()"><i class="fa-solid fa-paper-plane"></i></button>
                     </div>
+
                 </div>
             </div>
         </div>
@@ -237,6 +253,14 @@
             currentUser = session.user;
 
             loadProfile(); loadNotes(); loadInbox(); checkNotifications(); setupRealtime();
+            
+            // Enter ile gönderme (Shift+Enter alt satır)
+            document.getElementById('msgInput').addEventListener('keydown', function(e) {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    sendMessage();
+                }
+            });
         });
 
         function switchTab(tabId) {
@@ -313,25 +337,22 @@
             
             if(data) {
                 data.forEach(msg => {
-                    // Karşı tarafın ID'sini bul (Eğer gönderen bensem, alıcı karşı taraftır)
+                    // Karşı tarafın ID'sini bul
                     const partnerId = (msg.sender_id === currentUser.id) ? msg.receiver_id : msg.sender_id;
-                    const partnerName = (msg.sender_id === currentUser.id) ? "Ben: " + msg.content : msg.sender_name;
+                    const isMeSender = (msg.sender_id === currentUser.id);
                     
-                    // Daha önce eklenmemişse listeye ekle
                     if(!uniqueContacts.has(partnerId)) {
                         uniqueContacts.add(partnerId);
                         
                         // Okunmadı durumu sadece bana gelen mesajlarda geçerli
                         const isUnread = (!msg.is_read && msg.receiver_id === currentUser.id) ? 'unread' : '';
                         
-                        // İsmi bulmak için küçük bir numara (eğer ben gönderdiysem isim elimizde olmayabilir, şimdilik "Konuşma" yazalım, detayda düzelir)
-                        // Daha iyisi: İsimleri başka sorguyla çekmek ama bu basitlik için yeterli
-                        
-                        // Gelen mesajsa gönderen adı, Giden mesajsa "Giden ->" gibi bir işaret
-                        let displayName = (msg.sender_id === currentUser.id) ? "📤 Giden Mesaj" : msg.sender_name;
+                        // İsim Gösterimi
+                        let displayName = msg.sender_name; 
+                        if(isMeSender) displayName = "📤 Giden Mesaj"; // Basit çözüm (Daha ileri seviyede profilden çekilir)
 
                         inboxList.innerHTML += `
-                        <div class="msg-item ${isUnread}" onclick="openChat('${partnerId}', '${displayName === "📤 Giden Mesaj" ? "Sohbet" : displayName}')">
+                        <div class="msg-item ${isUnread}" onclick="openChat('${partnerId}', '${isMeSender ? 'Sohbet' : displayName}')">
                             <div style="font-weight:bold;">${displayName}</div>
                             <small>${msg.content.substring(0,30)}...</small>
                         </div>`;
