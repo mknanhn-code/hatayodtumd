@@ -6,62 +6,45 @@
 <title>Kariyer - Hatay ODTÜ MD</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
-    /* ORTAK STİLLER */
+    /* STİLLER */
     :root { --odtu-red: #E31E24; --odtu-dark: #2c3e50; --bg-light: #f4f6f9; --white: #ffffff; --navbar-height: 70px; }
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
     body { background-color: var(--bg-light); display: block; min-height: 100vh; }
-
-    /* NAVBAR */
+    
     .navbar { width: 100%; height: var(--navbar-height); background-color: var(--odtu-dark); display: flex; align-items: center; justify-content: space-between; padding: 0 30px; position: fixed; top: 0; left: 0; z-index: 1000; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
     .nav-left { display: flex; align-items: center; gap: 15px; }
-    .nav-logo { height: 50px; width: auto; background: white; padding: 2px; border-radius: 5px; object-fit: contain; }
+    .nav-logo { height: 50px; background: white; padding: 2px; border-radius: 5px; }
     .nav-title { color: white; font-size: 1.1rem; font-weight: bold; }
-    .nav-title span { display: block; font-size: 0.75rem; color: #bdc3c7; font-weight: normal; }
     .nav-links { display: flex; gap: 20px; }
     .nav-links a { color: #bdc3c7; text-decoration: none; font-size: 0.95rem; display: flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 6px; transition: 0.3s; }
     .nav-links a:hover, .nav-links a.active { background-color: rgba(255,255,255,0.1); color: white; }
     .nav-right { display: flex; align-items: center; gap: 20px; }
-    .logout-btn { color: #e74c3c; text-decoration: none; font-size: 0.9rem; border: 1px solid #e74c3c; padding: 6px 15px; border-radius: 20px; transition: 0.3s; }
+    .logout-btn { color: #e74c3c; border: 1px solid #e74c3c; padding: 6px 15px; border-radius: 20px; text-decoration: none; transition: 0.3s; }
     .logout-btn:hover { background: #e74c3c; color: white; }
 
-    /* İÇERİK */
     .main-content { margin-top: var(--navbar-height); padding: 40px; width: 100%; max-width: 1200px; margin-left: auto; margin-right: auto; }
-
-    /* KARİYER ÖZEL */
     .job-list { background: white; border-radius: 12px; box-shadow: 0 2px 15px rgba(0,0,0,0.05); overflow: hidden; min-height: 200px; }
     .job-row { display: flex; justify-content: space-between; align-items: center; padding: 20px; border-bottom: 1px solid #eee; transition: 0.2s; }
     .job-row:hover { background-color: #f9f9f9; }
-    .job-main { display: flex; gap: 20px; align-items: center; }
-    .company-logo { width: 60px; height: 60px; background: #eee; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: bold; color: #777; font-size: 1.2rem; flex-shrink: 0; }
-    .job-details h4 { color: var(--odtu-dark); margin-bottom: 5px; font-size: 1.1rem; }
+    .company-logo { width: 60px; height: 60px; background: #eee; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: bold; color: #777; font-size: 1.2rem; }
+    .job-details h4 { color: var(--odtu-dark); margin-bottom: 5px; }
     .job-meta { display: flex; gap: 15px; font-size: 0.9rem; color: #777; }
     .job-type { background: #e3f2fd; color: #1976d2; padding: 5px 10px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; }
     .btn-apply { padding: 8px 20px; border: 1px solid var(--odtu-red); color: var(--odtu-red); background: transparent; border-radius: 6px; cursor: pointer; transition: 0.3s; font-weight: bold; }
     .btn-apply:hover { background: var(--odtu-red); color: white; }
 
-    /* MODAL */
     .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 2000; display: none; justify-content: center; align-items: center; }
     .modal-content { background: white; padding: 30px; border-radius: 10px; width: 90%; max-width: 500px; box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
     .form-group { margin-bottom: 15px; }
     .form-group label { display: block; margin-bottom: 5px; font-weight: bold; }
     .form-group input, .form-group select { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px; outline: none; }
 
-    /* Animasyon (Bildirim için) */
-    @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
-
-    /* MOBİL UYUMLULUK */
     @media (max-width: 900px) {
-        .navbar { height: auto; flex-direction: column; padding: 15px; position: relative; }
-        .nav-left { margin-bottom: 15px; width: 100%; justify-content: center; }
+        .navbar { height: auto; flex-direction: column; padding: 15px; }
         .nav-links { flex-wrap: wrap; justify-content: center; gap: 10px; width: 100%; }
-        .nav-links a { background-color: rgba(255,255,255,0.05); padding: 10px 15px; border-radius: 20px; font-size: 0.85rem; flex: 1 1 auto; justify-content: center; }
-        .nav-right { margin-top: 15px; width: 100%; justify-content: center; }
-        .logout-btn { width: 100%; justify-content: center; }
         .main-content { margin-top: 0; padding: 20px; }
-        
         .job-row { flex-direction: column; align-items: flex-start; gap: 15px; }
-        .job-row > div:last-child { width: 100%; text-align: left; }
-        .btn-apply { width: 100%; display: block; margin-top: 10px; text-align: center; }
+        .btn-apply { width: 100%; margin-top: 10px; }
     }
 </style>
 </head>
@@ -70,7 +53,7 @@
         <div class="nav-left"><img src="logo.png" class="nav-logo"><div class="nav-title">Hatay ODTÜ MD <span>Üye Portalı</span></div></div>
         <div class="nav-links">
             <a href="dashboard.html"><i class="fa-solid fa-layer-group"></i> Panel</a>
-            <a href="meeting.html"><i class="fa-solid fa-video"></i> Meeting Hub</a>
+            <a href="meeting.html"><i class="fa-solid fa-video"></i> Etkinlik Üssü </a>
             <a href="mentor.html"><i class="fa-solid fa-handshake-angle"></i> Mentorluk</a>
             <a href="career.html" class="active"><i class="fa-solid fa-briefcase"></i> Kariyer</a>
             <a href="network.html"><i class="fa-solid fa-users-viewfinder"></i> Mezun Ağı</a>
@@ -105,13 +88,14 @@
         </div>
     </div>
 
-    <div id="liveToast" style="position: fixed; top: 20px; right: 20px; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 5px 20px rgba(0,0,0,0.2); border-left: 5px solid #8e44ad; z-index: 9999; display: none; min-width: 300px; animation: slideIn 0.5s;">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-            <strong style="color:#8e44ad; font-size:1.1rem;"><i class="fa-solid fa-tower-broadcast"></i> YÖNETİM DUYURUSU</strong>
-            <span onclick="document.getElementById('liveToast').style.display='none'" style="cursor:pointer; color:#999;">&times;</span>
+    <div id="liveToast" style="position: fixed; top: 20px; right: 20px; background: white; padding: 15px 20px; border-radius: 8px; box-shadow: 0 5px 25px rgba(0,0,0,0.2); border-left: 6px solid #333; z-index: 9999; display: none; min-width: 320px; animation: slideIn 0.4s; font-family: 'Segoe UI', sans-serif;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+            <strong id="toastTitle" style="font-size:1rem; display:flex; align-items:center; gap:8px;"></strong>
+            <span onclick="document.getElementById('liveToast').style.display='none'" style="cursor:pointer; color:#aaa; font-size:1.2rem;">&times;</span>
         </div>
-        <p id="toastMessage" style="color:#333; font-size:0.95rem; margin:0;">Mesaj buraya gelecek...</p>
+        <p id="toastMessage" style="color:#555; font-size:0.9rem; margin:0; line-height:1.4;">...</p>
     </div>
+    <style>@keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }</style>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
@@ -124,77 +108,54 @@
             const { data: { session } } = await supabase.auth.getSession();
             if (!session) { window.location.href = 'index.html'; return; }
             
-            // Verileri Yükle
             loadJobs();
-            checkGlobalNotifications();
-
-            // --- REALTIME: CANLI DUYURULARI DİNLE ---
-            supabase
-                .channel('public:broadcasts')
-                .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'broadcasts' }, payload => {
-                    showLiveNotification(payload.new.message);
-                })
-                .subscribe();
+            checkGlobalNotifications(); setupRealtime(session.user.id);
         });
 
         async function loadJobs() {
             const list = document.getElementById('jobList');
             const { data, error } = await supabase.from('jobs').select('*').order('created_at', { ascending: false });
             if (error || !data || data.length === 0) { list.innerHTML = '<div style="padding:20px; text-align:center;">İlan bulunamadı.</div>'; return; }
-            
             list.innerHTML = '';
             data.forEach(job => {
-                list.insertAdjacentHTML('beforeend', `
-                <div class="job-row">
-                    <div class="job-main">
-                        <div class="company-logo">${job.company.substring(0,3).toUpperCase()}</div>
-                        <div class="job-details"><h4>${job.title}</h4><div class="job-meta"><span>${job.company}</span><span>${job.location}</span></div></div>
-                    </div>
-                    <div style="text-align: right;"><span class="job-type">${job.type}</span><br><br><button class="btn-apply" onclick="alert('Başvuruldu!')">Başvur</button></div>
-                </div>`);
+                list.insertAdjacentHTML('beforeend', `<div class="job-row"><div class="job-main"><div class="company-logo">${job.company.substring(0,3).toUpperCase()}</div><div class="job-details"><h4>${job.title}</h4><div class="job-meta"><span>${job.company}</span><span>${job.location}</span></div></div></div><div style="text-align: right;"><span class="job-type">${job.type}</span><br><br><button class="btn-apply" onclick="alert('Başvuruldu!')">Başvur</button></div></div>`);
             });
         }
 
         document.getElementById('jobForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-            const { error } = await supabase.from('jobs').insert({
-                title: document.getElementById('jTitle').value,
-                company: document.getElementById('jComp').value,
-                location: document.getElementById('jLoc').value,
-                type: document.getElementById('jType').value
-            });
+            const { error } = await supabase.from('jobs').insert({ title: document.getElementById('jTitle').value, company: document.getElementById('jComp').value, location: document.getElementById('jLoc').value, type: document.getElementById('jType').value });
             if (!error) { document.getElementById('jobModal').style.display='none'; document.getElementById('jobForm').reset(); loadJobs(); }
         });
 
-        // --- BİLDİRİM FONKSİYONLARI ---
-        
         async function checkGlobalNotifications() {
             const { data: { session } } = await supabase.auth.getSession();
             if(!session) return;
-            
-            const { count } = await supabase.from('direct_messages')
-                .select('*', { count: 'exact', head: true })
-                .eq('receiver_id', session.user.id)
-                .eq('is_read', false);
-                
+            const { count } = await supabase.from('direct_messages').select('*', { count: 'exact', head: true }).eq('receiver_id', session.user.id).eq('is_read', false);
             const badge = document.getElementById('globalBadge');
-            if(badge && count > 0) {
-                badge.style.display = 'inline-block';
-                badge.innerText = count;
-            }
+            if(badge) { if(count > 0) { badge.style.display = 'inline-block'; badge.innerText = count; } else { badge.style.display = 'none'; } }
         }
 
-        function showLiveNotification(msg) {
+        function setupRealtime(userId) {
+            const channel = supabase.channel('global-alerts');
+            channel.on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'broadcasts' }, payload => { showNotification("YÖNETİM DUYURUSU", payload.new.message, "admin"); });
+            channel.on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'direct_messages', filter: `receiver_id=eq.${userId}` }, payload => {
+                showNotification(`💬 ${payload.new.sender_name || 'Bir Üye'}`, payload.new.content, "user");
+                checkGlobalNotifications();
+            });
+            channel.subscribe();
+        }
+
+        function showNotification(title, msg, type) {
             const toast = document.getElementById('liveToast');
-            const text = document.getElementById('toastMessage');
-            
-            text.innerText = msg;
+            const titleEl = document.getElementById('toastTitle');
+            const msgEl = document.getElementById('toastMessage');
+            msgEl.innerText = msg;
+            if (type === 'admin') { toast.style.borderLeftColor = "#8e44ad"; titleEl.style.color = "#8e44ad"; titleEl.innerHTML = `<i class="fa-solid fa-tower-broadcast"></i> ${title}`; } 
+            else { toast.style.borderLeftColor = "#3498db"; titleEl.style.color = "#3498db"; titleEl.innerHTML = `${title}`; }
             toast.style.display = 'block';
-
-            const audio = new Audio('https://actions.google.com/sounds/v1/alarms/beep_short.ogg');
-            audio.play().catch(e => console.log("Ses hatası"));
-
-            setTimeout(() => { toast.style.display = 'none'; }, 7000);
+            new Audio('https://actions.google.com/sounds/v1/alarms/beep_short.ogg').play().catch(()=>{});
+            setTimeout(() => { toast.style.display = 'none'; }, 6000);
         }
 
         async function logout() { await supabase.auth.signOut(); window.location.href = "index.html"; }
