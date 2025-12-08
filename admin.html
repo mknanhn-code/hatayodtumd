@@ -9,23 +9,13 @@
     :root { --admin-dark: #1a252f; --admin-red: #c0392b; --white: #fff; --gray: #f4f6f9; }
     
     body { 
-        margin: 0; 
-        font-family: 'Segoe UI', sans-serif; 
-        background: var(--gray); 
-        display: flex; 
-        height: 100vh; /* Masaüstünde tam ekran */
-        overflow: hidden; /* Masaüstünde dış scroll yok */
+        margin: 0; font-family: 'Segoe UI', sans-serif; background: var(--gray); 
+        display: flex; height: 100vh; overflow: hidden; 
     }
     
-    /* SIDEBAR (YAN MENÜ) */
+    /* SIDEBAR */
     .sidebar { 
-        width: 260px; 
-        background: var(--admin-dark); 
-        color: white; 
-        display: flex; 
-        flex-direction: column; 
-        padding: 20px; 
-        flex-shrink: 0; /* Küçülmesin */
+        width: 260px; background: var(--admin-dark); color: white; display: flex; flex-direction: column; padding: 20px; flex-shrink: 0; 
     }
     .sidebar h3 { text-align: center; border-bottom: 1px solid #34495e; padding-bottom: 20px; margin-bottom: 20px; font-size: 1.2rem; }
     
@@ -36,14 +26,14 @@
     }
     .menu-item:hover, .menu-item.active { background: #2c3e50; color: white; border-left: 4px solid var(--admin-red); }
     
-    /* CONTENT (İÇERİK) */
-    .content { flex: 1; padding: 40px; overflow-y: auto; /* İçerik kayabilsin */ }
+    /* CONTENT */
+    .content { flex: 1; padding: 40px; overflow-y: auto; }
     .section-title { margin-bottom: 20px; color: #333; }
     
-    .card { background: white; padding: 25px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); margin-bottom: 20px; overflow-x: auto; /* Tablo taşarsa kaydır */ }
+    .card { background: white; padding: 25px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); margin-bottom: 20px; overflow-x: auto; }
     
-    /* TABLO STİLLERİ */
-    table { width: 100%; border-collapse: collapse; margin-top: 10px; min-width: 600px; /* Mobilde sıkışmasın diye min genişlik */ }
+    /* TABLO */
+    table { width: 100%; border-collapse: collapse; margin-top: 10px; min-width: 600px; }
     th, td { padding: 15px; text-align: left; border-bottom: 1px solid #eee; }
     th { background: #f8f9fa; color: #555; font-weight: 600; }
     tr:last-child td { border-bottom: none; }
@@ -54,7 +44,7 @@
     .btn-reject { background: #c0392b; } .btn-reject:hover { background: #a93226; }
     .btn-add { background: var(--admin-dark); width: 100%; padding: 12px; font-weight: bold; } .btn-add:hover { opacity: 0.9; }
 
-    /* DUYURU FORMU */
+    /* FORMLAR */
     .form-group { margin-bottom: 15px; }
     .form-group label { display: block; margin-bottom: 5px; font-weight: bold; color: #555; }
     .form-control { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; outline: none; box-sizing: border-box; }
@@ -64,53 +54,15 @@
     .tab-section.active-section { display: block; }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-    .badge { padding: 4px 8px; border-radius: 12px; font-size: 0.75rem; font-weight: bold; }
-
-    /* --- MOBİL UYUMLULUK (RESPONSIVE) --- */
+    /* MOBİL */
     @media (max-width: 900px) {
-        body {
-            flex-direction: column; /* Yan yana değil alt alta */
-            height: auto; /* Yükseklik serbest */
-            overflow: auto; /* Sayfa kayabilsin */
-        }
-
-        .sidebar {
-            width: 100%;
-            height: auto;
-            flex-direction: row; /* Menüleri yan yana diz */
-            overflow-x: auto; /* Menüler sığmazsa yana kaysın */
-            padding: 10px;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .sidebar h3 { 
-            display: none; /* Mobilde başlığı gizle yer kaplamasın */ 
-        }
-
-        .menu-item {
-            padding: 10px;
-            font-size: 0.85rem;
-            white-space: nowrap; /* Metin alt satıra geçmesin */
-            border-left: none !important; /* Sol çizgi kalksın */
-            border-bottom: 3px solid transparent; /* Alt çizgi gelsin */
-            margin-bottom: 0;
-        }
-
-        .menu-item.active {
-            background: rgba(255,255,255,0.1);
-            border-bottom: 3px solid var(--admin-red);
-        }
-
-        .content {
-            padding: 20px;
-            width: 100%;
-        }
-
-        /* Mobilde form grupları */
+        body { flex-direction: column; height: auto; overflow: auto; }
+        .sidebar { width: 100%; height: auto; flex-direction: row; overflow-x: auto; padding: 10px; align-items: center; gap: 10px; }
+        .sidebar h3 { display: none; }
+        .menu-item { padding: 10px; font-size: 0.85rem; white-space: nowrap; border-left: none !important; border-bottom: 3px solid transparent; margin-bottom: 0; }
+        .menu-item.active { background: rgba(255,255,255,0.1); border-bottom: 3px solid var(--admin-red); }
+        .content { padding: 20px; width: 100%; }
         .form-group { width: 100%; }
-        
-        /* Tablo işlemleri için butonları alt alta al */
         td button { margin-bottom: 5px; }
     }
 </style>
@@ -122,6 +74,8 @@
         <div class="menu-item active" onclick="switchTab('members', this)"><i class="fa-solid fa-users"></i> Onaylar</div>
         <div class="menu-item" onclick="switchTab('announcements', this)"><i class="fa-solid fa-bullhorn"></i> Duyuru</div>
         <div class="menu-item" onclick="switchTab('events', this)"><i class="fa-solid fa-calendar-days"></i> Etkinlik</div>
+        <div class="menu-item" onclick="switchTab('broadcast', this)"><i class="fa-solid fa-tower-broadcast"></i> Toplu Mesaj</div>
+        
         <a href="dashboard.html" class="menu-item" style="margin-left: auto;"><i class="fa-solid fa-arrow-left"></i> Siteye Dön</a>
     </div>
 
@@ -139,58 +93,53 @@
 
         <div id="announcements" class="tab-section">
             <h2 class="section-title">📢 Duyuru Yönetimi</h2>
-            
             <div class="card" style="background: #fdfdfd; border-left: 5px solid #2c3e50;">
                 <h3>Yeni Duyuru Ekle</h3>
+                <div class="form-group"><input type="text" id="annText" class="form-control" placeholder="Örn: 2025 Burs başvuruları başladı."></div>
                 <div class="form-group">
-                    <label>Duyuru Metni</label>
-                    <input type="text" id="annText" class="form-control" placeholder="Örn: 2025 Burs başvuruları başladı.">
-                </div>
-                <div class="form-group">
-                    <label>Renk Etiketi</label>
                     <select id="annColor" class="form-control">
                         <option value="#333333">⚫ Siyah (Standart)</option>
-                        <option value="#e74c3c">🔴 Kırmızı (Acil / Önemli)</option>
-                        <option value="#27ae60">🟢 Yeşil (Başarı / Haber)</option>
+                        <option value="#e74c3c">🔴 Kırmızı (Acil)</option>
+                        <option value="#27ae60">🟢 Yeşil (Başarı)</option>
                         <option value="#3498db">🔵 Mavi (Bilgi)</option>
-                        <option value="#f39c12">🟠 Turuncu (Uyarı)</option>
                     </select>
                 </div>
                 <button class="btn btn-add" onclick="addAnnouncement()">Yayınla</button>
             </div>
-
             <h3>Yayındaki Duyurular</h3>
             <div class="card">
-                <table>
-                    <thead><tr><th>Renk</th><th>Metin</th><th>Tarih</th><th>İşlem</th></tr></thead>
-                    <tbody id="annBody"><tr><td colspan="4" style="text-align:center;">Yükleniyor...</td></tr></tbody>
-                </table>
+                <table><thead><tr><th>Renk</th><th>Metin</th><th>Tarih</th><th>İşlem</th></tr></thead><tbody id="annBody"><tr><td colspan="4" style="text-align:center;">Yükleniyor...</td></tr></tbody></table>
             </div>
         </div>
 
         <div id="events" class="tab-section">
             <h2 class="section-title">📅 Etkinlik Yönetimi</h2>
-            
             <div class="card" style="border-left: 5px solid #e74c3c;">
                 <h3>Yeni Etkinlik</h3>
-                <div class="form-group"><input type="text" id="evtTitle" class="form-control" placeholder="Etkinlik Adı (Örn: Vişnelik Buluşması)"></div>
-                <div class="form-group"><input type="text" id="evtLoc" class="form-control" placeholder="Konum (Örn: ODTÜ MD)"></div>
+                <div class="form-group"><input type="text" id="evtTitle" class="form-control" placeholder="Etkinlik Adı"></div>
+                <div class="form-group"><input type="text" id="evtLoc" class="form-control" placeholder="Konum"></div>
                 <div class="form-group" style="display:flex; gap:10px;">
                     <input type="date" id="evtDate" class="form-control">
                     <input type="time" id="evtTime" class="form-control">
                 </div>
-                <div class="form-group"><input type="text" id="evtSpeaker" class="form-control" placeholder="Konuşmacı (Opsiyonel)"></div>
+                <div class="form-group"><input type="text" id="evtSpeaker" class="form-control" placeholder="Konuşmacı"></div>
                 <button class="btn btn-add" onclick="addEvent()">Etkinliği Oluştur</button>
             </div>
-            
             <h3>Tüm Etkinlikler</h3>
             <div class="card">
-                <table>
-                    <thead><tr><th>Tarih</th><th>Etkinlik</th><th>Yer</th><th>İşlem</th></tr></thead>
-                    <tbody id="evtBody">
-                        <tr><td colspan="4" style="text-align:center;">Yükleniyor...</td></tr>
-                    </tbody>
-                </table>
+                <table><thead><tr><th>Tarih</th><th>Etkinlik</th><th>Yer</th><th>İşlem</th></tr></thead><tbody id="evtBody"><tr><td colspan="4" style="text-align:center;">Yükleniyor...</td></tr></tbody></table>
+            </div>
+        </div>
+
+        <div id="broadcast" class="tab-section">
+            <h2 class="section-title">📡 Tüm Üyelere Canlı Mesaj</h2>
+            <div class="card" style="border-left: 5px solid #8e44ad;">
+                <p style="color:#666; margin-bottom:15px;">Buradan göndereceğiniz mesaj, şu an sitede olan herkesin ekranında <b>anında (pop-up olarak)</b> belirecektir.</p>
+                <div class="form-group">
+                    <label>Mesajınız</label>
+                    <textarea id="bcMessage" class="form-control" rows="3" placeholder="Örn: Toplantı 10 dakika sonra başlıyor!"></textarea>
+                </div>
+                <button class="btn btn-add" style="background:#8e44ad;" onclick="sendBroadcast()">🚀 Herkese Gönder</button>
             </div>
         </div>
 
@@ -202,7 +151,6 @@
         const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhmdHJtaWlhY3hndGthcnN2dXBuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ3ODUzNzIsImV4cCI6MjA4MDM2MTM3Mn0.BgCk5xuZx6AZuxzfBHcQqg8j8BtxU9FbupDgoFecG_k';
         let supabase; try { supabase = window.supabase.createClient(supabaseUrl, supabaseKey); } catch(e){}
 
-        // --- GİRİŞ KONTROLÜ ---
         document.addEventListener("DOMContentLoaded", async () => {
             const { data: { session } } = await supabase.auth.getSession();
             if (!session) { window.location.href = 'index.html'; return; }
@@ -218,7 +166,6 @@
             loadEvents();
         });
 
-        // --- SEKME GEÇİŞLERİ ---
         function switchTab(tabId, btn) {
             document.querySelectorAll('.tab-section').forEach(el => el.classList.remove('active-section'));
             document.getElementById(tabId).classList.add('active-section');
@@ -226,89 +173,40 @@
             if(btn) btn.classList.add('active');
         }
 
-        // ==========================================
-        // 1. ÜYE İŞLEMLERİ
-        // ==========================================
+        // --- 1. ÜYE İŞLEMLERİ ---
         async function loadPendingUsers() {
             const tbody = document.getElementById('usersBody');
             const { data } = await supabase.from('profiles').select('*').eq('is_verified', false).order('created_at', {ascending: false});
-
-            if (!data || data.length === 0) { tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; padding:20px; color:#777;">Onay bekleyen üye yok.</td></tr>'; return; }
-
+            if (!data || data.length === 0) { tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;">Onay bekleyen üye yok.</td></tr>'; return; }
             tbody.innerHTML = '';
             data.forEach(user => {
-                tbody.insertAdjacentHTML('beforeend', `
-                <tr>
-                    <td><b>${user.full_name}</b></td>
-                    <td>${user.email}</td>
-                    <td>${user.department || '-'}</td>
-                    <td>
-                        <button class="btn btn-approve" onclick="approveUser('${user.id}')">Onayla</button>
-                        <button class="btn btn-reject" onclick="deleteUser('${user.id}')">Sil</button>
-                    </td>
-                </tr>`);
+                tbody.insertAdjacentHTML('beforeend', `<tr><td><b>${user.full_name}</b></td><td>${user.email}</td><td>${user.department || '-'}</td><td><button class="btn btn-approve" onclick="approveUser('${user.id}')">Onayla</button> <button class="btn btn-reject" onclick="deleteUser('${user.id}')">Sil</button></td></tr>`);
             });
         }
+        async function approveUser(id) { if(!confirm("Onaylıyor musunuz?")) return; await supabase.from('profiles').update({ is_verified: true }).eq('id', id); loadPendingUsers(); }
+        async function deleteUser(id) { if(!confirm("Silmek istediğinize emin misiniz?")) return; await supabase.from('profiles').delete().eq('id', id); loadPendingUsers(); }
 
-        async function approveUser(id) {
-            if(!confirm("Onaylıyor musunuz?")) return;
-            await supabase.from('profiles').update({ is_verified: true }).eq('id', id);
-            loadPendingUsers();
-        }
-
-        async function deleteUser(id) {
-            if(!confirm("Bu kaydı silmek istediğinize emin misiniz?")) return;
-            await supabase.from('profiles').delete().eq('id', id);
-            loadPendingUsers();
-        }
-
-        // ==========================================
-        // 2. DUYURU İŞLEMLERİ
-        // ==========================================
+        // --- 2. DUYURU İŞLEMLERİ ---
         async function loadAnnouncements() {
             const tbody = document.getElementById('annBody');
             const { data } = await supabase.from('announcements').select('*').order('created_at', {ascending:false});
-
             if (!data || data.length === 0) { tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;">Hiç duyuru yok.</td></tr>'; return; }
-
             tbody.innerHTML = '';
             data.forEach(ann => {
                 const date = new Date(ann.created_at).toLocaleDateString('tr-TR');
-                tbody.insertAdjacentHTML('beforeend', `
-                <tr>
-                    <td><span style="color:${ann.color}; font-size:1.5rem;">•</span></td>
-                    <td>${ann.title}</td>
-                    <td style="color:#777; font-size:0.9rem;">${date}</td>
-                    <td><button class="btn btn-reject" onclick="deleteAnnouncement(${ann.id})"><i class="fa-solid fa-trash"></i></button></td>
-                </tr>`);
+                tbody.insertAdjacentHTML('beforeend', `<tr><td><span style="color:${ann.color}; font-size:1.5rem;">•</span></td><td>${ann.title}</td><td style="color:#777;">${date}</td><td><button class="btn btn-reject" onclick="deleteAnnouncement(${ann.id})"><i class="fa-solid fa-trash"></i></button></td></tr>`);
             });
         }
-
         async function addAnnouncement() {
             const title = document.getElementById('annText').value;
             const color = document.getElementById('annColor').value;
-
-            if(!title) { alert("Lütfen bir metin giriniz."); return; }
-
-            const { error } = await supabase.from('announcements').insert({ title, color });
-
-            if(error) alert("Hata: " + error.message);
-            else {
-                document.getElementById('annText').value = ""; // Formu temizle
-                loadAnnouncements(); // Listeyi yenile
-                alert("Duyuru yayınlandı!");
-            }
+            if(!title) return;
+            await supabase.from('announcements').insert({ title, color });
+            document.getElementById('annText').value = ""; loadAnnouncements(); alert("Duyuru yayınlandı!");
         }
+        async function deleteAnnouncement(id) { if(!confirm("Silmek istiyor musunuz?")) return; await supabase.from('announcements').delete().eq('id', id); loadAnnouncements(); }
 
-        async function deleteAnnouncement(id) {
-            if(!confirm("Bu duyuruyu kaldırmak istiyor musunuz?")) return;
-            await supabase.from('announcements').delete().eq('id', id);
-            loadAnnouncements();
-        }
-
-        // ==========================================
-        // 3. ETKİNLİK İŞLEMLERİ
-        // ==========================================
+        // --- 3. ETKİNLİK İŞLEMLERİ ---
         async function loadEvents() {
             const tbody = document.getElementById('evtBody');
             const { data } = await supabase.from('events').select('*').order('event_date', {ascending:true});
@@ -322,15 +220,25 @@
             const date = document.getElementById('evtDate').value;
             const time = document.getElementById('evtTime').value;
             const spk = document.getElementById('evtSpeaker').value;
-
             if(!title || !date) { alert("Başlık ve Tarih zorunludur."); return; }
-            
             await supabase.from('events').insert({ title: title, location: loc, event_date: date, event_time: time, speaker: spk });
-            alert("Etkinlik eklendi!");
-            document.getElementById('evtTitle').value = "";
-            loadEvents();
+            alert("Etkinlik eklendi!"); document.getElementById('evtTitle').value = ""; loadEvents();
         }
         async function delEvent(id) { if(confirm('Sil?')) { await supabase.from('events').delete().eq('id',id); loadEvents(); } }
+
+        // --- 4. TOPLU MESAJ GÖNDERME (YENİ) ---
+        async function sendBroadcast() {
+            const msg = document.getElementById('bcMessage').value;
+            if(!msg) { alert("Boş mesaj gönderilemez."); return; }
+
+            const { error } = await supabase.from('broadcasts').insert({ message: msg });
+
+            if(error) alert("Hata: " + error.message);
+            else {
+                alert("Mesaj tüm kullanıcılara iletildi! 📡");
+                document.getElementById('bcMessage').value = "";
+            }
+        }
 
     </script>
 </body>
