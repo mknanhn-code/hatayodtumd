@@ -81,7 +81,10 @@
             <a href="mentor.html"><i class="fa-solid fa-handshake-angle"></i> Mentorluk</a>
             <a href="career.html"><i class="fa-solid fa-briefcase"></i> Kariyer</a>
             <a href="network.html"><i class="fa-solid fa-users-viewfinder"></i> Mezun Ağı</a>
-            <a href="settings.html"><i class="fa-solid fa-gear"></i> Ayarlar</a>
+            <a href="profile.html" style="position:relative;">
+    <i class="fa-solid fa-user"></i> Profil 
+    <span id="globalBadge" style="position:absolute; top:-8px; right:-10px; background:#E31E24; color:white; font-size:0.7rem; padding:2px 6px; border-radius:10px; display:none; border:1px solid white;">0</span>
+</a>
         </div>
         <div class="nav-right"><a href="#" class="logout-btn" onclick="logout()"><i class="fa-solid fa-right-from-bracket"></i> Çıkış</a></div>
     </nav>
@@ -219,6 +222,35 @@
         function closeModal() { document.getElementById('roomModal').style.display='none'; }
         async function logout() { await supabase.auth.signOut(); window.location.href = "index.html"; }
     </script>
+// --- GLOBAL BİLDİRİM KONTROLÜ (Bunu her sayfanın scriptine ekle) ---
+    async function checkGlobalNotifications() {
+        // 1. Oturum kontrolü
+        const { data: { session } } = await supabase.auth.getSession();
+        if (!session) return;
 
+        // 2. Okunmamış mesajları say
+        const { count, error } = await supabase
+            .from('direct_messages')
+            .select('*', { count: 'exact', head: true }) // head:true sadece sayıyı çeker, veriyi çekmez (hızlıdır)
+            .eq('receiver_id', session.user.id)
+            .eq('is_read', false);
+
+        // 3. Rozeti Göster/Gizle
+        const badge = document.getElementById('globalBadge');
+        if (badge) {
+            if (count > 0) {
+                badge.style.display = 'inline-block';
+                badge.innerText = count;
+            } else {
+                badge.style.display = 'none';
+            }
+        }
+    }
+
+    // Sayfa yüklenince çalıştır
+    checkGlobalNotifications();
+    
+    // (Opsiyonel) Her 10 saniyede bir tekrar kontrol et (Canlı gibi olsun)
+    setInterval(checkGlobalNotifications, 10000);
 </body>
 </html>
