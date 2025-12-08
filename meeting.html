@@ -222,35 +222,5 @@
         function closeModal() { document.getElementById('roomModal').style.display='none'; }
         async function logout() { await supabase.auth.signOut(); window.location.href = "index.html"; }
     </script>
-// --- GLOBAL BİLDİRİM KONTROLÜ (Bunu her sayfanın scriptine ekle) ---
-    async function checkGlobalNotifications() {
-        // 1. Oturum kontrolü
-        const { data: { session } } = await supabase.auth.getSession();
-        if (!session) return;
-
-        // 2. Okunmamış mesajları say
-        const { count, error } = await supabase
-            .from('direct_messages')
-            .select('*', { count: 'exact', head: true }) // head:true sadece sayıyı çeker, veriyi çekmez (hızlıdır)
-            .eq('receiver_id', session.user.id)
-            .eq('is_read', false);
-
-        // 3. Rozeti Göster/Gizle
-        const badge = document.getElementById('globalBadge');
-        if (badge) {
-            if (count > 0) {
-                badge.style.display = 'inline-block';
-                badge.innerText = count;
-            } else {
-                badge.style.display = 'none';
-            }
-        }
-    }
-
-    // Sayfa yüklenince çalıştır
-    checkGlobalNotifications();
-    
-    // (Opsiyonel) Her 10 saniyede bir tekrar kontrol et (Canlı gibi olsun)
-    setInterval(checkGlobalNotifications, 10000);
 </body>
 </html>
