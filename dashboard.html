@@ -65,6 +65,9 @@
     #idCardModal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); justify-content: center; align-items: center; z-index: 2000; }
     .id-card { width: 320px; height: 200px; background: linear-gradient(135deg, #E31E24 0%, #900e12 100%); border-radius: 15px; padding: 20px; color: white; position: relative; box-shadow: 0 10px 30px rgba(0,0,0,0.3); display: flex; flex-direction: column; justify-content: space-between; }
 
+    /* BİLDİRİM ANİMASYONU */
+    @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+
     /* MOBİL UYUMLULUK */
     @media (max-width: 900px) {
         .navbar { height: auto; flex-direction: column; padding: 15px; position: relative; }
@@ -86,14 +89,14 @@
         </div>
         <div class="nav-links">
             <a href="dashboard.html" class="active"><i class="fa-solid fa-layer-group"></i> Panel</a>
-            <a href="meeting.html" class="active"><i class="fa-solid fa-video"></i> Etkinlik Üssü</a>
+            <a href="meeting.html"><i class="fa-solid fa-video"></i> Meeting Hub</a>
             <a href="mentor.html"><i class="fa-solid fa-handshake-angle"></i> Mentorluk</a>
             <a href="career.html"><i class="fa-solid fa-briefcase"></i> Kariyer</a>
             <a href="network.html"><i class="fa-solid fa-users-viewfinder"></i> Mezun Ağı</a>
             <a href="profile.html" style="position:relative;">
-    <i class="fa-solid fa-user"></i> Profil 
-    <span id="globalBadge" style="position:absolute; top:-8px; right:-10px; background:#E31E24; color:white; font-size:0.7rem; padding:2px 6px; border-radius:10px; display:none; border:1px solid white;">0</span>
-</a>
+                <i class="fa-solid fa-user"></i> Profil 
+                <span id="globalBadge" style="position:absolute; top:-8px; right:-10px; background:#E31E24; color:white; font-size:0.7rem; padding:2px 6px; border-radius:10px; display:none; border:1px solid white;">0</span>
+            </a>
             
             <a href="admin.html" id="adminBtn" style="display: none; color: #ff6b6b; font-weight: bold;">
                 <i class="fa-solid fa-user-shield"></i> Yönetim
@@ -159,7 +162,7 @@
         <div id="genericSection" style="text-align:center; background:white; padding:40px; border-radius:12px;">
             <h3>👋 Profilini Tamamla</h3>
             <p>Sana özel içerikleri gösterebilmemiz için mezuniyet yılını bilmemiz gerekiyor.</p><br>
-            <button class="btn-action btn-red" style="max-width:200px;" onclick="window.location.href='settings.html'">Ayarlara Git</button>
+            <button class="btn-action btn-red" style="max-width:200px;" onclick="window.location.href='profile.html'">Ayarlara Git</button>
         </div>
     </div>
 
@@ -169,6 +172,14 @@
             <div style="text-align:center"><i class="fa-solid fa-qrcode" style="font-size:70px"></i></div>
             <div><div id="cardNameArea" style="font-weight:bold">YÜKLENİYOR...</div><div id="cardDeptArea" style="font-size:0.8rem">Bölüm Bilgisi</div></div>
         </div>
+    </div>
+
+    <div id="liveToast" style="position: fixed; top: 20px; right: 20px; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 5px 20px rgba(0,0,0,0.2); border-left: 5px solid #8e44ad; z-index: 9999; display: none; min-width: 300px; animation: slideIn 0.5s;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+            <strong style="color:#8e44ad; font-size:1.1rem;"><i class="fa-solid fa-tower-broadcast"></i> YÖNETİM DUYURUSU</strong>
+            <span onclick="document.getElementById('liveToast').style.display='none'" style="cursor:pointer; color:#999;">&times;</span>
+        </div>
+        <p id="toastMessage" style="color:#333; font-size:0.95rem; margin:0;">Mesaj buraya gelecek...</p>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -229,6 +240,15 @@
             fetchStats();
             fetchAnnouncements();
             fetchNextEvent();
+            checkGlobalNotifications();
+
+            // --- REALTIME: CANLI DUYURULARI DİNLE ---
+            supabase
+                .channel('public:broadcasts')
+                .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'broadcasts' }, payload => {
+                    showLiveNotification(payload.new.message);
+                })
+                .subscribe();
         });
 
         // --- 1. İSTATİSTİKLER ---
@@ -257,15 +277,13 @@
 
         // --- 3. ETKİNLİK (DÜZELTİLMİŞ) ---
         async function fetchNextEvent() {
-            // Tarihi yerel saate göre al (Bugün için)
             const today = new Date().toLocaleDateString('en-CA'); 
             
-            // Bugünden sonraki ilk etkinliği getir
             const { data, error } = await supabase.from('events')
                 .select('*')
                 .gte('event_date', today)
                 .order('event_date', { ascending: true })
-                .limit(1); // Single yerine limit(1) daha güvenli
+                .limit(1);
 
             const container = document.getElementById('eventContent');
 
@@ -274,8 +292,7 @@
                 return;
             }
 
-            const event = data[0]; // İlk etkinliği al
-
+            const event = data[0]; 
             const dateObj = new Date(event.event_date);
             const day = dateObj.getDate();
             const months = ["OCAK", "ŞUB", "MART", "NİS", "MAY", "HAZ", "TEM", "AĞU", "EYL", "EKİM", "KAS", "ARA"];
@@ -297,7 +314,39 @@
             <button class="btn-action btn-dark">Detaylar</button>`;
         }
 
+        // --- GLOBAL BİLDİRİMLER (MESAJ) ---
+        async function checkGlobalNotifications() {
+            const { data: { session } } = await supabase.auth.getSession();
+            if(!session) return;
+            
+            const { count } = await supabase.from('direct_messages')
+                .select('*', { count: 'exact', head: true })
+                .eq('receiver_id', session.user.id)
+                .eq('is_read', false);
+                
+            const badge = document.getElementById('globalBadge');
+            if(badge && count > 0) {
+                badge.style.display = 'inline-block';
+                badge.innerText = count;
+            }
+        }
+
+        // --- CANLI BİLDİRİM (TOAST) ---
+        function showLiveNotification(msg) {
+            const toast = document.getElementById('liveToast');
+            const text = document.getElementById('toastMessage');
+            
+            text.innerText = msg;
+            toast.style.display = 'block';
+
+            const audio = new Audio('https://actions.google.com/sounds/v1/alarms/beep_short.ogg');
+            audio.play().catch(e => console.log("Ses hatası"));
+
+            setTimeout(() => { toast.style.display = 'none'; }, 7000);
+        }
+
         async function logout() { await supabase.auth.signOut(); window.location.href = "index.html"; }
     </script>
+
 </body>
 </html>
