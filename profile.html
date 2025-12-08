@@ -74,23 +74,9 @@
     .mine { background: var(--odtu-dark); color: white; margin-left: auto; border-bottom-right-radius: 2px; }
     .theirs { background: #e0e0e0; color: #333; margin-right: auto; border-bottom-left-radius: 2px; }
     
-    /* GÜNCELLENEN MESAJ ALANI STİLİ */
     .send-area { display: flex; gap: 10px; align-items: center; border-top: 1px solid #eee; padding-top: 10px; }
-    .send-area textarea { 
-        flex: 1; 
-        padding: 12px; 
-        border: 1px solid #ddd; 
-        border-radius: 10px; 
-        outline: none; 
-        resize: none; /* Boyutlandırmayı kapat */
-        height: 50px; /* Yükseklik */
-        font-family: inherit;
-    }
-    .send-area textarea:focus { border-color: var(--odtu-dark); }
-    
+    .send-area textarea { flex: 1; padding: 12px; border: 1px solid #ddd; border-radius: 10px; outline: none; resize: none; height: 50px; font-family: inherit; }
     .send-btn { background: var(--odtu-red); color: white; border: none; width: 50px; height: 50px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.3s; }
-    .send-btn:hover { background: #c0392b; transform: scale(1.05); }
-    
     .new-msg-btn { width: 100%; padding: 12px; background: var(--odtu-dark); color: white; border: none; border-radius: 6px; margin-bottom: 15px; cursor: pointer; font-weight: bold; }
 
     /* YENİ: ÇOKLU SEÇİM MODALI */
@@ -131,7 +117,7 @@
         </div>
         <div class="nav-links">
             <a href="dashboard.html">Panel</a>
-            <a href="meeting.html">Etkinlik Üssü</a>
+            <a href="meeting.html">Meeting Hub</a>
             <a href="mentor.html">Mentorluk</a>
             <a href="career.html">Kariyer</a>
             <a href="network.html">Mezun Ağı</a>
@@ -202,12 +188,10 @@
                             Bir konuşma seçin veya yeni mesaj gönderin.
                         </div>
                     </div>
-                    
                     <div class="send-area" style="display:none;" id="sendArea">
                         <textarea id="msgInput" placeholder="Mesaj yaz... (Enter: Gönder, Shift+Enter: Alt Satır)"></textarea>
                         <button class="send-btn" onclick="sendMessage()"><i class="fa-solid fa-paper-plane"></i></button>
                     </div>
-
                 </div>
             </div>
         </div>
@@ -220,9 +204,7 @@
                 <h3>Kişi Seç (Tek veya Çoklu)</h3>
                 <span onclick="document.getElementById('userModal').style.display='none'" style="cursor:pointer; font-size:1.5rem;">&times;</span>
             </div>
-            
             <div style="max-height: 250px; overflow-y: auto;" id="userList"></div>
-
             <div class="multi-send-area">
                 <input type="text" id="multiMsgInput" placeholder="Çoklu mesajınızı yazın..." style="width:100%; padding:10px; margin-bottom:10px; border:1px solid #ddd; border-radius:6px; display:none;">
                 <button id="btnMultiSend" class="btn-multi-send" disabled onclick="sendMultiMessage()">Seçilenlere Gönder (0)</button>
@@ -254,11 +236,10 @@
 
             loadProfile(); loadNotes(); loadInbox(); checkNotifications(); setupRealtime();
             
-            // Enter ile gönderme (Shift+Enter alt satır)
+            // Enter ile gönderme
             document.getElementById('msgInput').addEventListener('keydown', function(e) {
                 if (e.key === 'Enter' && !e.shiftKey) {
-                    e.preventDefault();
-                    sendMessage();
+                    e.preventDefault(); sendMessage();
                 }
             });
         });
@@ -306,12 +287,12 @@
         }
         async function deleteNote(id) { if(confirm("Sil?")) { await supabase.from('personal_notes').delete().eq('id', id); loadNotes(); }}
 
-        // --- MESAJLAŞMA & DUYURULAR ---
+        // --- MESAJLAŞMA & DUYURULAR (İSİM DÜZELTİLDİ) ---
         async function loadInbox() {
             const inboxList = document.getElementById('inboxList');
             inboxList.innerHTML = "";
 
-            // 1. DUYURULARI ÇEK VE EKLE
+            // 1. DUYURULARI EKLE
             const { data: broadcastData } = await supabase.from('broadcasts').select('*').order('created_at', {ascending: false}).limit(1);
             let lastBroadcastMsg = "Henüz duyuru yok.";
             let lastBroadcastDate = "";
@@ -327,38 +308,49 @@
                 <div style="font-size:0.8rem; color:#666; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${lastBroadcastMsg}</div>
             </div>`;
 
-            // 2. GELEN VE GİDEN MESAJLARI (OR MANTIĞI) İLE ÇEK
+            // 2. KİŞİSEL MESAJLARI EKLE (İSİM DÜZELTME İLE)
             const { data } = await supabase.from('direct_messages')
-                .select('sender_id, receiver_id, sender_name, content, created_at, is_read')
+                .select('*')
                 .or(`sender_id.eq.${currentUser.id},receiver_id.eq.${currentUser.id}`)
                 .order('created_at', {ascending: false});
 
             const uniqueContacts = new Set();
-            
+            const contactIds = new Set();
+            const conversationMap = []; // Sıralamayı korumak için dizi
+
+            // Önce konuşulan kişilerin ID'lerini topla
             if(data) {
                 data.forEach(msg => {
-                    // Karşı tarafın ID'sini bul
                     const partnerId = (msg.sender_id === currentUser.id) ? msg.receiver_id : msg.sender_id;
-                    const isMeSender = (msg.sender_id === currentUser.id);
-                    
                     if(!uniqueContacts.has(partnerId)) {
                         uniqueContacts.add(partnerId);
-                        
-                        // Okunmadı durumu sadece bana gelen mesajlarda geçerli
-                        const isUnread = (!msg.is_read && msg.receiver_id === currentUser.id) ? 'unread' : '';
-                        
-                        // İsim Gösterimi
-                        let displayName = msg.sender_name; 
-                        if(isMeSender) displayName = "📤 Giden Mesaj"; // Basit çözüm (Daha ileri seviyede profilden çekilir)
-
-                        inboxList.innerHTML += `
-                        <div class="msg-item ${isUnread}" onclick="openChat('${partnerId}', '${isMeSender ? 'Sohbet' : displayName}')">
-                            <div style="font-weight:bold;">${displayName}</div>
-                            <small>${msg.content.substring(0,30)}...</small>
-                        </div>`;
+                        contactIds.add(partnerId);
+                        conversationMap.push({ partnerId: partnerId, msg: msg });
                     }
                 });
             }
+
+            // Bu kişilerin isimlerini 'profiles' tablosundan çek
+            const { data: profiles } = await supabase.from('profiles').select('id, full_name').in('id', Array.from(contactIds));
+            const nameMap = {};
+            if(profiles) profiles.forEach(p => nameMap[p.id] = p.full_name);
+
+            // Listeyi oluştur
+            conversationMap.forEach(item => {
+                const partnerId = item.partnerId;
+                const msg = item.msg;
+                const realName = nameMap[partnerId] || "Bilinmeyen Üye"; // İsmi buradan alıyoruz!
+                
+                const isUnread = (!msg.is_read && msg.receiver_id === currentUser.id) ? 'unread' : '';
+                
+                inboxList.innerHTML += `
+                <div class="msg-item ${isUnread}" onclick="openChat('${partnerId}', '${realName}')">
+                    <div style="font-weight:bold;">${realName}</div>
+                    <small style="color:${msg.sender_id === currentUser.id ? '#999' : '#555'}">
+                        ${msg.sender_id === currentUser.id ? '↪️ ' : ''}${msg.content.substring(0,30)}...
+                    </small>
+                </div>`;
+            });
         }
 
         async function openChat(partnerId, partnerName) {
@@ -378,8 +370,6 @@
                 sendArea.style.display = 'flex';
                 const { data } = await supabase.from('direct_messages').select('*').or(`and(sender_id.eq.${currentUser.id},receiver_id.eq.${partnerId}),and(sender_id.eq.${partnerId},receiver_id.eq.${currentUser.id})`).order('created_at', {ascending: true});
                 data.forEach(msg => chatBox.innerHTML += `<div class="chat-bubble ${msg.sender_id === currentUser.id ? 'mine' : 'theirs'}">${msg.content}</div>`);
-                
-                // Sadece bana gelenleri okundu yap
                 await supabase.from('direct_messages').update({is_read: true}).eq('sender_id', partnerId).eq('receiver_id', currentUser.id);
                 checkNotifications();
             }
@@ -390,13 +380,11 @@
             const input = document.getElementById('msgInput');
             if(!input.value || !activeChatUserId || activeChatUserId === 'broadcast') return;
             const myName = currentUser.user_metadata.full_name || "Üye";
-            
             await supabase.from('direct_messages').insert({ sender_id: currentUser.id, receiver_id: activeChatUserId, content: input.value, sender_name: myName });
-            
             document.getElementById('chatBox').innerHTML += `<div class="chat-bubble mine">${input.value}</div>`;
             document.getElementById('chatBox').scrollTop = document.getElementById('chatBox').scrollHeight;
             input.value = "";
-            loadInbox(); // Giden mesaj listeye düşsün
+            loadInbox(); 
         }
 
         // --- ÇOKLU GÖNDERİM ---
@@ -416,10 +404,7 @@
                 </div>`;
             });
         }
-        function toggleUser(id, name, checkbox) {
-            if (checkbox.checked) selectedUsers.add(id); else selectedUsers.delete(id);
-            updateMultiSendButton();
-        }
+        function toggleUser(id, name, checkbox) { if (checkbox.checked) selectedUsers.add(id); else selectedUsers.delete(id); updateMultiSendButton(); }
         function updateMultiSendButton() {
             const btn = document.getElementById('btnMultiSend');
             const input = document.getElementById('multiMsgInput');
@@ -431,9 +416,7 @@
             if(!text || selectedUsers.size === 0) return;
             const myName = currentUser.user_metadata.full_name || "Üye";
             document.getElementById('btnMultiSend').innerText = "Gönderiliyor...";
-            for (const receiverId of selectedUsers) {
-                await supabase.from('direct_messages').insert({ sender_id: currentUser.id, receiver_id: receiverId, content: text, sender_name: myName });
-            }
+            for (const receiverId of selectedUsers) { await supabase.from('direct_messages').insert({ sender_id: currentUser.id, receiver_id: receiverId, content: text, sender_name: myName }); }
             alert("Mesajlar iletildi! 🚀");
             document.getElementById('userModal').style.display = 'none'; document.getElementById('multiMsgInput').value = ""; selectedUsers.clear(); loadInbox();
         }
@@ -441,20 +424,14 @@
 
         // --- REALTIME & BİLDİRİM ---
         function setupRealtime() {
-            supabase.channel('public:broadcasts').on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'broadcasts' }, payload => {
-                showNotification("YÖNETİM DUYURUSU", payload.new.message, "admin");
-                loadInbox(); 
-            }).subscribe();
-
+            supabase.channel('public:broadcasts').on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'broadcasts' }, payload => { showNotification("YÖNETİM DUYURUSU", payload.new.message, "admin"); loadInbox(); }).subscribe();
             supabase.channel('chat-room').on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'direct_messages', filter: `receiver_id=eq.${currentUser.id}` }, payload => {
                 if (activeChatUserId && payload.new.sender_id === activeChatUserId) {
                     const chatBox = document.getElementById('chatBox');
                     chatBox.innerHTML += `<div class="chat-bubble theirs">${payload.new.content}</div>`;
                     chatBox.scrollTop = chatBox.scrollHeight;
                     supabase.from('direct_messages').update({is_read: true}).eq('id', payload.new.id).then();
-                } else {
-                    showNotification(`💬 ${payload.new.sender_name}`, payload.new.content, "user");
-                }
+                } else { showNotification(`💬 ${payload.new.sender_name}`, payload.new.content, "user"); }
                 loadInbox(); checkNotifications();
             }).subscribe();
         }
@@ -471,16 +448,13 @@
 
         async function checkNotifications() {
             const { count } = await supabase.from('direct_messages').select('*', { count: 'exact', head: true }).eq('receiver_id', currentUser.id).eq('is_read', false);
-            
-            // Hem Menüdeki (navBadge) hem Sekmedeki (tabBadge) bildirimleri güncelle
-            const navBadge = document.getElementById('navBadge');
+            const badge = document.getElementById('navBadge');
             const tabBadge = document.getElementById('tabBadge');
-            
             if(count > 0) { 
-                if(navBadge) { navBadge.style.display = 'inline-block'; navBadge.innerText = count; }
+                if(badge) { badge.style.display = 'inline-block'; badge.innerText = count; }
                 if(tabBadge) { tabBadge.style.display = 'inline-block'; tabBadge.innerText = count; }
             } else { 
-                if(navBadge) navBadge.style.display = 'none'; 
+                if(badge) badge.style.display = 'none'; 
                 if(tabBadge) tabBadge.style.display = 'none';
             }
         }
