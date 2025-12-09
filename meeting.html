@@ -10,6 +10,7 @@
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
     body { background-color: var(--bg-light); display: block; min-height: 100vh; }
     
+    /* NAVBAR (Masaüstü için Sabit) */
     .navbar { width: 100%; height: 70px; background-color: var(--odtu-dark); display: flex; align-items: center; justify-content: space-between; padding: 0 30px; position: fixed; top: 0; left: 0; z-index: 1000; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
     .nav-left { display: flex; align-items: center; gap: 15px; }
     .nav-logo { height: 50px; background: white; padding: 2px; border-radius: 5px; }
@@ -21,6 +22,7 @@
     .logout-btn { color: #e74c3c; border: 1px solid #e74c3c; padding: 6px 15px; border-radius: 20px; text-decoration: none; transition: 0.3s; }
     .logout-btn:hover { background: #e74c3c; color: white; }
 
+    /* İÇERİK */
     .main-content { margin-top: 70px; padding: 40px; width: 100%; max-width: 1200px; margin-left: auto; margin-right: auto; }
     .header-area { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
     .create-btn { background: var(--odtu-red); color: white; border: none; padding: 12px 25px; border-radius: 8px; cursor: pointer; font-weight: bold; display: flex; align-items: center; gap: 10px; transition: 0.3s; }
@@ -46,10 +48,22 @@
     .input-wrapper { display: flex; gap: 10px; }
     .btn-generate { background: #3498db; color: white; border: none; padding: 0 15px; border-radius: 6px; cursor: pointer; font-size: 0.8rem; white-space: nowrap; }
     
+    /* TOAST BİLDİRİM ANİMASYONU */
+    @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+
+    /* MOBİL DÜZELTME */
     @media (max-width: 900px) {
-        .navbar { height: auto; flex-direction: column; padding: 15px; }
+        .navbar { 
+            height: auto; 
+            flex-direction: column; 
+            padding: 15px; 
+            position: relative; /* DÜZELTME: Mobilde sabit olmasın, aksın */
+        }
         .nav-links { flex-wrap: wrap; justify-content: center; width: 100%; gap: 10px; }
-        .main-content { margin-top: 0; padding: 20px; }
+        .main-content { 
+            margin-top: 0; /* DÜZELTME: Navbar relative olduğu için boşluğa gerek yok */
+            padding: 20px; 
+        }
         .header-area { flex-direction: column; gap: 20px; text-align: center; }
         .create-btn { width: 100%; justify-content: center; }
         .rooms-grid { grid-template-columns: 1fr; }
@@ -62,7 +76,7 @@
         <div class="nav-left"><img src="logo.png" class="nav-logo"><div class="nav-title">Hatay ODTÜ MD <span>Üye Portalı</span></div></div>
         <div class="nav-links">
             <a href="dashboard.html"><i class="fa-solid fa-layer-group"></i> Panel</a>
-            <a href="meeting.html" class="active"><i class="fa-solid fa-video"></i> Etkinlik Üssü </a>
+            <a href="meeting.html" class="active"><i class="fa-solid fa-video"></i> Meeting Hub</a>
             <a href="mentor.html"><i class="fa-solid fa-handshake-angle"></i> Mentorluk</a>
             <a href="career.html"><i class="fa-solid fa-briefcase"></i> Kariyer</a>
             <a href="network.html"><i class="fa-solid fa-users-viewfinder"></i> Mezun Ağı</a>
@@ -106,7 +120,6 @@
         </div>
         <p id="toastMessage" style="color:#555; font-size:0.9rem; margin:0; line-height:1.4;">...</p>
     </div>
-    <style>@keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }</style>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
@@ -116,8 +129,10 @@
         let currentUser = null;
 
         document.addEventListener("DOMContentLoaded", async () => {
+            if(!supabase) return;
             const { data: { session } } = await supabase.auth.getSession();
             if (!session) { window.location.href = 'index.html'; return; }
+            
             currentUser = session.user;
             if(!currentUser.user_metadata.full_name) {
                 const { data } = await supabase.from('profiles').select('full_name').eq('id', currentUser.id).single();
@@ -163,6 +178,7 @@
         function openModal() { document.getElementById('roomModal').style.display='flex'; }
         function closeModal() { document.getElementById('roomModal').style.display='none'; }
 
+        // --- BİLDİRİM FONKSİYONLARI ---
         async function checkGlobalNotifications() {
             const { data: { session } } = await supabase.auth.getSession();
             if(!session) return;
