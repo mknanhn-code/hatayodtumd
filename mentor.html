@@ -7,62 +7,84 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
     /* KURUMSAL STİLLER */
-    :root { --odtu-red: #E31E24; --odtu-dark: #2c3e50; --bg-light: #f8f9fa; --white: #ffffff; --border: #e9ecef; }
+    :root { --odtu-red: #E31E24; --odtu-dark: #2c3e50; --bg-light: #f3f4f6; --white: #ffffff; --border: #e5e7eb; --text-gray: #6b7280; }
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
-    body { background-color: var(--bg-light); color: #333; min-height: 100vh; }
+    body { background-color: var(--bg-light); color: #111827; min-height: 100vh; }
     
     /* NAVBAR */
-    .navbar { width: 100%; height: 70px; background-color: var(--odtu-dark); display: flex; align-items: center; justify-content: space-between; padding: 0 30px; position: fixed; top: 0; left: 0; z-index: 1000; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+    .navbar { width: 100%; height: 70px; background-color: var(--odtu-dark); display: flex; align-items: center; justify-content: space-between; padding: 0 30px; position: fixed; top: 0; left: 0; z-index: 1000; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); }
     .nav-left { display: flex; align-items: center; gap: 15px; }
     .nav-logo { height: 50px; background: white; padding: 2px; border-radius: 5px; }
     .nav-title { color: white; font-size: 1.1rem; font-weight: bold; }
     .nav-links { display: flex; gap: 20px; }
-    .nav-links a { color: #bdc3c7; text-decoration: none; font-size: 0.95rem; display: flex; align-items: center; gap: 8px; transition: 0.3s; }
+    .nav-links a { color: #d1d5db; text-decoration: none; font-size: 0.95rem; display: flex; align-items: center; gap: 8px; transition: 0.3s; }
     .nav-links a:hover, .nav-links a.active { color: white; }
     .nav-right { display: flex; align-items: center; gap: 20px; }
-    .logout-btn { color: #e74c3c; border: 1px solid #e74c3c; padding: 5px 15px; border-radius: 20px; text-decoration: none; font-size: 0.9rem; transition: 0.3s; }
-    .logout-btn:hover { background: #e74c3c; color: white; }
+    .logout-btn { color: #ef4444; border: 1px solid #ef4444; padding: 6px 16px; border-radius: 20px; text-decoration: none; font-size: 0.9rem; transition: 0.3s; }
+    .logout-btn:hover { background: #ef4444; color: white; }
 
     /* ANA İÇERİK */
-    .main-content { margin-top: 70px; padding: 40px; width: 100%; max-width: 1200px; margin-left: auto; margin-right: auto; }
+    .main-content { margin-top: 70px; padding: 40px; width: 100%; max-width: 1100px; margin-left: auto; margin-right: auto; }
     
     /* BAŞLIK ALANI */
-    .header-area { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; border-bottom: 1px solid #ddd; padding-bottom: 20px; }
+    .header-area { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 30px; border-bottom: 2px solid var(--border); padding-bottom: 20px; }
     .header-area h2 { color: var(--odtu-dark); font-size: 1.8rem; margin-bottom: 5px; }
-    .mentor-toggle-btn { background: var(--odtu-dark); color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: 600; }
+    .mentor-toggle-btn { background: var(--odtu-dark); color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 0.9rem; transition: 0.2s; }
+    .mentor-toggle-btn:hover { background: #374151; }
 
-    /* AKTİF MENTORLUK KARTI (PROFESYONEL) */
-    .match-card { background: white; border-radius: 8px; border: 1px solid var(--border); margin-bottom: 40px; box-shadow: 0 2px 8px rgba(0,0,0,0.03); }
-    .match-header { padding: 20px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; background: #fff; border-radius: 8px 8px 0 0; }
+    /* AKTİF MENTORLUK KARTI */
+    .match-card { background: white; border-radius: 12px; border: 1px solid var(--border); margin-bottom: 40px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); overflow: hidden; }
+    
+    .match-header { padding: 25px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; background: #fff; }
     .match-user { display: flex; align-items: center; gap: 15px; }
-    .match-avatar { width: 45px; height: 45px; background: var(--odtu-dark); color: white; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-weight: bold; }
-    .btn-action { padding: 8px 15px; border-radius: 4px; border: 1px solid var(--border); background: white; cursor: pointer; color: #555; display: flex; align-items: center; gap: 5px; font-size: 0.9rem; }
-    .btn-action:hover { background: #f8f9fa; color: var(--odtu-dark); }
+    .match-avatar { width: 55px; height: 55px; background: var(--odtu-dark); color: white; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-weight: bold; font-size: 1.2rem; }
+    .match-info h3 { margin: 0; font-size: 1.2rem; color: #1f2937; }
+    .match-info span { font-size: 0.9rem; color: var(--text-gray); }
+    
+    /* Gelecek Toplantı Rozeti */
+    .next-meeting-badge { background: #ecfdf5; color: #059669; padding: 8px 15px; border-radius: 20px; font-size: 0.85rem; font-weight: 600; display: flex; align-items: center; gap: 8px; border: 1px solid #a7f3d0; display: none; } /* JS ile açılacak */
+
+    .action-buttons { display: flex; gap: 10px; }
+    .btn-action { padding: 8px 16px; border-radius: 6px; border: 1px solid var(--border); background: white; cursor: pointer; color: #4b5563; display: flex; align-items: center; gap: 8px; font-weight: 500; transition: 0.2s; }
+    .btn-action:hover { background: #f9fafb; border-color: #d1d5db; color: var(--odtu-dark); }
 
     /* TAB MENÜSÜ */
-    .tabs { display: flex; background: #f1f3f5; padding: 5px 20px 0; border-bottom: 1px solid var(--border); }
-    .tab-btn { padding: 12px 20px; border: none; background: transparent; cursor: pointer; font-weight: 600; color: #666; border-bottom: 3px solid transparent; transition: 0.3s; }
+    .tabs { display: flex; background: #f9fafb; padding: 0 25px; border-bottom: 1px solid var(--border); }
+    .tab-btn { padding: 15px 20px; border: none; background: transparent; cursor: pointer; font-weight: 600; color: #6b7280; border-bottom: 3px solid transparent; transition: 0.3s; font-size: 0.95rem; }
+    .tab-btn:hover { color: var(--odtu-dark); }
     .tab-btn.active { color: var(--odtu-dark); border-bottom-color: var(--odtu-red); }
     
-    .tab-content { padding: 25px; display: none; }
+    .tab-content { padding: 30px; display: none; background: #fff; min-height: 300px; }
     .tab-content.active { display: block; }
 
     /* FORM ELEMANLARI */
-    .input-group { display: flex; gap: 10px; margin-bottom: 20px; }
-    .form-control { flex: 1; padding: 10px; border: 1px solid #ddd; border-radius: 4px; outline: none; }
-    .btn-add { background: var(--odtu-dark); color: white; border: none; padding: 0 20px; border-radius: 4px; cursor: pointer; }
+    .input-group { display: flex; gap: 10px; margin-bottom: 25px; background: #f9fafb; padding: 15px; border-radius: 8px; border: 1px solid var(--border); }
+    .form-control { flex: 1; padding: 10px 15px; border: 1px solid #d1d5db; border-radius: 6px; outline: none; font-size: 0.95rem; }
+    .form-control:focus { border-color: var(--odtu-dark); ring: 2px; }
+    .btn-add { background: var(--odtu-dark); color: white; border: none; padding: 0 25px; border-radius: 6px; cursor: pointer; font-weight: 600; transition: 0.2s; }
+    .btn-add:hover { background: #1f2937; }
 
-    /* LİSTELER */
-    .list-item { padding: 15px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; transition: 0.2s; }
-    .list-item:hover { background: #fafafa; }
-    .item-meta { font-size: 0.8rem; color: #888; margin-top: 5px; }
-    .item-icon { color: var(--odtu-red); margin-right: 10px; }
+    /* LİSTELER VE İÇERİK */
+    .list-item { padding: 15px; border: 1px solid var(--border); border-radius: 8px; margin-bottom: 10px; transition: 0.2s; position: relative; }
+    .list-item:hover { border-color: #d1d5db; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
+    
+    /* YENİ: KİM YAZDI ROZETİ */
+    .author-badge { font-size: 0.7rem; padding: 2px 8px; border-radius: 10px; font-weight: bold; margin-bottom: 5px; display: inline-block; }
+    .auth-me { background: #e0e7ff; color: #4338ca; } /* Ben */
+    .auth-other { background: #fef3c7; color: #d97706; } /* Karşı Taraf */
 
-    /* MENTOR ARAMA (Alt Kısım) */
-    .search-area { margin-top: 50px; }
-    .mentor-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin-top: 20px; }
-    .mentor-card-sm { background: white; padding: 20px; border-radius: 8px; border: 1px solid var(--border); display: flex; align-items: center; gap: 15px; }
-    .btn-request { background: transparent; border: 1px solid var(--odtu-dark); color: var(--odtu-dark); padding: 5px 15px; border-radius: 4px; cursor: pointer; margin-left: auto; font-size: 0.85rem; }
+    .item-header { display: flex; justify-content: space-between; margin-bottom: 5px; }
+    .item-date { font-size: 0.75rem; color: #9ca3af; }
+    
+    /* BOŞ DURUM */
+    .empty-state { text-align: center; padding: 40px; color: #9ca3af; }
+    .empty-state i { font-size: 3rem; margin-bottom: 15px; opacity: 0.5; }
+
+    /* ARAMA ALANI (Alt Kısım) */
+    .search-area { margin-top: 60px; }
+    .mentor-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 25px; margin-top: 25px; }
+    .mentor-card-sm { background: white; padding: 20px; border-radius: 10px; border: 1px solid var(--border); display: flex; align-items: center; gap: 15px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+    .btn-request { background: white; border: 1px solid var(--odtu-dark); color: var(--odtu-dark); padding: 6px 16px; border-radius: 6px; cursor: pointer; margin-left: auto; font-size: 0.85rem; font-weight: 600; transition: 0.2s; }
     .btn-request:hover { background: var(--odtu-dark); color: white; }
 
     /* MOBİL */
@@ -70,8 +92,13 @@
         .navbar { flex-direction: column; height: auto; padding: 15px; }
         .nav-links { flex-wrap: wrap; justify-content: center; width: 100%; gap: 10px; }
         .main-content { margin-top: 0; padding: 20px; }
-        .match-header { flex-direction: column; gap: 15px; align-items: flex-start; }
+        .match-header { flex-direction: column; align-items: flex-start; gap: 20px; }
+        .match-user { width: 100%; }
+        .action-buttons { width: 100%; justify-content: space-between; }
+        .btn-action { flex: 1; justify-content: center; }
         .input-group { flex-direction: column; }
+        .btn-add { padding: 12px; width: 100%; }
+        .next-meeting-badge { width: 100%; justify-content: center; margin-top: 10px; display: flex !important; }
     }
 </style>
 </head>
@@ -103,13 +130,15 @@
         <div id="activeMentorshipsArea"></div>
 
         <div class="search-area">
-            <h3 style="margin-bottom:15px; color:#444;">Mentor Rehberi</h3>
-            <div class="input-group">
+            <h3 style="margin-bottom:15px; color:#1f2937; border-left: 4px solid var(--odtu-red); padding-left: 10px;">Mentor Rehberi</h3>
+            <div class="input-group" style="background: white;">
                 <input type="text" id="searchInput" class="form-control" placeholder="İsim, Şirket veya Sektör ara..." onkeypress="if(event.key==='Enter') fetchMentors()">
-                <button class="btn-add" onclick="fetchMentors()">Ara</button>
+                <button class="btn-add" onclick="fetchMentors()"><i class="fa-solid fa-search"></i> Ara</button>
             </div>
             <div class="mentor-grid" id="mentorList">
-                <div style="text-align:center; padding:20px; color:#999; grid-column:1/-1;">Yükleniyor...</div>
+                <div style="text-align:center; padding:40px; color:#999; grid-column:1/-1;">
+                    <i class="fa-solid fa-spinner fa-spin fa-2x"></i><br><br>Yükleniyor...
+                </div>
             </div>
         </div>
 
@@ -147,41 +176,60 @@
                     const partnerId = match.mentor_id === currentUser.id ? match.mentee_id : match.mentor_id;
                     const { data: partner } = await supabase.from('profiles').select('full_name, company').eq('id', partnerId).single();
                     
+                    // Gelecek toplantıyı kontrol et
+                    const { data: nextMeet } = await supabase.from('mentorship_sessions')
+                        .select('next_meeting_date')
+                        .eq('mentorship_id', match.id)
+                        .gt('next_meeting_date', new Date().toISOString()) // Bugünden büyük olan
+                        .order('next_meeting_date', { ascending: true })
+                        .limit(1)
+                        .single();
+
+                    let meetingHtml = '';
+                    if (nextMeet && nextMeet.next_meeting_date) {
+                        const d = new Date(nextMeet.next_meeting_date);
+                        meetingHtml = `<div class="next-meeting-badge" style="display:flex;"><i class="fa-regular fa-clock"></i> Sonraki Görüşme: ${d.toLocaleDateString()} ${d.toLocaleTimeString().substr(0,5)}</div>`;
+                    }
+
                     const div = document.createElement('div');
                     div.className = 'match-card';
                     div.innerHTML = `
                         <div class="match-header">
                             <div class="match-user">
                                 <div class="match-avatar">${partner.full_name.substring(0,2).toUpperCase()}</div>
-                                <div>
-                                    <div style="font-weight:bold; font-size:1.1rem;">${partner.full_name}</div>
-                                    <div style="font-size:0.85rem; color:#777;">${partner.company || 'ODTÜ MD Üyesi'}</div>
+                                <div class="match-info">
+                                    <h3>${partner.full_name}</h3>
+                                    <span>${partner.company || 'ODTÜ MD Üyesi'}</span>
                                 </div>
                             </div>
-                            <div style="display:flex; gap:10px;">
-                                <button class="btn-action" onclick="window.location.href='profile.html'"><i class="fa-regular fa-envelope"></i> Mesaj</button>
-                                <button class="btn-action" onclick="window.location.href='meeting.html'"><i class="fa-solid fa-video"></i> Görüşme</button>
+                            
+                            <div style="display:flex; align-items:center; gap:15px; flex-wrap:wrap;">
+                                ${meetingHtml}
+                                <div class="action-buttons">
+                                    <button class="btn-action" onclick="window.location.href='profile.html'"><i class="fa-regular fa-envelope"></i> Mesaj</button>
+                                    <button class="btn-action" onclick="window.location.href='meeting.html'"><i class="fa-solid fa-video"></i> Görüşme</button>
+                                </div>
                             </div>
                         </div>
                         
                         <div class="tabs">
-                            <button class="tab-btn active" onclick="openTab(event, 'goals-${match.id}')">Hedefler</button>
-                            <button class="tab-btn" onclick="openTab(event, 'notes-${match.id}')">Tutanaklar</button>
-                            <button class="tab-btn" onclick="openTab(event, 'resources-${match.id}')">Kaynaklar</button>
+                            <button class="tab-btn active" onclick="openTab(event, 'goals-${match.id}')"><i class="fa-solid fa-bullseye"></i> Hedefler</button>
+                            <button class="tab-btn" onclick="openTab(event, 'notes-${match.id}')"><i class="fa-solid fa-book-open"></i> Tutanaklar</button>
+                            <button class="tab-btn" onclick="openTab(event, 'resources-${match.id}')"><i class="fa-solid fa-link"></i> Kaynaklar</button>
                         </div>
 
                         <div id="goals-${match.id}" class="tab-content active">
                             <div class="input-group">
-                                <input type="text" id="goalInput-${match.id}" class="form-control" placeholder="Yeni bir hedef belirleyin...">
+                                <input type="text" id="goalInput-${match.id}" class="form-control" placeholder="Yeni bir hedef belirleyin (Örn: LinkedIn profili güncellenecek)">
                                 <button class="btn-add" onclick="addGoal(${match.id})">Ekle</button>
                             </div>
                             <div id="goalList-${match.id}">Yükleniyor...</div>
                         </div>
 
                         <div id="notes-${match.id}" class="tab-content">
-                            <div class="input-group">
-                                <input type="text" id="noteInput-${match.id}" class="form-control" placeholder="Bugünkü görüşmede ne konuşuldu?">
-                                <input type="date" id="nextDate-${match.id}" class="form-control" style="max-width:150px;" title="Sonraki Toplantı">
+                            <div class="input-group" style="flex-wrap:wrap;">
+                                <input type="text" id="noteInput-${match.id}" class="form-control" placeholder="Görüşme notları..." style="flex:2;">
+                                <input type="datetime-local" id="nextDate-${match.id}" class="form-control" style="flex:1;" title="Sonraki Toplantı Tarihi">
                                 <button class="btn-add" onclick="addNote(${match.id})">Kaydet</button>
                             </div>
                             <div id="noteList-${match.id}">Yükleniyor...</div>
@@ -189,7 +237,7 @@
 
                         <div id="resources-${match.id}" class="tab-content">
                             <div class="input-group">
-                                <input type="text" id="resTitle-${match.id}" class="form-control" placeholder="Başlık (Örn: CV Örneği)">
+                                <input type="text" id="resTitle-${match.id}" class="form-control" placeholder="Başlık (Örn: Sektör Raporu)">
                                 <input type="url" id="resLink-${match.id}" class="form-control" placeholder="Link (Drive, PDF...)">
                                 <button class="btn-add" onclick="addResource(${match.id})">Paylaş</button>
                             </div>
@@ -215,18 +263,31 @@
             evt.currentTarget.classList.add('active');
         }
 
-        // --- 1. HEDEF İŞLEMLERİ ---
+        // --- 1. HEDEF İŞLEMLERİ (Geliştirilmiş) ---
         async function loadGoals(matchId) {
             const list = document.getElementById(`goalList-${matchId}`);
             const { data } = await supabase.from('mentorship_goals').select('*').eq('mentorship_id', matchId).order('created_at', {ascending: false});
-            list.innerHTML = data.map(g => `
+            
+            if(!data || data.length === 0) {
+                list.innerHTML = '<div class="empty-state"><i class="fa-solid fa-bullseye"></i><p>Henüz belirlenmiş bir hedef yok.</p></div>';
+                return;
+            }
+
+            list.innerHTML = data.map(g => {
+                const isMe = g.created_by === currentUser.id;
+                return `
                 <div class="list-item">
-                    <div style="display:flex; align-items:center; gap:10px;">
-                        <input type="checkbox" ${g.is_completed?'checked':''} onchange="toggleGoal(${g.id}, this.checked)">
-                        <span style="${g.is_completed?'text-decoration:line-through; color:#999':''}">${g.goal_text}</span>
+                    <div class="item-header">
+                        <span class="author-badge ${isMe ? 'auth-me' : 'auth-other'}">${isMe ? 'Siz' : 'Partner'}</span>
+                        <span class="item-date">${new Date(g.created_at).toLocaleDateString()}</span>
                     </div>
-                    <i class="fa-solid fa-trash" style="color:#ccc; cursor:pointer;" onclick="deleteItem('mentorship_goals', ${g.id}, ${matchId}, 'goals')"></i>
-                </div>`).join('') || '<p style="color:#999; text-align:center;">Hedef yok.</p>';
+                    <div style="display:flex; align-items:center; gap:10px;">
+                        <input type="checkbox" ${g.is_completed?'checked':''} onchange="toggleGoal(${g.id}, this.checked)" style="transform:scale(1.2); accent-color:var(--odtu-dark);">
+                        <span style="font-size:1rem; ${g.is_completed?'text-decoration:line-through; color:#999':''}">${g.goal_text}</span>
+                    </div>
+                    <i class="fa-solid fa-trash" style="position:absolute; bottom:15px; right:15px; color:#e5e7eb; cursor:pointer;" onclick="deleteItem('mentorship_goals', ${g.id}, ${matchId}, 'goals')"></i>
+                </div>`;
+            }).join('');
         }
         async function addGoal(matchId) {
             const txt = document.getElementById(`goalInput-${matchId}`).value;
@@ -236,37 +297,60 @@
         }
         async function toggleGoal(id, status) { await supabase.from('mentorship_goals').update({ is_completed: status }).eq('id', id); }
 
-        // --- 2. TUTANAK İŞLEMLERİ (Yeni) ---
+        // --- 2. TUTANAK İŞLEMLERİ (Geliştirilmiş) ---
         async function loadNotes(matchId) {
             const list = document.getElementById(`noteList-${matchId}`);
             const { data } = await supabase.from('mentorship_sessions').select('*').eq('mentorship_id', matchId).order('created_at', {ascending: false});
+            
+            if(!data || data.length === 0) {
+                list.innerHTML = '<div class="empty-state"><i class="fa-solid fa-clipboard-list"></i><p>Henüz görüşme notu girilmedi.</p></div>';
+                return;
+            }
+
             list.innerHTML = data.map(n => `
                 <div class="list-item" style="display:block;">
-                    <div style="font-weight:bold; color:#444;"><i class="fa-regular fa-calendar-check item-icon"></i> ${new Date(n.created_at).toLocaleDateString()} Görüşmesi</div>
-                    <div style="margin-top:5px;">${n.notes}</div>
-                    ${n.next_meeting_date ? `<div class="item-meta"><i class="fa-solid fa-clock"></i> Sonraki Toplantı: ${new Date(n.next_meeting_date).toLocaleDateString()}</div>` : ''}
-                </div>`).join('') || '<p style="color:#999; text-align:center;">Henüz tutanak girilmedi.</p>';
+                    <div class="item-header">
+                        <div style="font-weight:bold; color:var(--odtu-dark);"><i class="fa-regular fa-calendar-check"></i> ${new Date(n.created_at).toLocaleDateString()} Görüşmesi</div>
+                        ${n.next_meeting_date ? `<span style="font-size:0.8rem; color:#27ae60; font-weight:600;"><i class="fa-solid fa-arrow-right"></i> Sonraki: ${new Date(n.next_meeting_date).toLocaleDateString()}</span>` : ''}
+                    </div>
+                    <div style="margin-top:10px; line-height:1.5;">${n.notes}</div>
+                </div>`).join('');
         }
         async function addNote(matchId) {
             const txt = document.getElementById(`noteInput-${matchId}`).value;
             const date = document.getElementById(`nextDate-${matchId}`).value || null;
             if(!txt) return;
             await supabase.from('mentorship_sessions').insert({ mentorship_id: matchId, notes: txt, next_meeting_date: date });
-            document.getElementById(`noteInput-${matchId}`).value = ''; loadNotes(matchId);
+            document.getElementById(`noteInput-${matchId}`).value = ''; 
+            loadNotes(matchId);
+            // Tarih değiştiği için sayfayı (veya kartı) yenilemek iyi olabilir
+            setTimeout(() => loadActiveMentorships(), 500); 
         }
 
-        // --- 3. KAYNAK İŞLEMLERİ (Yeni) ---
+        // --- 3. KAYNAK İŞLEMLERİ (Geliştirilmiş) ---
         async function loadResources(matchId) {
             const list = document.getElementById(`resList-${matchId}`);
             const { data } = await supabase.from('mentorship_resources').select('*').eq('mentorship_id', matchId).order('created_at', {ascending: false});
-            list.innerHTML = data.map(r => `
+            
+            if(!data || data.length === 0) {
+                list.innerHTML = '<div class="empty-state"><i class="fa-solid fa-link"></i><p>Henüz kaynak paylaşılmadı.</p></div>';
+                return;
+            }
+
+            list.innerHTML = data.map(r => {
+                const isMe = r.shared_by === currentUser.id;
+                return `
                 <div class="list-item">
                     <div>
-                        <i class="fa-solid fa-link item-icon"></i> 
-                        <a href="${r.link_url}" target="_blank" style="text-decoration:none; color:#2c3e50; font-weight:600;">${r.title}</a>
+                        <span class="author-badge ${isMe ? 'auth-me' : 'auth-other'}">${isMe ? 'Siz' : 'Partner'}</span>
+                        <div style="margin-top:5px;">
+                            <i class="fa-solid fa-paperclip" style="color:var(--odtu-dark); margin-right:5px;"></i>
+                            <a href="${r.link_url}" target="_blank" style="text-decoration:none; color:#2563eb; font-weight:600;">${r.title}</a>
+                        </div>
                     </div>
-                    <i class="fa-solid fa-trash" style="color:#ccc; cursor:pointer;" onclick="deleteItem('mentorship_resources', ${r.id}, ${matchId}, 'resources')"></i>
-                </div>`).join('') || '<p style="color:#999; text-align:center;">Paylaşılan kaynak yok.</p>';
+                    <i class="fa-solid fa-trash" style="color:#e5e7eb; cursor:pointer;" onclick="deleteItem('mentorship_resources', ${r.id}, ${matchId}, 'resources')"></i>
+                </div>`;
+            }).join('');
         }
         async function addResource(matchId) {
             const title = document.getElementById(`resTitle-${matchId}`).value;
@@ -278,7 +362,7 @@
 
         // ORTAK SİLME
         async function deleteItem(table, id, matchId, type) {
-            if(confirm("Silinecek?")) {
+            if(confirm("Bu öğeyi silmek istediğinize emin misiniz?")) {
                 await supabase.from(table).delete().eq('id', id);
                 if(type==='goals') loadGoals(matchId);
                 if(type==='resources') loadResources(matchId);
@@ -292,10 +376,18 @@
             let query = supabase.from('profiles').select('*').eq('role', 'mentor');
             if(q) query = query.or(`full_name.ilike.%${q}%,company.ilike.%${q}%`);
             const { data } = await query;
-            if(!data || data.length===0) { list.innerHTML = '<p style="text-align:center; width:100%;">Sonuç yok.</p>'; return; }
+            if(!data || data.length===0) { list.innerHTML = '<p style="text-align:center; width:100%; color:#999;">Sonuç bulunamadı.</p>'; return; }
             list.innerHTML = data.map(m => {
                 if(m.id === currentUser.id) return '';
-                return `<div class="mentor-card-sm"><div class="match-avatar">${m.full_name.substring(0,2)}</div><div style="flex:1;"><b>${m.full_name}</b><br><small>${m.company||''}</small></div><button class="btn-request" onclick="sendReq('${m.id}')">İstek Gönder</button></div>`;
+                return `
+                <div class="mentor-card-sm">
+                    <div class="match-avatar" style="width:40px; height:40px; font-size:1rem;">${m.full_name.substring(0,2)}</div>
+                    <div style="flex:1;">
+                        <b style="color:#111827;">${m.full_name}</b><br>
+                        <small style="color:#6b7280;">${m.company||''}</small>
+                    </div>
+                    <button class="btn-request" onclick="sendReq('${m.id}')">İstek Gönder</button>
+                </div>`;
             }).join('');
         }
         
