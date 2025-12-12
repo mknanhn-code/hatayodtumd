@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aramıza Katıl - Hatay ODTÜ MD</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+    :root { --odtu-red: #E31E24; --odtu-dark: #2c3e50; --bg-light: #f4f6f9; }
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+    body { background-color: var(--bg-light); display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
+
+    .register-container { background: white; padding: 40px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); width: 100%; max-width: 450px; }
+    .logo-area { text-align: center; margin-bottom: 20px; }
+    .logo-area img { height: 60px; margin-bottom: 10px; }
+    .logo-area h2 { color: var(--odtu-dark); margin: 0; }
+
+    /* SEKME (TAB) YAPISI */
+    .tabs { display: flex; gap: 10px; margin-bottom: 20px; background: #f1f3f5; padding: 5px; border-radius: 10px; }
+    .tab-btn { flex: 1; padding: 12px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; transition: 0.3s; background: transparent; color: #777; }
+    .tab-btn.active { background: white; color: var(--odtu-red); box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+
+    .form-section { display: none; animation: fadeIn 0.3s; }
+    .form-section.active { display: block; }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+    .form-group { margin-bottom: 15px; }
+    .form-group label { display: block; margin-bottom: 5px; font-weight: bold; color: #555; font-size: 0.9rem; }
+    .form-control { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; outline: none; transition: 0.3s; }
+    .form-control:focus { border-color: var(--odtu-red); }
+
+    .btn-submit { width: 100%; padding: 14px; background: var(--odtu-red); color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 1rem; margin-top: 10px; transition: 0.3s; }
+    .btn-submit:hover { background: #c0392b; }
+    .btn-submit:disabled { background: #ccc; cursor: not-allowed; }
+
+    .login-link { text-align: center; margin-top: 20px; font-size: 0.9rem; }
+    .login-link a { color: var(--odtu-red); text-decoration: none; font-weight: bold; }
+</style>
+</head>
+<body>
+
+    <div class="register-container">
+        <div class="logo-area">
+            <img src="logo.png" onerror="this.src='https://upload.wikimedia.org/wikipedia/tr/a/a6/Odt%C3%BC_logo.png'">
+            <h2>Aramıza Katıl</h2>
+            <p style="color:#777; font-size:0.9rem;">Lütfen size uygun olan kaydı seçiniz.</p>
+        </div>
+
+        <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab('student')"><i class="fa-solid fa-graduation-cap"></i> Öğrenciyim</button>
+            <button class="tab-btn" onclick="switchTab('grad')"><i class="fa-solid fa-briefcase"></i> Mezunum</button>
+        </div>
+
+        <form id="studentForm" class="form-section active" onsubmit="handleRegister(event, 'student')">
+            <div class="form-group"><label>Ad Soyad</label><input type="text" class="form-control" name="full_name" required></div>
+            <div class="form-group"><label>ODTÜ E-posta</label><input type="email" class="form-control" name="email" placeholder="e123456@metu.edu.tr" required></div>
+            <div class="form-group"><label>Bölüm</label><input type="text" class="form-control" name="department" required></div>
+            <div class="form-group">
+                <label>Sınıf Seviyesi</label>
+                <select class="form-control" name="class_level">
+                    <option value="0">Hazırlık</option>
+                    <option value="1">1. Sınıf</option>
+                    <option value="2">2. Sınıf</option>
+                    <option value="3">3. Sınıf</option>
+                    <option value="4">4. Sınıf</option>
+                </select>
+            </div>
+            <div class="form-group"><label>Şifre Belirle</label><input type="password" class="form-control" name="password" required></div>
+            <button type="submit" class="btn-submit">Öğrenci Olarak Kaydol</button>
+        </form>
+
+        <form id="gradForm" class="form-section" onsubmit="handleRegister(event, 'grad')">
+            <div class="form-group"><label>Ad Soyad</label><input type="text" class="form-control" name="full_name" required></div>
+            <div class="form-group"><label>E-posta</label><input type="email" class="form-control" name="email" required></div>
+            <div class="form-group" style="display:flex; gap:10px;">
+                <div style="flex:1;"><label>Bölüm</label><input type="text" class="form-control" name="department" required></div>
+                <div style="width:100px;"><label>Mez. Yılı</label><input type="number" class="form-control" name="grad_year" placeholder="20XX" required></div>
+            </div>
+            <div class="form-group"><label>Çalıştığınız Kurum (Opsiyonel)</label><input type="text" class="form-control" name="company"></div>
+            <div class="form-group"><label>Sektör / Unvan</label><input type="text" class="form-control" name="sector" placeholder="Örn: Yazılım, İnşaat..."></div>
+            <div class="form-group"><label>Şifre Belirle</label><input type="password" class="form-control" name="password" required></div>
+            <button type="submit" class="btn-submit" style="background:#2c3e50;">Mezun Olarak Kaydol</button>
+        </form>
+
+        <div class="login-link">
+            Zaten hesabın var mı? <a href="index.html">Giriş Yap</a>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        const supabaseUrl = 'https://hftrmiiacxgtkarsvupn.supabase.co';
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhmdHJtaWlhY3hndGthcnN2dXBuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ3ODUzNzIsImV4cCI6MjA4MDM2MTM3Mn0.BgCk5xuZx6AZuxzfBHcQqg8j8BtxU9FbupDgoFecG_k';
+        const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+        function switchTab(type) {
+            document.querySelectorAll('.form-section').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+            
+            document.getElementById(type + 'Form').classList.add('active');
+            // Buton stilini güncelle
+            const btns = document.querySelectorAll('.tab-btn');
+            if(type === 'student') btns[0].classList.add('active');
+            else btns[1].classList.add('active');
+        }
+
+        async function handleRegister(e, type) {
+            e.preventDefault();
+            const btn = e.target.querySelector('button');
+            const originalText = btn.innerText;
+            btn.disabled = true; btn.innerText = "Kaydediliyor...";
+
+            const formData = new FormData(e.target);
+            const email = formData.get('email');
+            const password = formData.get('password');
+            const fullName = formData.get('full_name');
+            const department = formData.get('department');
+
+            // 1. Kullanıcıyı oluştur (Auth)
+            const { data, error } = await supabase.auth.signUp({
+                email: email,
+                password: password,
+                options: { data: { full_name: fullName } }
+            });
+
+            if (error) {
+                alert("Hata: " + error.message);
+                btn.disabled = false; btn.innerText = originalText;
+                return;
+            }
+
+            // 2. Profil detaylarını kaydet (Database)
+            const user = data.user;
+            let profileData = {
+                id: user.id,
+                email: email,
+                full_name: fullName,
+                department: department,
+                user_type: type // 'student' veya 'grad'
+            };
+
+            if (type === 'student') {
+                profileData.class_level = formData.get('class_level');
+            } else {
+                profileData.grad_year = formData.get('grad_year');
+                profileData.company = formData.get('company');
+                profileData.sector = formData.get('sector'); // Yeni sütun
+            }
+
+            const { error: profileError } = await supabase.from('profiles').insert(profileData);
+
+            if (profileError) {
+                alert("Kullanıcı oluştu ama profil kaydedilemedi: " + profileError.message);
+            } else {
+                alert("Kayıt Başarılı! Hoş geldiniz.");
+                window.location.href = 'dashboard.html';
+            }
+            
+            btn.disabled = false; btn.innerText = originalText;
+        }
+    </script>
+
+</body>
+</html>
