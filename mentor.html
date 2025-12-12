@@ -4,10 +4,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Mentorluk - Hatay ODTÜ MD</title>
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
     /* TEMEL STİLLER */
-    :root { --odtu-red: #E31E24; --odtu-dark: #2c3e50; --bg-light: #f4f6f9; --white: #ffffff; --green: #27ae60; }
+    :root { --odtu-red: #E31E24; --odtu-dark: #2c3e50; --bg-light: #f4f6f9; --white: #ffffff; --green: #27ae60; --gold: #f1c40f; }
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
     body { background-color: var(--bg-light); display: block; min-height: 100vh; }
     
@@ -26,6 +27,19 @@
     /* İÇERİK */
     .main-content { margin-top: 70px; padding: 40px; width: 100%; max-width: 1200px; margin-left: auto; margin-right: auto; }
     
+    /* GAMIFICATION (OYUNLAŞTIRMA) ALANI - YENİ! 🔥 */
+    .xp-container { background: #2c3e50; color: white; padding: 15px 20px; border-radius: 12px; margin-bottom: 20px; display: flex; align-items: center; gap: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.2); position: relative; overflow: hidden; }
+    .xp-container::after { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent); transform: rotate(45deg); animation: shine 3s infinite; pointer-events: none; }
+    @keyframes shine { 0% { left: -50%; } 100% { left: 150%; } }
+    
+    .rank-badge { width: 60px; height: 60px; background: var(--gold); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; box-shadow: 0 0 10px var(--gold); border: 3px solid white; z-index: 2; }
+    .xp-info { flex: 1; z-index: 2; }
+    .xp-title { font-size: 0.9rem; color: #bdc3c7; text-transform: uppercase; letter-spacing: 1px; }
+    .xp-value { font-size: 1.4rem; font-weight: bold; margin-bottom: 5px; }
+    
+    .xp-bar-bg { width: 100%; height: 12px; background: rgba(255,255,255,0.2); border-radius: 10px; overflow: hidden; }
+    .xp-bar-fill { height: 100%; background: linear-gradient(90deg, #f1c40f, #e67e22); width: 0%; transition: width 1s ease-out; border-radius: 10px; }
+
     /* AKTİF MENTORLUK KARTI */
     .active-match-card { background: white; border-radius: 15px; box-shadow: 0 5px 20px rgba(0,0,0,0.05); overflow: hidden; margin-bottom: 40px; border-left: 6px solid var(--green); display: none; }
     .match-header { background: #f9f9f9; padding: 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; }
@@ -35,17 +49,14 @@
     .btn-action-sm { padding: 8px 15px; border-radius: 6px; border: none; cursor: pointer; font-size: 0.9rem; font-weight: bold; display: flex; align-items: center; gap: 5px; }
     .btn-msg { background: #3498db; color: white; } .btn-meet { background: #9b59b6; color: white; }
 
-    /* HEDEFLER BÖLÜMÜ (GELİŞMİŞ) */
+    /* HEDEFLER BÖLÜMÜ */
     .goals-section { padding: 20px; }
     .goals-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
     .goals-title { font-size: 1rem; font-weight: bold; color: #555; }
-    
-    /* İlerleme Çubuğu */
-    .progress-track { width: 200px; height: 10px; background: #eee; border-radius: 5px; overflow: hidden; position: relative; }
+    .progress-track { width: 200px; height: 10px; background: #eee; border-radius: 5px; overflow: hidden; }
     .progress-fill { height: 100%; background: var(--green); width: 0%; transition: width 0.5s ease; }
     .progress-text { font-size: 0.8rem; color: var(--green); font-weight: bold; margin-left: 10px; }
 
-    /* Yeni Hedef Ekleme */
     .goal-input-wrapper { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; background: #f8f9fa; padding: 15px; border-radius: 8px; }
     .goal-input { flex: 2; padding: 10px; border: 1px solid #ddd; border-radius: 6px; outline: none; }
     .goal-select { flex: 1; padding: 10px; border: 1px solid #ddd; border-radius: 6px; outline: none; }
@@ -57,14 +68,13 @@
     .goal-item:hover { background: #fafafa; }
     .goal-item.completed span.text { text-decoration: line-through; color: #aaa; }
     .goal-check { cursor: pointer; transform: scale(1.3); accent-color: var(--green); }
-    
     .goal-content { flex: 1; }
     .goal-meta { font-size: 0.75rem; display: flex; gap: 10px; margin-top: 3px; }
     .badge-cat { background: #e3f2fd; color: #1565c0; padding: 2px 6px; border-radius: 4px; font-weight: bold; }
     .badge-date { color: #666; }
     .badge-date.overdue { color: #e74c3c; font-weight: bold; }
 
-    /* DİĞER ESKİ STİLLER (Aynen Korundu) */
+    /* DİĞER STİLLER */
     .requests-panel { background: #fff3e0; border: 1px solid #ffe0b2; border-radius: 12px; padding: 20px; margin-bottom: 30px; display: none; }
     .req-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 15px; }
     .req-card { background: white; padding: 15px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); display: flex; justify-content: space-between; align-items: center; }
@@ -90,6 +100,8 @@
         .navbar { height: auto; flex-direction: column; padding: 15px; position: relative; }
         .nav-links { flex-wrap: wrap; justify-content: center; width: 100%; gap: 10px; }
         .main-content { margin-top: 0; padding: 20px; }
+        .search-section { flex-direction: column; }
+        .btn-search { padding: 12px; width: 100%; }
         .goal-input-wrapper { flex-direction: column; }
         .btn-add-goal { width: 100%; padding: 10px; }
     }
@@ -116,11 +128,19 @@
     <div class="main-content">
         
         <div class="header-area">
-            <div>
-                <h2>🎓 Mentorluk Programı</h2>
-                <p style="color:#666;">Deneyimli mezunlarımızdan kariyer rehberliği al.</p>
-            </div>
+            <div><h2>🎓 Mentorluk Programı</h2><p style="color:#666;">Deneyimli mezunlarımızdan kariyer rehberliği al.</p></div>
             <button id="becomeMentorBtn" class="mentor-toggle-btn" onclick="toggleMentorStatus()">Mentor Ol / Bırak</button>
+        </div>
+
+        <div id="gamificationArea" style="display:none;">
+            <div class="xp-container">
+                <div class="rank-badge" id="rankIcon">🌱</div>
+                <div class="xp-info">
+                    <div class="xp-title">Mentorluk Seviyesi: <span id="rankName" style="color:#f1c40f;">Çaylak</span></div>
+                    <div class="xp-value" id="xpText">0 XP</div>
+                    <div class="xp-bar-bg"><div class="xp-bar-fill" id="xpBar"></div></div>
+                </div>
+            </div>
         </div>
 
         <div id="activeMentorshipsArea"></div>
@@ -156,6 +176,7 @@
         const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhmdHJtaWlhY3hndGthcnN2dXBuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ3ODUzNzIsImV4cCI6MjA4MDM2MTM3Mn0.BgCk5xuZx6AZuxzfBHcQqg8j8BtxU9FbupDgoFecG_k';
         let supabase; try { supabase = window.supabase.createClient(supabaseUrl, supabaseKey); } catch(e){}
         let currentUser = null;
+        let currentXP = 0; // Mevcut XP'yi tutar
         let myRequests = new Set(); 
 
         document.addEventListener("DOMContentLoaded", async () => {
@@ -164,6 +185,7 @@
             if (!session) { window.location.href = 'index.html'; return; }
             currentUser = session.user;
 
+            await loadXP(); // XP'yi çek
             await checkUserRole();
             await loadActiveMentorships();
             await loadMyRequests();
@@ -171,6 +193,54 @@
             fetchMentors();
             checkGlobalNotifications(); setupRealtime(session.user.id);
         });
+
+        // --- GAMIFICATION: XP YÖNETİMİ ---
+        async function loadXP() {
+            const { data } = await supabase.from('profiles').select('xp').eq('id', currentUser.id).single();
+            currentXP = data?.xp || 0;
+            updateXPUI(currentXP);
+            // Kartı göster
+            document.getElementById('gamificationArea').style.display = 'block';
+        }
+
+        function updateXPUI(xp) {
+            // Level Mantığı: Her 200 XP = 1 Level
+            const level = Math.floor(xp / 200) + 1;
+            const nextLevelXP = level * 200;
+            const progress = ((xp % 200) / 200) * 100;
+
+            // Rütbeler
+            let rankName = "Çaylak 🌱";
+            let rankIcon = "🌱";
+            if(level >= 2) { rankName = "Kaşif 🔭"; rankIcon = "🔭"; }
+            if(level >= 5) { rankName = "Usta 🛠️"; rankIcon = "🛠️"; }
+            if(level >= 10) { rankName = "Efsane 🏆"; rankIcon = "🏆"; }
+
+            document.getElementById('rankName').innerText = `${rankName} (Lvl ${level})`;
+            document.getElementById('rankIcon').innerText = rankIcon;
+            document.getElementById('xpText').innerText = `${xp} XP / ${nextLevelXP} XP`;
+            document.getElementById('xpBar').style.width = `${progress}%`;
+        }
+
+        async function gainXp(amount) {
+            // 1. Veritabanını güncelle
+            const newXP = currentXP + amount;
+            await supabase.from('profiles').update({ xp: newXP }).eq('id', currentUser.id);
+            
+            // 2. UI'ı güncelle
+            currentXP = newXP;
+            updateXPUI(newXP);
+
+            // 3. EFEKT: Konfeti Patlat! 🎉
+            confetti({
+                particleCount: 100,
+                spread: 70,
+                origin: { y: 0.6 }
+            });
+
+            // 4. Bildirim
+            showNotification("TEBRİKLER! 🎉", `+${amount} XP Kazandın!`, "gamify");
+        }
 
         // --- AKTİF MENTORLUK & HEDEFLER ---
         async function loadActiveMentorships() {
@@ -239,7 +309,6 @@
                     const checked = g.is_completed ? 'checked' : '';
                     const completedClass = g.is_completed ? 'completed' : '';
                     
-                    // Tarih Kontrolü
                     let dateHtml = '';
                     if(g.due_date) {
                         const today = new Date().toISOString().split('T')[0];
@@ -285,7 +354,13 @@
 
         async function toggleGoal(goalId, checkbox, matchId) {
             await supabase.from('mentorship_goals').update({ is_completed: checkbox.checked }).eq('id', goalId);
-            loadGoals(matchId); // Listeyi ve barı yenile
+            
+            // 🔥 OYUN MOTORU: EĞER GÖREV TAMAMLANDIYSA XP VER!
+            if(checkbox.checked) {
+                gainXp(50); // +50 XP
+            }
+
+            loadGoals(matchId); 
         }
 
         async function deleteGoal(goalId, matchId) {
@@ -370,11 +445,11 @@
 
         function showNotification(title, msg, type) {
             const toast = document.getElementById('liveToast');
-            document.getElementById('toastTitle').innerHTML = type==='admin' ? `<i class="fa-solid fa-tower-broadcast" style="color:#8e44ad"></i> ${title}` : `${title}`;
+            document.getElementById('toastTitle').innerHTML = type==='gamify' ? `<i class="fa-solid fa-trophy" style="color:#f1c40f"></i> ${title}` : (type==='admin' ? `<i class="fa-solid fa-tower-broadcast"></i> ${title}` : `${title}`);
             document.getElementById('toastMessage').innerText = msg;
-            toast.style.borderLeftColor = type==='admin' ? "#8e44ad" : "#3498db";
+            toast.style.borderLeftColor = type==='gamify' ? "#f1c40f" : (type==='admin' ? "#8e44ad" : "#3498db");
             toast.style.display = 'block';
-            new Audio('https://actions.google.com/sounds/v1/alarms/beep_short.ogg').play().catch(()=>{});
+            if(type !== 'gamify') { new Audio('https://actions.google.com/sounds/v1/alarms/beep_short.ogg').play().catch(()=>{}); }
             setTimeout(() => { toast.style.display = 'none'; }, 6000);
         }
 
