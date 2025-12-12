@@ -26,6 +26,17 @@
     /* İÇERİK */
     .main-content { margin-top: 70px; padding: 40px; width: 100%; max-width: 1200px; margin-left: auto; margin-right: auto; }
     
+    /* YENİ: GELEN İSTEKLER PANELİ (Sadece Mentorlar Görür) */
+    .requests-panel { background: #fff3e0; border: 1px solid #ffe0b2; border-radius: 12px; padding: 20px; margin-bottom: 30px; display: none; }
+    .requests-title { font-weight: bold; color: #d35400; margin-bottom: 15px; display: flex; align-items: center; gap: 10px; }
+    .req-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 15px; }
+    .req-card { background: white; padding: 15px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); display: flex; justify-content: space-between; align-items: center; }
+    .req-info h4 { margin: 0 0 5px 0; color: var(--odtu-dark); }
+    .req-info p { margin: 0; font-size: 0.85rem; color: #666; }
+    .req-actions { display: flex; gap: 5px; }
+    .btn-accept { background: #27ae60; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; }
+    .btn-reject { background: #e74c3c; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; }
+
     /* ARAMA VE FİLTRE ALANI */
     .search-section { background: white; padding: 20px; border-radius: 12px; margin-bottom: 30px; display: flex; gap: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
     .search-section input { flex: 1; padding: 12px; border: 1px solid #ddd; border-radius: 8px; outline: none; }
@@ -39,18 +50,13 @@
     .mentor-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px; }
     .mentor-card { background: white; border-radius: 12px; padding: 25px; text-align: center; box-shadow: 0 2px 15px rgba(0,0,0,0.05); position: relative; overflow: hidden; transition: 0.3s; border: 1px solid transparent; }
     .mentor-card:hover { transform: translateY(-5px); border-color: var(--odtu-red); }
-    
-    /* Kartın üstündeki renkli şerit */
     .mentor-card::before { content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 80px; background: linear-gradient(135deg, #2c3e50, #34495e); z-index: 0; }
-    
     .mentor-avatar { width: 90px; height: 90px; background: #ecf0f1; border-radius: 50%; margin: 20px auto 10px; position: relative; z-index: 1; border: 4px solid white; display: flex; justify-content: center; align-items: center; font-size: 1.5rem; font-weight: bold; color: var(--odtu-dark); }
     .mentor-info h3 { margin: 10px 0 5px; color: var(--odtu-dark); }
     .mentor-info p { color: #777; font-size: 0.9rem; margin-bottom: 15px; min-height: 40px; }
-    
     .tags { display: flex; justify-content: center; gap: 5px; flex-wrap: wrap; margin-bottom: 20px; }
     .tag { background: #f0f2f5; font-size: 0.75rem; padding: 4px 10px; border-radius: 15px; color: #555; border: 1px solid #eee; }
     .tag.company { background: #e3f2fd; color: #1565c0; border-color: #bbdefb; font-weight: bold; }
-
     .btn-request { background-color: var(--odtu-dark); color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; width: 100%; font-weight: bold; transition: 0.2s; }
     .btn-request:hover { background-color: #1a252f; }
     .btn-request:disabled { background-color: #ccc; cursor: not-allowed; }
@@ -94,6 +100,12 @@
             <button id="becomeMentorBtn" class="mentor-toggle-btn" onclick="toggleMentorStatus()">Mentor Ol / Bırak</button>
         </div>
 
+        <div id="incomingRequestsArea" class="requests-panel">
+            <div class="requests-title"><i class="fa-solid fa-envelope-open-text"></i> Gelen Mentorluk Talepleri</div>
+            <div class="req-grid" id="requestsGrid">
+                </div>
+        </div>
+
         <div class="search-section">
             <input type="text" id="searchInput" placeholder="İsim, Şirket veya Sektör ara..." onkeypress="if(event.key==='Enter') fetchMentors()">
             <button class="btn-search" onclick="fetchMentors()">Ara</button>
@@ -130,18 +142,16 @@
             if (!session) { window.location.href = 'index.html'; return; }
             currentUser = session.user;
 
-            // Kullanıcı Rolüne Göre Buton Ayarla
-            checkUserRole();
-            
-            // Önce attığım istekleri çek, sonra listeyi yükle
-            await loadMyRequests();
-            fetchMentors();
+            await checkUserRole(); // Rolü kontrol et ve butonları ayarla
+            await loadMyRequests(); // Benim attığım istekleri çek
+            checkIncomingRequests(); // Bana gelen istekleri çek (Varsa)
+            fetchMentors(); // Mentor listesini çek
             
             checkGlobalNotifications(); 
             setupRealtime(session.user.id);
         });
 
-        // 1. KULLANICI MEZUN MU ÖĞRENCİ Mİ?
+        // 1. KULLANICI ROL KONTROLÜ
         async function checkUserRole() {
             const { data } = await supabase.from('profiles').select('user_type, role').eq('id', currentUser.id).single();
             const btn = document.getElementById('becomeMentorBtn');
@@ -158,59 +168,106 @@
             }
         }
 
-        // 2. MENTOR OL / BIRAK
+        // 2. GELEN İSTEKLERİ KONTROL ET (YENİ ÖZELLİK)
+        async function checkIncomingRequests() {
+            // Sadece bana gelen ve durumu 'pending' olan istekleri al
+            // İlişkili tablo (profiles) ile öğrencinin adını da al
+            const { data, error } = await supabase
+                .from('mentorships')
+                .select(`
+                    id,
+                    mentee_id,
+                    status,
+                    created_at,
+                    profiles!mentee_id (full_name, department, class_level)
+                `)
+                .eq('mentor_id', currentUser.id)
+                .eq('status', 'pending');
+
+            if (data && data.length > 0) {
+                document.getElementById('incomingRequestsArea').style.display = 'block';
+                const grid = document.getElementById('requestsGrid');
+                grid.innerHTML = '';
+
+                data.forEach(req => {
+                    const studentName = req.profiles ? req.profiles.full_name : 'Bilinmeyen Öğrenci';
+                    const studentInfo = req.profiles ? `${req.profiles.department} (${req.profiles.class_level}. Sınıf)` : '';
+                    
+                    grid.innerHTML += `
+                    <div class="req-card" id="req-${req.id}">
+                        <div class="req-info">
+                            <h4>${studentName}</h4>
+                            <p>${studentInfo}</p>
+                            <p style="font-size:0.7rem; color:#999;">${new Date(req.created_at).toLocaleDateString()}</p>
+                        </div>
+                        <div class="req-actions">
+                            <button class="btn-accept" onclick="respondRequest(${req.id}, 'accepted')"><i class="fa-solid fa-check"></i></button>
+                            <button class="btn-reject" onclick="respondRequest(${req.id}, 'rejected')"><i class="fa-solid fa-xmark"></i></button>
+                        </div>
+                    </div>`;
+                });
+            } else {
+                document.getElementById('incomingRequestsArea').style.display = 'none';
+            }
+        }
+
+        // 3. İSTEĞE CEVAP VER (Kabul/Red)
+        async function respondRequest(reqId, status) {
+            if(!confirm(status === 'accepted' ? "Bu öğrenciye mentorluk yapmayı kabul ediyor musunuz?" : "İsteği reddetmek istediğinize emin misiniz?")) return;
+
+            const { error } = await supabase.from('mentorships').update({ status: status }).eq('id', reqId);
+            
+            if(!error) {
+                alert(status === 'accepted' ? "Harika! Eşleşme sağlandı. 🎉" : "İstek reddedildi.");
+                // Kartı ekrandan kaldır
+                document.getElementById(`req-${reqId}`).remove();
+                // Eğer kart kalmadıysa paneli gizle
+                if(document.getElementById('requestsGrid').children.length === 0) {
+                    document.getElementById('incomingRequestsArea').style.display = 'none';
+                }
+            } else {
+                alert("Hata oluştu.");
+            }
+        }
+
+        // 4. MENTOR OL / BIRAK
         async function toggleMentorStatus() {
             const { data } = await supabase.from('profiles').select('role').eq('id', currentUser.id).single();
             const newRole = (data.role === 'mentor') ? 'user' : 'mentor';
             const { error } = await supabase.from('profiles').update({ role: newRole }).eq('id', currentUser.id);
-            
             if(!error) {
                 alert(newRole === 'mentor' ? "Tebrikler! Artık Mentor listesindesiniz." : "Mentorluk profiliniz gizlendi.");
-                checkUserRole();
-                fetchMentors(); // Listeyi yenile
+                checkUserRole(); fetchMentors();
             }
         }
 
-        // 3. DAHA ÖNCEKİ İSTEKLERİMİ ÇEK (Butonları yönetmek için)
         async function loadMyRequests() {
             const { data } = await supabase.from('mentorships').select('mentor_id').eq('mentee_id', currentUser.id);
             if(data) data.forEach(r => myRequests.add(r.mentor_id));
         }
 
-        // 4. MENTORLARI LİSTELE (Filtreli)
         async function fetchMentors() {
             const queryText = document.getElementById('searchInput').value;
             const list = document.getElementById('mentorList');
-            
-            // Yükleniyor göster
             list.innerHTML = '<div style="text-align:center; width:100%; padding:40px; color:#999; grid-column: 1/-1;"><i class="fa-solid fa-spinner fa-spin fa-2x"></i></div>';
 
             let query = supabase.from('profiles').select('*').eq('role', 'mentor');
-
-            // Arama varsa filtrele
-            if (queryText) {
-                query = query.or(`full_name.ilike.%${queryText}%,company.ilike.%${queryText}%,sector.ilike.%${queryText}%`);
-            }
+            if (queryText) query = query.or(`full_name.ilike.%${queryText}%,company.ilike.%${queryText}%,sector.ilike.%${queryText}%`);
 
             const { data, error } = await query;
-
             if (error || !data || data.length === 0) {
                 list.innerHTML = '<div style="text-align:center; width:100%; padding:40px; color:#777; grid-column: 1/-1;">Aradığınız kriterde mentor bulunamadı.</div>';
                 return;
             }
 
             list.innerHTML = '';
-            
             data.forEach(m => {
-                // Kendimi listede görmeyeyim
                 if (m.id === currentUser.id) return;
-
                 const initials = m.full_name ? m.full_name.substring(0,2).toUpperCase() : 'ME';
                 const companyTag = m.company ? `<span class="tag company"><i class="fa-solid fa-building"></i> ${m.company}</span>` : '';
                 const sectorTag = m.sector ? `<span class="tag"><i class="fa-solid fa-briefcase"></i> ${m.sector}</span>` : '';
                 const deptTag = m.department ? `<span class="tag"><i class="fa-solid fa-graduation-cap"></i> ${m.department}</span>` : '';
 
-                // Buton Durumu (Daha önce istek attım mı?)
                 let btnHtml = '';
                 if (myRequests.has(m.id)) {
                     btnHtml = `<button class="btn-request" disabled style="background:#f39c12; opacity:0.7;">İstek Gönderildi ⏳</button>`;
@@ -218,45 +275,19 @@
                     btnHtml = `<button class="btn-request" onclick="sendRequest('${m.id}', this)">Mentorluk İste 🚀</button>`;
                 }
 
-                list.insertAdjacentHTML('beforeend', `
-                <div class="mentor-card">
-                    <div class="mentor-avatar">${initials}</div>
-                    <div class="mentor-info">
-                        <h3>${m.full_name}</h3>
-                        <p>${m.department || ''} - ${m.grad_year || ''}</p>
-                        <div class="tags">${companyTag}${sectorTag}${deptTag}</div>
-                        ${btnHtml}
-                    </div>
-                </div>`);
+                list.insertAdjacentHTML('beforeend', `<div class="mentor-card"><div class="mentor-avatar">${initials}</div><div class="mentor-info"><h3>${m.full_name}</h3><p>${m.department || ''} - ${m.grad_year || ''}</p><div class="tags">${companyTag}${sectorTag}${deptTag}</div>${btnHtml}</div></div>`);
             });
         }
 
-        // 5. İSTEK GÖNDERME
         async function sendRequest(mentorId, btnElement) {
             if(!confirm("Bu mentora resmi bir istek gönderilecek. Onaylıyor musunuz?")) return;
-
-            btnElement.innerText = "Gönderiliyor...";
-            btnElement.disabled = true;
-
-            const { error } = await supabase.from('mentorships').insert({
-                mentor_id: mentorId,
-                mentee_id: currentUser.id,
-                status: 'pending'
-            });
-
-            if (error) {
-                alert("Hata: " + error.message);
-                btnElement.innerText = "Tekrar Dene";
-                btnElement.disabled = false;
-            } else {
-                alert("Talebiniz iletildi! Mentorunuz onayladığında bildirim alacaksınız.");
-                btnElement.innerText = "İstek Gönderildi ⏳";
-                btnElement.style.backgroundColor = "#f39c12";
-                myRequests.add(mentorId); // Listeye ekle ki sayfa yenilenmeden durumu korusun
-            }
+            btnElement.innerText = "Gönderiliyor..."; btnElement.disabled = true;
+            const { error } = await supabase.from('mentorships').insert({ mentor_id: mentorId, mentee_id: currentUser.id, status: 'pending' });
+            if (error) { alert("Hata: " + error.message); btnElement.innerText = "Tekrar Dene"; btnElement.disabled = false; } 
+            else { alert("Talebiniz iletildi!"); btnElement.innerText = "İstek Gönderildi ⏳"; btnElement.style.backgroundColor = "#f39c12"; myRequests.add(mentorId); }
         }
 
-        // --- BİLDİRİM FONKSİYONLARI ---
+        // BİLDİRİMLER
         async function checkGlobalNotifications() {
             const { data: { session } } = await supabase.auth.getSession();
             if(!session) return;
@@ -266,22 +297,15 @@
         }
 
         function setupRealtime(userId) {
-            const channel = supabase.channel('global-alerts');
-            channel.on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'broadcasts' }, payload => { showNotification("YÖNETİM DUYURUSU", payload.new.message, "admin"); });
-            channel.on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'direct_messages', filter: `receiver_id=eq.${userId}` }, payload => {
-                showNotification(`💬 ${payload.new.sender_name || 'Bir Üye'}`, payload.new.content, "user");
-                checkGlobalNotifications();
-            });
-            channel.subscribe();
+            supabase.channel('global-alerts').on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'broadcasts' }, payload => { showNotification("YÖNETİM DUYURUSU", payload.new.message, "admin"); })
+            .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'direct_messages', filter: `receiver_id=eq.${userId}` }, payload => { showNotification(`💬 ${payload.new.sender_name || 'Bir Üye'}`, payload.new.content, "user"); checkGlobalNotifications(); }).subscribe();
         }
 
         function showNotification(title, msg, type) {
             const toast = document.getElementById('liveToast');
-            const titleEl = document.getElementById('toastTitle');
-            const msgEl = document.getElementById('toastMessage');
-            msgEl.innerText = msg;
-            if (type === 'admin') { toast.style.borderLeftColor = "#8e44ad"; titleEl.style.color = "#8e44ad"; titleEl.innerHTML = `<i class="fa-solid fa-tower-broadcast"></i> ${title}`; } 
-            else { toast.style.borderLeftColor = "#3498db"; titleEl.style.color = "#3498db"; titleEl.innerHTML = `${title}`; }
+            document.getElementById('toastTitle').innerHTML = type==='admin' ? `<i class="fa-solid fa-tower-broadcast" style="color:#8e44ad"></i> ${title}` : `${title}`;
+            document.getElementById('toastMessage').innerText = msg;
+            toast.style.borderLeftColor = type==='admin' ? "#8e44ad" : "#3498db";
             toast.style.display = 'block';
             new Audio('https://actions.google.com/sounds/v1/alarms/beep_short.ogg').play().catch(()=>{});
             setTimeout(() => { toast.style.display = 'none'; }, 6000);
