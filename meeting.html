@@ -11,96 +11,155 @@
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
     body { background-color: var(--bg-light); min-height: 100vh; color: #333; }
 
-    /* NAVBAR */
-    .navbar { width: 100%; height: 70px; background-color: var(--odtu-dark); display: flex; align-items: center; justify-content: space-between; padding: 0 30px; position: fixed; top: 0; left: 0; z-index: 1000; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-    .nav-left { display: flex; align-items: center; gap: 15px; }
-    .nav-logo { height: 50px; background: white; padding: 2px; border-radius: 5px; }
+    /* --- NAVBAR (MOBİL GÜNCELLEMELİ) --- */
+    .navbar { 
+        width: 100%; height: 70px; background-color: var(--odtu-dark); 
+        display: flex; align-items: center; justify-content: space-between; 
+        padding: 0 20px; position: fixed; top: 0; left: 0; z-index: 1000; 
+        box-shadow: 0 4px 10px rgba(0,0,0,0.1); 
+    }
+    
+    .nav-left { display: flex; align-items: center; gap: 15px; z-index: 1001; }
+    .nav-logo { height: 40px; background: white; padding: 2px; border-radius: 5px; }
     .nav-title { color: white; font-size: 1.1rem; font-weight: bold; }
-    .nav-links { display: flex; gap: 20px; }
+    
+    /* Masaüstü Menü Yapısı */
+    .nav-links { display: flex; gap: 20px; align-items: center; }
     .nav-links a { color: #bdc3c7; text-decoration: none; font-size: 0.95rem; display: flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 6px; transition: 0.3s; }
     .nav-links a:hover, .nav-links a.active { background-color: rgba(255,255,255,0.1); color: white; }
-    .nav-right { display: flex; align-items: center; gap: 20px; }
-    .logout-btn { color: #e74c3c; border: 1px solid #e74c3c; padding: 6px 15px; border-radius: 20px; text-decoration: none; transition: 0.3s; }
-
-    /* ANA İÇERİK */
-    .main-content { margin-top: 70px; padding: 40px; width: 100%; max-width: 1200px; margin-left: auto; margin-right: auto; }
     
+    .nav-right { display: flex; align-items: center; }
+    .logout-btn { color: #e74c3c; border: 1px solid #e74c3c; padding: 6px 15px; border-radius: 20px; text-decoration: none; transition: 0.3s; font-size: 0.9rem; }
+
+    /* Hamburger İkonu (Masaüstünde Gizli) */
+    .hamburger { display: none; font-size: 1.5rem; color: white; cursor: pointer; z-index: 1001; }
+
+    /* --- ANA İÇERİK --- */
+    .main-content { margin-top: 70px; padding: 30px; width: 100%; max-width: 1200px; margin-left: auto; margin-right: auto; }
     .hub-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 30px; border-bottom: 2px solid #eee; padding-bottom: 20px; }
     .hub-header h2 { font-size: 2rem; color: var(--odtu-dark); margin: 0; }
-    .hub-header p { color: #666; margin: 5px 0 0 0; }
+    
+    /* CANLI BÖLÜM */
+    .live-section { margin-bottom: 30px; display: none; }
+    .live-title { font-size: 1.1rem; font-weight: bold; color: #e74c3c; margin-bottom: 10px; display: flex; align-items: center; gap: 10px; animation: flash 2s infinite; }
+    @keyframes flash { 0%, 100% { opacity: 1; } 50% { opacity: 0.6; } }
+    .live-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 15px; }
+    .live-card { background: #fff0f0; border: 1px solid #ffcdd2; border-radius: 12px; padding: 15px; display: flex; justify-content: space-between; align-items: center; }
+    .btn-live-join { background: #e74c3c; color: white; border: none; padding: 6px 12px; border-radius: 20px; font-weight: bold; cursor: pointer; font-size: 0.85rem; }
 
-    /* AKSİYON KUTULARI */
-    .actions-row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 40px; }
-    .action-box { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); display: flex; align-items: center; gap: 15px; border: 1px solid #e0e0e0; transition: 0.3s; }
-    .action-box:hover { transform: translateY(-3px); }
+    /* AKSİYONLAR */
+    .actions-row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 30px; }
+    .action-box { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); display: flex; align-items: center; gap: 15px; border: 1px solid #e0e0e0; }
     .ab-icon { width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; flex-shrink: 0; }
     .icon-flash { background: #fff3e0; color: #e67e22; }
     .icon-invite { background: #e3f2fd; color: #1565c0; }
-    .btn-action { background: var(--odtu-dark); color: white; padding: 10px 20px; border-radius: 8px; font-weight: bold; border: none; cursor: pointer; margin-left: auto; }
+    .btn-action { background: var(--odtu-dark); color: white; padding: 10px 20px; border-radius: 8px; font-weight: bold; border: none; cursor: pointer; margin-left: auto; white-space: nowrap; }
 
-    /* CANLI ODALAR BÖLÜMÜ (YENİ) */
-    .live-section { margin-bottom: 40px; display: none; } /* JS ile doluysa açılacak */
-    .live-title { font-size: 1.2rem; font-weight: bold; color: #e74c3c; margin-bottom: 15px; display: flex; align-items: center; gap: 10px; animation: flash 2s infinite; }
-    @keyframes flash { 0%, 100% { opacity: 1; } 50% { opacity: 0.6; } }
+    /* MEETINGS */
+    .meetings-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    .section-box { background: white; border-radius: 15px; padding: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); min-height: 300px; }
+    .section-title { font-size: 1.1rem; font-weight: bold; color: var(--odtu-dark); margin-bottom: 15px; border-bottom: 1px solid #eee; padding-bottom: 10px; }
     
-    .live-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
-    .live-card { background: #fff0f0; border: 1px solid #ffcdd2; border-radius: 12px; padding: 20px; display: flex; justify-content: space-between; align-items: center; position: relative; overflow: hidden; }
-    .live-card::before { content: ''; position: absolute; left: 0; top: 0; height: 100%; width: 5px; background: #e74c3c; }
-    .live-info h4 { margin: 0 0 5px 0; color: #c0392b; font-size: 1.1rem; }
-    .live-info p { margin: 0; font-size: 0.85rem; color: #555; }
-    .btn-live-join { background: #e74c3c; color: white; border: none; padding: 8px 15px; border-radius: 20px; font-weight: bold; cursor: pointer; font-size: 0.9rem; display: flex; align-items: center; gap: 5px; box-shadow: 0 4px 10px rgba(231, 76, 60, 0.3); }
-
-    /* STANDART LİSTELER */
-    .meetings-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
-    .section-box { background: white; border-radius: 15px; padding: 25px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); min-height: 400px; }
-    .section-title { font-size: 1.2rem; font-weight: bold; color: var(--odtu-dark); margin-bottom: 20px; border-bottom: 1px solid #eee; padding-bottom: 10px; }
-
-    .meeting-card { display: flex; justify-content: space-between; align-items: center; padding: 15px; border: 1px solid #eee; border-radius: 10px; margin-bottom: 15px; background: white; }
-    .m-date { background: #f8f9fa; padding: 8px 12px; border-radius: 8px; text-align: center; min-width: 60px; margin-right: 15px; font-weight: bold; border: 1px solid #eee; }
-    .m-info h4 { margin: 0 0 5px 0; font-size: 1rem; }
-    .m-info p { margin: 0; font-size: 0.85rem; color: #666; }
-    .btn-join { background: #27ae60; color: white; padding: 8px 15px; border-radius: 6px; text-decoration: none; font-size: 0.85rem; font-weight: bold; border: none; cursor: pointer; }
-    .btn-wait { background: #eee; color: #999; padding: 8px 15px; border-radius: 6px; font-size: 0.8rem; cursor: not-allowed; }
+    .meeting-card { display: flex; justify-content: space-between; align-items: center; padding: 12px; border: 1px solid #eee; border-radius: 10px; margin-bottom: 10px; background: white; }
+    .meeting-card.live { border-left: 4px solid #27ae60; background: #f0fdf4; }
+    .m-date { background: #f8f9fa; padding: 6px 10px; border-radius: 8px; text-align: center; min-width: 55px; margin-right: 10px; font-weight: bold; border: 1px solid #eee; font-size: 0.9rem; }
+    .m-info h4 { margin: 0 0 3px 0; font-size: 0.95rem; }
+    .m-info p { margin: 0; font-size: 0.8rem; color: #666; }
+    .btn-join { background: #27ae60; color: white; padding: 6px 12px; border-radius: 6px; font-size: 0.8rem; font-weight: bold; border: none; cursor: pointer; }
+    .btn-wait { background: #eee; color: #999; padding: 6px 12px; border-radius: 6px; font-size: 0.8rem; }
 
     /* MODALLER */
     .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 3000; display: none; justify-content: center; align-items: center; backdrop-filter: blur(5px); }
-    .invite-modal-content { background: white; padding: 30px; border-radius: 12px; width: 90%; max-width: 500px; position: relative; }
-    .video-modal-content { width: 100%; height: 100%; background: black; display: flex; flex-direction: column; } /* MOBİL İÇİN TAM EKRAN */
-    
-    .video-header { background: #111; color: white; padding: 10px 20px; display: flex; justify-content: space-between; align-items: center; height: 60px; }
+    .invite-modal-content { background: white; padding: 25px; border-radius: 12px; width: 90%; max-width: 450px; position: relative; }
+    .video-modal-content { width: 100%; height: 100%; background: black; display: flex; flex-direction: column; }
+    .video-header { background: #111; color: white; padding: 10px 15px; display: flex; justify-content: space-between; align-items: center; height: 50px; }
     #meet-frame { flex: 1; width: 100%; background: #000; }
-    .btn-hangup { background: #e74c3c; color: white; border: none; padding: 8px 20px; border-radius: 4px; cursor: pointer; font-weight: bold; }
-    
-    /* ARAMA KUTUSU */
-    .search-box { position: relative; margin-bottom: 15px; }
-    .search-input { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; outline: none; }
-    .search-results { position: absolute; width: 100%; background: white; z-index: 10; box-shadow: 0 5px 15px rgba(0,0,0,0.1); display: none; max-height: 200px; overflow-y: auto; }
-    .user-item { padding: 10px; border-bottom: 1px solid #eee; cursor: pointer; } .user-item:hover { background: #f0f8ff; }
-    .selected-user { background: #e3f2fd; padding: 10px; border-radius: 6px; margin-bottom: 15px; display: none; color: #1565c0; font-weight: bold; }
+    .btn-hangup { background: #e74c3c; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 0.9rem; }
 
+    .search-box { position: relative; margin-bottom: 15px; }
+    .search-input { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px; outline: none; }
+    .search-results { position: absolute; width: 100%; background: white; z-index: 10; box-shadow: 0 5px 15px rgba(0,0,0,0.1); display: none; max-height: 180px; overflow-y: auto; }
+    .user-item { padding: 10px; border-bottom: 1px solid #eee; cursor: pointer; }
+    .selected-user { background: #e3f2fd; padding: 10px; border-radius: 6px; margin-bottom: 15px; display: none; color: #1565c0; font-weight: bold; font-size: 0.9rem; }
+
+    /* --- MOBİL UYUMLULUK (MEDIA QUERIES) --- */
     @media (max-width: 900px) {
-        .navbar { height: auto; flex-direction: column; padding: 15px; } .nav-links { flex-wrap: wrap; justify-content: center; }
+        .navbar { padding: 0 15px; }
+        
+        /* Hamburger Göster */
+        .hamburger { display: block; }
+
+        /* Menüyü Gizle ve Dikey Yap */
+        .nav-links {
+            position: fixed;
+            top: 70px;
+            left: -100%; /* Ekran dışına it */
+            width: 100%;
+            height: calc(100vh - 70px);
+            background-color: var(--odtu-dark);
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            padding-top: 40px;
+            transition: 0.4s ease-in-out;
+            box-shadow: inset 0 10px 20px rgba(0,0,0,0.2);
+        }
+
+        /* Menü Açılınca */
+        .nav-links.active { left: 0; }
+
+        /* Link Stilleri */
+        .nav-links a {
+            font-size: 1.2rem;
+            margin: 15px 0;
+            width: 80%;
+            justify-content: center;
+            padding: 15px;
+        }
+
+        /* Çıkış Butonunu Menüye Dahil Et */
+        .nav-right { display: none; } /* Masaüstü butonu gizle */
+        /* Mobil menü içine çıkış butonu ekleyeceğiz (HTML'de) */
+
+        /* İçerik Düzeni */
         .main-content { padding: 20px; margin-top: 0; }
-        .meetings-grid, .actions-row { grid-template-columns: 1fr; }
-        .action-box { flex-direction: column; text-align: center; } .btn-action { margin-left: 0; width: 100%; }
-        /* Mobil Video Modalı */
-        .video-modal-content { border-radius: 0; }
+        .hub-header { flex-direction: column; align-items: flex-start; gap: 10px; }
+        .hub-header h2 { font-size: 1.6rem; }
+        
+        .actions-row { grid-template-columns: 1fr; gap: 15px; margin-bottom: 30px; }
+        .action-box { padding: 15px; }
+        
+        .meetings-grid { grid-template-columns: 1fr; gap: 20px; }
+        .section-box { min-height: auto; }
     }
 </style>
 </head>
 <body>
 
     <nav class="navbar">
-        <div class="nav-left"><img src="logo.png" class="nav-logo"><div class="nav-title">Hatay ODTÜ MD <span>Üye Portalı</span></div></div>
-        <div class="nav-links">
+        <div class="nav-left">
+            <img src="logo.png" class="nav-logo">
+            <div class="nav-title">Hatay ODTÜ MD</div>
+        </div>
+        
+        <div class="hamburger" onclick="toggleMenu()">
+            <i class="fa-solid fa-bars"></i>
+        </div>
+
+        <div class="nav-links" id="navLinks">
             <a href="dashboard.html">Panel</a>
             <a href="meeting.html" class="active" style="background:rgba(255,255,255,0.2); color:white;"><i class="fa-solid fa-video"></i> Etkinlik Üssü</a>
             <a href="mentor.html">Mentorluk</a>
             <a href="career.html">Kariyer Lab</a>
             <a href="network.html">Mezun Ağı</a>
             <a href="profile.html">Profil</a>
+            
+            <a href="#" onclick="logout()" style="color: #ff6b6b; border: 1px solid #ff6b6b; margin-top: 20px;">Çıkış Yap</a>
         </div>
-        <div class="nav-right"><a href="#" class="logout-btn" onclick="logout()">Çıkış</a></div>
+
+        <div class="nav-right">
+            <a href="#" class="logout-btn" onclick="logout()">Çıkış</a>
+        </div>
     </nav>
 
     <div class="main-content">
@@ -108,33 +167,32 @@
         <div class="hub-header">
             <div>
                 <h2>Etkinlik Üssü</h2>
-                <p>Toplulukla buluşun, canlı yayın açın veya randevulaşın.</p>
+                <p>Canlı görüşmeler, randevular ve etkinlikler.</p>
             </div>
         </div>
 
         <div id="liveSection" class="live-section">
             <div class="live-title"><i class="fa-solid fa-circle"></i> ŞU AN CANLI</div>
-            <div id="liveGrid" class="live-grid">
-                </div>
+            <div id="liveGrid" class="live-grid"></div>
         </div>
 
         <div class="actions-row">
             <div class="action-box">
                 <div class="ab-icon icon-flash"><i class="fa-solid fa-video"></i></div>
                 <div style="flex:1;">
-                    <h3 style="margin:0;">Canlı Oda Aç</h3>
-                    <p style="margin:5px 0 0 0; font-size:0.85rem; color:#666;">Oda oluştur, herkes görsün ve katılsın.</p>
+                    <h3 style="margin:0;">Canlı Oda</h3>
+                    <p style="margin:2px 0 0 0; font-size:0.8rem; color:#666;">Topluluğa açık yayın başlat.</p>
                 </div>
-                <button class="btn-action" onclick="createInstantRoom()"><i class="fa-solid fa-plus"></i> Başlat</button>
+                <button class="btn-action" onclick="createInstantRoom()"><i class="fa-solid fa-play"></i> Başlat</button>
             </div>
 
             <div class="action-box">
                 <div class="ab-icon icon-invite"><i class="fa-solid fa-calendar-check"></i></div>
                 <div style="flex:1;">
-                    <h3 style="margin:0;">Randevu Planla</h3>
-                    <p style="margin:5px 0 0 0; font-size:0.85rem; color:#666;">Birebir görüşme için davet gönder.</p>
+                    <h3 style="margin:0;">Randevu</h3>
+                    <p style="margin:2px 0 0 0; font-size:0.8rem; color:#666;">Birebir görüşme planla.</p>
                 </div>
-                <button class="btn-action" style="background:#1565c0;" onclick="document.getElementById('inviteModal').style.display='flex'"><i class="fa-solid fa-envelope"></i> Davet Et</button>
+                <button class="btn-action" style="background:#1565c0;" onclick="document.getElementById('inviteModal').style.display='flex'"><i class="fa-solid fa-plus"></i> Planla</button>
             </div>
         </div>
 
@@ -144,7 +202,7 @@
                 <div id="myMeetingsList"><div style="text-align:center; padding:20px; color:#999;">Yükleniyor...</div></div>
             </div>
             <div class="section-box">
-                <div class="section-title"><i class="fa-solid fa-users"></i> Planlı Etkinlikler</div>
+                <div class="section-title"><i class="fa-solid fa-users"></i> Etkinlikler</div>
                 <div id="publicEventsList"><div style="text-align:center; padding:20px; color:#999;">Yükleniyor...</div></div>
             </div>
         </div>
@@ -176,8 +234,8 @@
     <div id="meetingRoomModal" class="modal-overlay">
         <div class="video-modal-content">
             <div class="video-header">
-                <span id="videoTitle" style="font-size:1.1rem; font-weight:bold;">Toplantı Odası</span>
-                <button class="btn-hangup" onclick="endMeeting()">Kapat / Bitir</button>
+                <span id="videoTitle" style="font-size:1rem; font-weight:bold;">Toplantı Odası</span>
+                <button class="btn-hangup" onclick="endMeeting()">Kapat</button>
             </div>
             <div id="meet-frame"></div>
         </div>
@@ -192,102 +250,85 @@
         let supabase; try { supabase = window.supabase.createClient(supabaseUrl, supabaseKey); } catch(e){}
         let currentUser = null;
         let apiObj = null;
-        let currentRoomId = null; // Aktif anlık oda ID'si
+        let currentRoomId = null; 
 
         document.addEventListener("DOMContentLoaded", async () => {
             const { data: { session } } = await supabase.auth.getSession();
             if (!session) { window.location.href = 'index.html'; return; }
             currentUser = session.user;
             
-            loadLiveRooms(); // Canlı odaları yükle
+            loadLiveRooms(); 
             loadMyMeetings();
             loadPublicEvents();
         });
 
-        // --- 1. ANLIK CANLI ODA (VERİTABANLI) ---
+        // --- MENÜ AÇMA/KAPAMA (MOBİL) ---
+        function toggleMenu() {
+            const nav = document.getElementById('navLinks');
+            nav.classList.toggle('active');
+        }
+
+        // --- 1. ANLIK CANLI ODA ---
         async function createInstantRoom() {
-            const topic = prompt("Oda için bir başlık girin (Örn: Sohbet, Proje X):");
+            const topic = prompt("Oda Başlığı (Örn: Sohbet):");
             if(!topic) return;
 
             const roomName = `ODTU_Live_${Date.now()}`;
             
-            // Veritabanına kaydet
             const { data, error } = await supabase.from('instant_rooms').insert({
-                creator_id: currentUser.id,
-                room_name: roomName,
-                title: topic
+                creator_id: currentUser.id, room_name: roomName, title: topic
             }).select().single();
 
             if(error) { alert("Hata: " + error.message); return; }
 
-            currentRoomId = data.id; // Şu an bu odadayım
-            startMeeting(roomName, topic, true); // True = Anlık Oda
+            currentRoomId = data.id; 
+            startMeeting(roomName, topic, true);
         }
 
         async function loadLiveRooms() {
             const section = document.getElementById('liveSection');
             const grid = document.getElementById('liveGrid');
-            
             const { data } = await supabase.from('instant_rooms').select('*, profiles(full_name)').order('created_at', {ascending:false});
             
             if(data && data.length > 0) {
                 section.style.display = 'block';
                 grid.innerHTML = '';
                 data.forEach(r => {
-                    grid.innerHTML += `
-                    <div class="live-card">
-                        <div class="live-info">
-                            <h4>${r.title}</h4>
-                            <p><i class="fa-solid fa-user"></i> ${r.profiles.full_name} yayında</p>
-                        </div>
-                        <button class="btn-live-join" onclick="startMeeting('${r.room_name}', '${r.title}')">
-                            <i class="fa-solid fa-video"></i> KATIL
-                        </button>
-                    </div>`;
+                    grid.innerHTML += `<div class="live-card"><div class="live-info"><h4>${r.title}</h4><p>${r.profiles.full_name}</p></div><button class="btn-live-join" onclick="startMeeting('${r.room_name}', '${r.title}')">KATIL</button></div>`;
                 });
-            } else {
-                section.style.display = 'none';
-            }
+            } else { section.style.display = 'none'; }
         }
 
-        // --- 2. JITSI BAŞLATMA / BİTİRME ---
+        // --- 2. JITSI ---
         function startMeeting(roomName, title, isInstant = false) {
             document.getElementById('meetingRoomModal').style.display = 'flex';
             document.getElementById('videoTitle').innerText = title;
-            
             if(apiObj) apiObj.dispose();
 
             const domain = 'meet.jit.si';
             const options = {
                 roomName: roomName,
-                width: '100%',
-                height: '100%',
+                width: '100%', height: '100%',
                 parentNode: document.querySelector('#meet-frame'),
                 userInfo: { displayName: currentUser.user_metadata?.full_name || 'Üye' },
-                configOverwrite: { startWithAudioMuted: false, startWithVideoMuted: false, prejoinPageEnabled: false },
+                configOverwrite: { startWithAudioMuted: false, startWithVideoMuted: false },
                 interfaceConfigOverwrite: { SHOW_JITSI_WATERMARK: false }
             };
             apiObj = new JitsiMeetExternalAPI(domain, options);
-            
-            apiObj.addEventListeners({
-                videoConferenceLeft: function () { endMeeting(isInstant); }
-            });
+            apiObj.addEventListeners({ videoConferenceLeft: function () { endMeeting(isInstant); } });
         }
 
         async function endMeeting(isInstant = false) {
             if(apiObj) { apiObj.dispose(); apiObj = null; }
             document.getElementById('meetingRoomModal').style.display = 'none';
-
-            // Eğer bu benim açtığım bir anlık oda ise, çıkarken veritabanından sil
             if(isInstant && currentRoomId) {
                 await supabase.from('instant_rooms').delete().eq('id', currentRoomId);
                 currentRoomId = null;
-                loadLiveRooms(); // Listeyi güncelle
-                alert("Yayın sonlandırıldı ve oda kapatıldı.");
+                loadLiveRooms();
             }
         }
 
-        // --- 3. RANDEVULAR VE ETKİNLİKLER (ESKİ KODLARIN AYNISI) ---
+        // --- 3. RANDEVULAR ---
         async function loadMyMeetings() {
             const list = document.getElementById('myMeetingsList');
             const { data } = await supabase.from('mock_interviews').select('*, profiles:mentor_id(full_name), inviter:user_id(full_name)').or(`user_id.eq.${currentUser.id},mentor_id.eq.${currentUser.id}`).order('requested_date');
@@ -299,7 +340,7 @@
                 let other = isMine ? m.profiles?.full_name : m.inviter?.full_name;
                 const diff = d - new Date();
                 let btn = diff > -3600000 && diff < 600000 ? `<button class="btn-join" onclick="startMeeting('ODTU_Meet_${m.id}', '${m.interview_type}')">Katıl</button>` : `<div class="btn-wait">${d.toLocaleTimeString().substr(0,5)}</div>`;
-                list.innerHTML += `<div class="meeting-card"><div style="display:flex; align-items:center;"><div class="m-date"><div>${d.getDate()}</div><small>${d.toLocaleString('tr-TR',{month:'short'})}</small></div><div class="m-info"><h4>${m.interview_type}</h4><p>${other||'Bilinmeyen'} ile</p></div></div>${btn}</div>`;
+                list.innerHTML += `<div class="meeting-card"><div style="display:flex; align-items:center;"><div class="m-date"><div>${d.getDate()}</div><small>${d.toLocaleString('tr-TR',{month:'short'})}</small></div><div class="m-info"><h4>${m.interview_type}</h4><p>${other||'Bilinmeyen'}</p></div></div>${btn}</div>`;
             });
         }
 
@@ -312,11 +353,11 @@
                 const d = new Date(e.event_date);
                 const isToday = new Date().toDateString() === d.toDateString();
                 const btn = isToday ? `<button class="btn-join" onclick="startMeeting('ODTU_Event_${e.id}', '${e.title}')">Katıl</button>` : `<div class="btn-wait">${d.toLocaleDateString()}</div>`;
-                list.innerHTML += `<div class="meeting-card"><div style="display:flex; align-items:center;"><div class="m-date"><div>${d.getDate()}</div><small>${d.toLocaleString('tr-TR',{month:'short'})}</small></div><div class="m-info"><h4>${e.title}</h4><p>${e.location}</p></div></div>${btn}</div>`;
+                list.innerHTML += `<div class="meeting-card"><div style="display:flex; align-items:center;"><div class="m-date" style="background:#f3e5f5; color:#7b1fa2;"><div>${d.getDate()}</div><small>${d.toLocaleString('tr-TR',{month:'short'})}</small></div><div class="m-info"><h4>${e.title}</h4><p>${e.location}</p></div></div>${btn}</div>`;
             });
         }
 
-        // --- 4. DAVET FONKSİYONLARI ---
+        // --- 4. DAVET ---
         async function searchUsers(q) {
             const box = document.getElementById('searchResults');
             if(q.length<3) { box.style.display='none'; return; }
