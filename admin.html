@@ -47,15 +47,21 @@
     .badge-student { background: #e0f2fe; color: #0284c7; }
     .badge-grad { background: #dcfce7; color: #166534; }
     .badge-admin { background: #fae8ff; color: #86198f; }
-    .badge-mentor { background: #ffedd5; color: #c2410c; }
-    .badge-user { background: #f1f5f9; color: #64748b; }
+    
+    /* Talep Türü Rozetleri */
+    .badge-cv { background: #dbeafe; color: #1e40af; border: 1px solid #93c5fd; }
+    .badge-int { background: #dcfce7; color: #166534; border: 1px solid #86efac; }
+    .badge-sha { background: #ffedd5; color: #9a3412; border: 1px solid #fdba74; }
+    .badge-aca { background: #f3e8ff; color: #6b21a8; border: 1px solid #d8b4fe; }
+    .badge-cas { background: #ccfbf1; color: #115e59; border: 1px solid #5eead4; }
 
     /* FORM ELEMENTS */
     .form-box { background: white; padding: 25px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); height: 100%; }
     .form-control { width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px; outline: none; margin-bottom: 15px; }
-    .btn { padding: 10px 20px; border-radius: 6px; border: none; cursor: pointer; font-weight: bold; transition: 0.2s; }
+    .btn { padding: 8px 16px; border-radius: 6px; border: none; cursor: pointer; font-weight: bold; transition: 0.2s; font-size: 0.9rem; }
     .btn-primary { background: var(--admin-dark); color: white; }
     .btn-danger { background: #ef4444; color: white; }
+    .btn-success { background: #10b981; color: white; }
     .btn-sm { padding: 5px 10px; font-size: 0.8rem; }
     label { font-weight: bold; display: block; margin-bottom: 5px; font-size: 0.9rem; color: #475569; }
 
@@ -72,6 +78,7 @@
         
         <div class="menu-item active" onclick="switchTab('dashboard', this)"><i class="fa-solid fa-chart-line"></i> Genel Bakış</div>
         <div class="menu-item" onclick="switchTab('users', this)"><i class="fa-solid fa-users"></i> Kullanıcılar</div>
+        <div class="menu-item" onclick="switchTab('requests', this)"><i class="fa-solid fa-flask"></i> Gelişim Talepleri</div>
         <div class="menu-item" onclick="switchTab('jobs', this)"><i class="fa-solid fa-briefcase"></i> İş İlanları</div>
         <div class="menu-item" onclick="switchTab('mentorships', this)"><i class="fa-solid fa-handshake"></i> Eşleşmeler</div>
         <div class="menu-item" onclick="switchTab('content', this)"><i class="fa-solid fa-bullhorn"></i> Duyuru & Etkinlik</div>
@@ -87,28 +94,16 @@
 
         <div id="dashboard" class="section active">
             <div class="stats-grid">
-                <div class="stat-card">
-                    <div class="stat-icon bg-blue"><i class="fa-solid fa-users"></i></div>
-                    <div class="stat-info"><h3 id="statUsers">-</h3><p>Toplam Üye</p></div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon bg-green"><i class="fa-solid fa-briefcase"></i></div>
-                    <div class="stat-info"><h3 id="statJobs">-</h3><p>Aktif İlan</p></div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon bg-purple"><i class="fa-solid fa-handshake-angle"></i></div>
-                    <div class="stat-info"><h3 id="statMentors">-</h3><p>Mentor</p></div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon bg-orange"><i class="fa-solid fa-link"></i></div>
-                    <div class="stat-info"><h3 id="statMatches">-</h3><p>Eşleşme</p></div>
-                </div>
+                <div class="stat-card"><div class="stat-icon bg-blue"><i class="fa-solid fa-users"></i></div><div class="stat-info"><h3 id="statUsers">-</h3><p>Toplam Üye</p></div></div>
+                <div class="stat-card"><div class="stat-icon bg-green"><i class="fa-solid fa-briefcase"></i></div><div class="stat-info"><h3 id="statJobs">-</h3><p>Aktif İlan</p></div></div>
+                <div class="stat-card"><div class="stat-icon bg-purple"><i class="fa-solid fa-flask"></i></div><div class="stat-info"><h3 id="statReqs">-</h3><p>Bekleyen Talep</p></div></div>
+                <div class="stat-card"><div class="stat-icon bg-orange"><i class="fa-solid fa-link"></i></div><div class="stat-info"><h3 id="statMatches">-</h3><p>Eşleşme</p></div></div>
             </div>
             <div class="form-box" style="height: auto;">
                 <h3>🚀 Hızlı İşlemler</h3>
                 <p style="margin-bottom: 20px;">Sistem genelinde anlık aksiyonlar.</p>
                 <div style="display:flex; gap:10px;">
-                    <button class="btn btn-primary" onclick="switchTab('content', document.querySelectorAll('.menu-item')[4])">Yeni Duyuru Yaz</button>
+                    <button class="btn btn-primary" onclick="switchTab('content', document.querySelectorAll('.menu-item')[5])">Yeni Duyuru Yaz</button>
                     <button class="btn btn-primary" onclick="window.location.href='dashboard.html'">Siteyi Görüntüle</button>
                 </div>
             </div>
@@ -123,6 +118,17 @@
                 <table id="userTable">
                     <thead><tr><th>Ad Soyad</th><th>Tip</th><th>Detay</th><th>Roller</th><th>İşlem</th></tr></thead>
                     <tbody id="userListBody"><tr><td colspan="5">Yükleniyor...</td></tr></tbody>
+                </table>
+            </div>
+        </div>
+
+        <div id="requests" class="section">
+            <div class="table-container">
+                <h3>🧪 Kariyer Lab Talepleri (CV, Mülakat, vb.)</h3>
+                <p style="color:#666; font-size:0.9rem; margin-bottom:15px;">Öğrencilerden gelen tüm gelişim istekleri burada toplanır.</p>
+                <table id="reqTable">
+                    <thead><tr><th>Öğrenci</th><th>Tür</th><th>Detay / Link</th><th>Tarih</th><th>İşlem</th></tr></thead>
+                    <tbody id="reqListBody"><tr><td colspan="5">Yükleniyor...</td></tr></tbody>
                 </table>
             </div>
         </div>
@@ -150,37 +156,23 @@
         <div id="content" class="section">
             <div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px;">
                 <div class="form-box">
-                    <h3>📢 Toplu Duyuru (Broadcast)</h3>
-                    <p style="color:#666; font-size:0.9rem; margin-bottom:15px;">Tüm kullanıcılara anlık bildirim gider.</p>
-                    <label>Mesajınız</label>
-                    <textarea id="broadcastMsg" class="form-control" rows="3" placeholder="Duyuru metnini yazın..."></textarea>
-                    <button class="btn btn-primary" onclick="sendBroadcast()">📢 Gönder</button>
+                    <h3>📢 Toplu Duyuru</h3>
+                    <textarea id="broadcastMsg" class="form-control" rows="3" placeholder="Mesajınız..."></textarea>
+                    <button class="btn btn-primary" onclick="sendBroadcast()">Gönder</button>
                 </div>
-
                 <div class="form-box">
-                    <h3>📅 Yeni Etkinlik Oluştur</h3>
-                    <p style="color:#666; font-size:0.9rem; margin-bottom:15px;">Takvimde görünecek etkinlik ekleyin.</p>
-                    
-                    <label>Etkinlik Başlığı</label>
-                    <input type="text" id="evtTitle" class="form-control" placeholder="Örn: Mezunlar Kahvaltısı">
-                    
-                    <label>Yer / Platform</label>
-                    <input type="text" id="evtLoc" class="form-control" placeholder="Örn: Zoom veya ODTÜ Vişnelik">
-                    
-                    <label>Tarih</label>
+                    <h3>📅 Etkinlik Oluştur</h3>
+                    <input type="text" id="evtTitle" class="form-control" placeholder="Başlık">
+                    <input type="text" id="evtLoc" class="form-control" placeholder="Yer">
                     <input type="date" id="evtDate" class="form-control">
-                    
-                    <button class="btn btn-primary" onclick="createNewEvent()">📅 Takvime Ekle</button>
+                    <button class="btn btn-primary" onclick="createNewEvent()">Ekle</button>
                 </div>
             </div>
         </div>
 
     </div>
 
-    <div id="liveToast" style="position: fixed; top: 20px; right: 20px; background: white; padding: 15px 20px; border-radius: 8px; box-shadow: 0 5px 25px rgba(0,0,0,0.2); border-left: 6px solid #333; z-index: 9999; display: none; min-width: 300px; animation: slideIn 0.4s;">
-        <strong id="toastTitle">Bildirim</strong>
-        <p id="toastMessage" style="margin:5px 0 0 0; color:#555;">...</p>
-    </div>
+    <div id="liveToast" style="position: fixed; top: 20px; right: 20px; background: white; padding: 15px 20px; border-radius: 8px; box-shadow: 0 5px 25px rgba(0,0,0,0.2); border-left: 6px solid #333; z-index: 9999; display: none; min-width: 300px; animation: slideIn 0.4s;"><strong id="toastTitle">Bildirim</strong><p id="toastMessage" style="margin:5px 0 0 0; color:#555;">...</p></div>
     <style>@keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }</style>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -193,19 +185,13 @@
             const { data: { session } } = await supabase.auth.getSession();
             if (!session) { window.location.href = 'index.html'; return; }
             
-            // ADMIN KONTROLÜ
             const { data: profile } = await supabase.from('profiles').select('roles').eq('id', session.user.id).single();
             if (!profile || !profile.roles || !profile.roles.includes('admin')) {
-                alert("Bu sayfaya erişim yetkiniz yok!");
-                window.location.href = 'dashboard.html';
-                return;
+                alert("Yetkisiz Giriş!"); window.location.href = 'dashboard.html'; return;
             }
 
-            // Verileri Yükle
-            loadStats();
-            loadUsers();
-            loadJobs();
-            loadMentorships();
+            loadStats(); loadUsers(); loadJobs(); loadMentorships();
+            loadLabRequests(); // YENİ FONKSİYON
         });
 
         function switchTab(id, el) {
@@ -213,119 +199,114 @@
             document.querySelectorAll('.menu-item').forEach(m => m.classList.remove('active'));
             document.getElementById(id).classList.add('active');
             el.classList.add('active');
-            const titles = { 'dashboard': 'Genel Bakış', 'users': 'Kullanıcı Yönetimi', 'jobs': 'İlan Yönetimi', 'mentorships': 'Eşleşme Takibi', 'content': 'İçerik Yönetimi' };
+            const titles = {'dashboard':'Genel Bakış', 'users':'Kullanıcılar', 'requests':'Gelişim Talepleri', 'jobs':'İlanlar', 'mentorships':'Eşleşmeler', 'content':'İçerik'};
             document.getElementById('pageTitle').innerText = titles[id];
         }
 
+        // --- YENİ: GELİŞİM TALEPLERİNİ YÜKLEME ---
+        async function loadLabRequests() {
+            const tbody = document.getElementById('reqListBody');
+            tbody.innerHTML = '<tr><td colspan="5">Yükleniyor...</td></tr>';
+            
+            let allReqs = [];
+
+            // 5 Tablodan Veri Çek ve Birleştir
+            const t1 = await supabase.from('cv_requests').select('id, created_at, cv_url, profiles(full_name)').order('created_at',{ascending:false});
+            const t2 = await supabase.from('mock_interviews').select('id, created_at, interview_type, requested_date, profiles(full_name)').order('created_at',{ascending:false});
+            const t3 = await supabase.from('job_shadowing').select('id, created_at, sector, profiles(full_name)').order('created_at',{ascending:false});
+            const t4 = await supabase.from('academic_matches').select('id, created_at, research_topic, profiles(full_name)').order('created_at',{ascending:false});
+            const t5 = await supabase.from('case_submissions').select('id, created_at, case_topic, solution_url, profiles(full_name)').order('created_at',{ascending:false});
+
+            if(t1.data) t1.data.forEach(x => allReqs.push({...x, type: 'CV Check', detail: `<a href="${x.cv_url}" target="_blank">Dosyayı Aç</a>`, table:'cv_requests'}));
+            if(t2.data) t2.data.forEach(x => allReqs.push({...x, type: 'Mülakat', detail: `${x.interview_type} - ${new Date(x.requested_date).toLocaleDateString()}`, table:'mock_interviews'}));
+            if(t3.data) t3.data.forEach(x => allReqs.push({...x, type: 'Gölgeleme', detail: x.sector, table:'job_shadowing'}));
+            if(t4.data) t4.data.forEach(x => allReqs.push({...x, type: 'Akademik', detail: x.research_topic, table:'academic_matches'}));
+            if(t5.data) t5.data.forEach(x => allReqs.push({...x, type: 'Vaka', detail: `${x.case_topic} (<a href="${x.solution_url}" target="_blank">Çözüm</a>)`, table:'case_submissions'}));
+
+            // Tarihe göre yeniden sırala
+            allReqs.sort((a,b) => new Date(b.created_at) - new Date(a.created_at));
+
+            document.getElementById('statReqs').innerText = allReqs.length; // İstatistik güncelle
+
+            if(allReqs.length === 0) { tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; color:#999;">Henüz talep yok.</td></tr>'; return; }
+
+            tbody.innerHTML = '';
+            allReqs.forEach(r => {
+                let badgeClass = r.type==='CV Check'?'badge-cv':(r.type==='Mülakat'?'badge-int':(r.type==='Gölgeleme'?'badge-sha':(r.type==='Akademik'?'badge-aca':'badge-cas')));
+                
+                tbody.innerHTML += `
+                <tr>
+                    <td><b>${r.profiles ? r.profiles.full_name : 'Bilinmeyen'}</b></td>
+                    <td><span class="badge ${badgeClass}">${r.type}</span></td>
+                    <td>${r.detail}</td>
+                    <td>${new Date(r.created_at).toLocaleDateString()}</td>
+                    <td>
+                        <button class="btn btn-sm btn-success" onclick="completeReq('${r.table}', ${r.id})"><i class="fa-solid fa-check"></i></button>
+                        <button class="btn btn-sm btn-danger" onclick="deleteItem('${r.table}', ${r.id}, loadLabRequests)"><i class="fa-solid fa-trash"></i></button>
+                    </td>
+                </tr>`;
+            });
+        }
+
+        async function completeReq(table, id) {
+            if(!confirm("Bu talep tamamlandı olarak işaretlensin mi? (Listeden silinecek)")) return;
+            await supabase.from(table).delete().eq('id', id); // Şimdilik siliyoruz, ileride status='completed' yapılabilir
+            loadLabRequests(); showToast("İşlem tamamlandı.");
+        }
+
+        // --- DİĞER YÜKLEMELER (User, Job, Stats...) ---
         async function loadStats() {
             const { count: u } = await supabase.from('profiles').select('*', { count: 'exact', head: true });
             const { count: j } = await supabase.from('jobs').select('*', { count: 'exact', head: true });
-            const { count: m } = await supabase.from('profiles').select('*', { count: 'exact', head: true }).contains('roles', ['mentor']);
             const { count: mat } = await supabase.from('mentorships').select('*', { count: 'exact', head: true });
-
             document.getElementById('statUsers').innerText = u || 0;
             document.getElementById('statJobs').innerText = j || 0;
-            document.getElementById('statMentors').innerText = m || 0;
             document.getElementById('statMatches').innerText = mat || 0;
         }
 
         async function loadUsers() {
             const { data } = await supabase.from('profiles').select('*').order('created_at', { ascending: false });
-            const tbody = document.getElementById('userListBody');
-            tbody.innerHTML = '';
+            const tbody = document.getElementById('userListBody'); tbody.innerHTML = '';
             data.forEach(u => {
-                const badge = u.user_type === 'student' ? '<span class="badge badge-student">Öğrenci</span>' : '<span class="badge badge-grad">Mezun</span>';
-                const detail = u.user_type === 'student' ? `${u.class_level}. Sınıf` : (u.company || '-');
-                
-                let rolesHtml = '';
-                if(u.roles && Array.isArray(u.roles)) {
-                    u.roles.forEach(r => {
-                        let colorClass = r==='admin'?'badge-admin':(r==='mentor'?'badge-mentor':'badge-user');
-                        rolesHtml += `<span class="badge ${colorClass}">${r}</span>`;
-                    });
-                } else { rolesHtml = '<span class="badge badge-user">user</span>'; }
-                const rolesString = u.roles ? u.roles.join(', ') : 'user';
-
-                tbody.innerHTML += `<tr><td><b>${u.full_name}</b><br><small>${u.email}</small></td><td>${badge}</td><td>${u.department} <br> <small>${detail}</small></td><td>${rolesHtml}</td><td><button class="btn btn-sm btn-primary" onclick="toggleRole('${u.id}', '${rolesString}')">Rol Değiştir</button></td></tr>`;
+                let roles = u.roles ? u.roles.map(r => `<span class="badge ${r==='admin'?'badge-admin':'badge-user'}">${r}</span>`).join('') : 'user';
+                tbody.innerHTML += `<tr><td><b>${u.full_name}</b><br><small>${u.email}</small></td><td>${u.user_type}</td><td>${u.department}</td><td>${roles}</td><td><button class="btn btn-sm btn-primary" onclick="toggleRole('${u.id}', '${u.roles}')">Rol</button></td></tr>`;
             });
         }
 
-        async function toggleRole(id, currentRolesStr) {
-            const newRolesInput = prompt("Kullanıcının rollerini virgülle ayırarak yazın (Örn: user, mentor, admin):", currentRolesStr);
-            if(newRolesInput) {
-                const newRolesArray = newRolesInput.split(',').map(r => r.trim());
-                const { error } = await supabase.from('profiles').update({ roles: newRolesArray }).eq('id', id);
-                if (!error) { loadUsers(); showToast("Roller güncellendi! ✅"); } else { alert("Hata: " + error.message); }
-            }
+        async function toggleRole(id, roles) {
+            const n = prompt("Rolleri virgülle yaz (örn: user, admin):", roles);
+            if(n) { await supabase.from('profiles').update({ roles: n.split(',').map(r=>r.trim()) }).eq('id', id); loadUsers(); }
         }
 
         async function loadJobs() {
             const { data } = await supabase.from('jobs').select('*, profiles(full_name)').order('created_at', { ascending: false });
-            const tbody = document.getElementById('jobListBody');
-            tbody.innerHTML = '';
-            data.forEach(j => {
-                const owner = j.profiles ? j.profiles.full_name : 'Bilinmiyor';
-                tbody.innerHTML += `<tr><td><b>${j.title}</b><br><small>${j.company}</small></td><td>${j.location}</td><td>${owner}</td><td>${new Date(j.created_at).toLocaleDateString()}</td><td><button class="btn btn-sm btn-danger" onclick="deleteItem('jobs', ${j.id}, loadJobs)">Sil</button></td></tr>`;
-            });
+            const tbody = document.getElementById('jobListBody'); tbody.innerHTML = '';
+            data.forEach(j => tbody.innerHTML += `<tr><td>${j.title}</td><td>${j.company}</td><td>${j.profiles?.full_name}</td><td>${new Date(j.created_at).toLocaleDateString()}</td><td><button class="btn btn-sm btn-danger" onclick="deleteItem('jobs', ${j.id}, loadJobs)">Sil</button></td></tr>`);
         }
 
         async function loadMentorships() {
             const { data } = await supabase.from('mentorships').select('*, mentor:mentor_id(full_name), mentee:mentee_id(full_name)').order('created_at', { ascending: false });
-            const tbody = document.getElementById('matchListBody');
-            tbody.innerHTML = '';
-            data.forEach(m => {
-                const statusColor = m.status === 'accepted' ? 'green' : (m.status === 'rejected' ? 'red' : 'orange');
-                tbody.innerHTML += `<tr><td>${m.mentor ? m.mentor.full_name : 'Silinmiş'}</td><td>${m.mentee ? m.mentee.full_name : 'Silinmiş'}</td><td style="color:${statusColor}; font-weight:bold;">${m.status.toUpperCase()}</td><td>${new Date(m.created_at).toLocaleDateString()}</td><td><button class="btn btn-sm btn-danger" onclick="deleteItem('mentorships', ${m.id}, loadMentorships)">Kaldır</button></td></tr>`;
-            });
+            const tbody = document.getElementById('matchListBody'); tbody.innerHTML = '';
+            data.forEach(m => tbody.innerHTML += `<tr><td>${m.mentor?.full_name}</td><td>${m.mentee?.full_name}</td><td>${m.status}</td><td>${new Date(m.created_at).toLocaleDateString()}</td><td><button class="btn btn-sm btn-danger" onclick="deleteItem('mentorships', ${m.id}, loadMentorships)">Sil</button></td></tr>`);
+        }
+
+        async function createNewEvent() {
+            const t = document.getElementById('evtTitle').value; const l = document.getElementById('evtLoc').value; const d = document.getElementById('evtDate').value;
+            if(!t || !d) return alert("Bilgileri girin");
+            await supabase.from('events').insert({ title: t, location: l, event_date: d });
+            showToast("Etkinlik Eklendi!");
         }
 
         async function sendBroadcast() {
-            const msg = document.getElementById('broadcastMsg').value;
-            if(!msg) return;
-            const { error } = await supabase.from('broadcasts').insert({ message: msg });
-            if(error) alert("Hata: " + error.message);
-            else { showToast("Duyuru gönderildi! 📢"); document.getElementById('broadcastMsg').value = ''; }
-        }
-
-        // DÜZELTİLEN VE İSMİ DEĞİŞTİRİLEN FONKSİYON
-        async function createNewEvent() {
-            const title = document.getElementById('evtTitle').value;
-            const loc = document.getElementById('evtLoc').value;
-            const date = document.getElementById('evtDate').value;
-            if(!title || !date) { alert("Lütfen başlık ve tarih giriniz!"); return; }
-
-            const btn = event.target; 
-            const originalText = btn.innerText;
-            btn.innerText = "Ekleniyor..."; btn.disabled = true;
-
-            const { data, error } = await supabase.from('events').insert([{ title: title, location: loc, event_date: date }]).select();
-
-            if (error) {
-                console.error("HATA:", error);
-                alert("KAYIT BAŞARISIZ! \n\n" + error.message);
-            } else {
-                showToast("Etkinlik Takvime Eklendi! 📅");
-                document.getElementById('evtTitle').value = '';
-                document.getElementById('evtLoc').value = '';
-                document.getElementById('evtDate').value = '';
-            }
-            btn.innerText = originalText; btn.disabled = false;
+            const m = document.getElementById('broadcastMsg').value;
+            if(m) { await supabase.from('broadcasts').insert({ message: m }); showToast("Duyuru Gönderildi"); }
         }
 
         async function deleteItem(table, id, reloadFunc) {
-            if(confirm("Emin misiniz?")) {
-                await supabase.from(table).delete().eq('id', id);
-                reloadFunc(); showToast("Silindi.");
-            }
+            if(confirm("Silinsin mi?")) { await supabase.from(table).delete().eq('id', id); reloadFunc(); showToast("Silindi"); }
         }
-        function filterTable(tableId, query) {
-            document.getElementById(tableId).querySelectorAll('tbody tr').forEach(row => { row.style.display = row.innerText.toLowerCase().includes(query.toLowerCase()) ? '' : 'none'; });
-        }
-        function showToast(msg) {
-            const t = document.getElementById('liveToast');
-            document.getElementById('toastMessage').innerText = msg;
-            t.style.display = 'block'; setTimeout(() => t.style.display = 'none', 3000);
-        }
+        function filterTable(tid, q) { document.getElementById(tid).querySelectorAll('tbody tr').forEach(r => r.style.display = r.innerText.toLowerCase().includes(q.toLowerCase())?'':'none'); }
+        function showToast(m) { const t = document.getElementById('liveToast'); document.getElementById('toastMessage').innerText=m; t.style.display='block'; setTimeout(()=>t.style.display='none', 3000); }
         async function logout() { await supabase.auth.signOut(); window.location.href = "index.html"; }
     </script>
 </body>
