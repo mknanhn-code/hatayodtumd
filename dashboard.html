@@ -9,9 +9,11 @@
     /* GENEL STİLLER */
     :root { --odtu-red: #E31E24; --odtu-dark: #2c3e50; --bg-light: #f4f6f9; --white: #ffffff; }
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
-    body { background-color: var(--bg-light); min-height: 100vh; display: block; }
+    
+    /* ÖNEMLİ: Sayfa yüklenirken içerik gizli başlar (Güvenlik İçin) */
+    body { background-color: var(--bg-light); min-height: 100vh; display: none; }
 
-    /* --- NAVBAR (MOBİL UYUMLU & SABİT) --- */
+    /* --- NAVBAR (SABİT & MOBİL UYUMLU) --- */
     .navbar { 
         width: 100%; height: 70px; background-color: var(--odtu-dark); 
         display: flex; align-items: center; justify-content: space-between; 
@@ -82,12 +84,12 @@
     #liveToast { position: fixed; top: 20px; right: 20px; background: white; padding: 15px 20px; border-radius: 8px; box-shadow: 0 5px 25px rgba(0,0,0,0.2); border-left: 6px solid #333; z-index: 9999; display: none; min-width: 320px; animation: slideIn 0.4s; font-family: 'Segoe UI', sans-serif; }
     @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
 
-    /* --- MOBİL UYUMLULUK (MEDIA QUERY) --- */
+    /* --- MOBİL UYUMLULUK --- */
     @media (max-width: 900px) {
         .navbar { padding: 0 15px; }
-        .hamburger { display: block; } /* İkonu göster */
+        .hamburger { display: block; }
         
-        /* Menüyü Gizle ve Yana Kaydır (Tam Ekran ve Opak) */
+        /* Menü Tam Ekran ve Opak */
         .nav-links {
             position: fixed; top: 70px; left: -100%; width: 100%; height: calc(100vh - 70px);
             background-color: var(--odtu-dark); flex-direction: column;
@@ -95,12 +97,12 @@
             transition: 0.4s ease-in-out; box-shadow: inset 0 10px 20px rgba(0,0,0,0.2);
             z-index: 4999;
         }
-        .nav-links.active { left: 0; } /* Menü Açılınca */
+        .nav-links.active { left: 0; }
         
         .nav-links a { font-size: 1.2rem; margin: 15px 0; width: 80%; justify-content: center; padding: 15px; color: white; }
         .nav-right { display: none; } /* Masaüstü butonu gizle */
         
-        /* Mobilde İçerik Düzeni */
+        /* İçerik Düzeni */
         .main-content { margin-top: 90px; padding: 20px; }
         .top-header { flex-direction: column; text-align: center; gap: 15px; }
         .dashboard-grid { grid-template-columns: 1fr; }
@@ -220,22 +222,25 @@
             const { data: { session } } = await supabase.auth.getSession();
             if (!session) { window.location.href = 'index.html'; return; }
 
+            // --- GÜVENLİK (GATEKEEPER) KONTROLÜ ---
             const { data: profile } = await supabase.from('profiles').select('*').eq('id', session.user.id).single();
             
-            // --- KAPI BEKÇİSİ (GATEKEEPER) ---
-            // Eğer profil yoksa veya is_approved true değilse içeri alma
+            // Onay YOKSA -> Uyar ve Çıkış Yap (Sayfa hala görünmez)
             if (!profile || profile.is_approved !== true) {
-                alert("⛔ Üyeliğiniz oluşturuldu ancak henüz yönetici onayı almadı.\n\nGüvenlik nedeniyle, yöneticimiz bilgilerinizi doğruladıktan sonra erişiminiz açılacaktır.\nLütfen daha sonra tekrar deneyin.");
+                alert("⛔ Hesabınız henüz yönetici onayı almamıştır.\nGüvenlik nedeniyle şu an erişim sağlayamazsınız.\nLütfen daha sonra tekrar deneyin.");
                 await supabase.auth.signOut(); 
                 window.location.href = 'index.html'; 
                 return;
             }
 
-            // --- İÇERİDEYİZ ---
+            // ONAY VARSA -> Sayfayı Göster
+            document.body.style.display = 'block';
+
+            // --- İÇERİK YÜKLEME ---
             if(profile) {
                 document.getElementById("userName").innerText = profile.full_name || "Üye";
                 
-                // Admin Butonu Göster/Gizle
+                // Admin Butonunu Aç
                 if(profile.roles && profile.roles.includes('admin') && document.getElementById('adminBtn')) {
                     document.getElementById('adminBtn').style.display = 'flex';
                 }
