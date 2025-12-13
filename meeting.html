@@ -3,14 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Etkinlik Üssü - Hatay ODTÜ MD</title>
+<title>Meeting Hub - Hatay ODTÜ MD</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
-    :root { --odtu-red: #E31E24; --odtu-dark: #2c3e50; --bg-light: #f4f6f9; --white: #ffffff; --meet-green: #00796b; }
+    :root { --odtu-red: #E31E24; --odtu-dark: #2c3e50; --bg-light: #f8f9fa; --white: #ffffff; }
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
-    body { background-color: var(--bg-light); display: block; min-height: 100vh; }
-    
-    /* NAVBAR (Masaüstü için Sabit) */
+    body { background-color: var(--bg-light); min-height: 100vh; color: #333; }
+
+    /* NAVBAR */
     .navbar { width: 100%; height: 70px; background-color: var(--odtu-dark); display: flex; align-items: center; justify-content: space-between; padding: 0 30px; position: fixed; top: 0; left: 0; z-index: 1000; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
     .nav-left { display: flex; align-items: center; gap: 15px; }
     .nav-logo { height: 50px; background: white; padding: 2px; border-radius: 5px; }
@@ -20,106 +20,146 @@
     .nav-links a:hover, .nav-links a.active { background-color: rgba(255,255,255,0.1); color: white; }
     .nav-right { display: flex; align-items: center; gap: 20px; }
     .logout-btn { color: #e74c3c; border: 1px solid #e74c3c; padding: 6px 15px; border-radius: 20px; text-decoration: none; transition: 0.3s; }
-    .logout-btn:hover { background: #e74c3c; color: white; }
 
-    /* İÇERİK */
+    /* ANA İÇERİK */
     .main-content { margin-top: 70px; padding: 40px; width: 100%; max-width: 1200px; margin-left: auto; margin-right: auto; }
-    .header-area { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
-    .create-btn { background: var(--odtu-red); color: white; border: none; padding: 12px 25px; border-radius: 8px; cursor: pointer; font-weight: bold; display: flex; align-items: center; gap: 10px; transition: 0.3s; }
-    .rooms-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px; }
-    .room-card { background: white; border-radius: 15px; padding: 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); position: relative; border-top: 5px solid var(--meet-green); display: flex; flex-direction: column; transition: 0.3s; }
-    .room-card:hover { transform: translateY(-5px); box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
-    .room-status { position: absolute; top: 15px; right: 15px; background: #e0f2f1; color: var(--meet-green); padding: 5px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: bold; display: flex; align-items: center; gap: 5px; }
-    .pulsing-dot { width: 8px; height: 8px; background-color: var(--meet-green); border-radius: 50%; animation: pulse 1.5s infinite; }
-    @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; } }
-    .room-title { font-size: 1.2rem; font-weight: bold; color: #333; margin-bottom: 5px; }
-    .room-topic { color: #666; font-size: 0.9rem; margin-bottom: 20px; flex: 1; }
-    .room-host { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; font-size: 0.85rem; color: #555; }
-    .host-avatar { width: 30px; height: 30px; background: #eee; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-weight: bold; color: #777; }
-    .join-btn { width: 100%; padding: 10px; background: var(--meet-green); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; text-decoration: none; display: block; text-align: center; transition: 0.3s; }
-    .join-btn:hover { background: #004d40; }
-    .delete-btn { background: transparent; color: #999; border: none; cursor: pointer; font-size: 0.8rem; margin-top: 10px; width: 100%; text-decoration: underline; }
-    .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 2000; display: none; justify-content: center; align-items: center; }
-    .modal-content { background: white; padding: 30px; border-radius: 12px; width: 90%; max-width: 500px; animation: slideDown 0.3s; }
-    @keyframes slideDown { from { transform: translateY(-50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-    .form-group { margin-bottom: 15px; }
-    .form-group label { display: block; margin-bottom: 5px; font-weight: bold; }
-    .form-control { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px; outline: none; }
-    .input-wrapper { display: flex; gap: 10px; }
-    .btn-generate { background: #3498db; color: white; border: none; padding: 0 15px; border-radius: 6px; cursor: pointer; font-size: 0.8rem; white-space: nowrap; }
     
-    /* TOAST BİLDİRİM ANİMASYONU */
-    @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+    .hub-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 30px; border-bottom: 2px solid #eee; padding-bottom: 20px; }
+    .hub-header h2 { font-size: 2rem; color: var(--odtu-dark); margin: 0; }
+    .hub-header p { color: #666; margin: 5px 0 0 0; }
 
-    /* MOBİL DÜZELTME */
+    /* --- YENİ: KİŞİ DAVET KUTUSU --- */
+    .invite-box { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 5px 20px rgba(0,0,0,0.05); margin-bottom: 40px; display: flex; align-items: center; gap: 20px; border: 1px solid #e0e0e0; }
+    .invite-icon { width: 60px; height: 60px; background: #e3f2fd; color: #1565c0; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; flex-shrink: 0; }
+    .invite-content { flex: 1; }
+    .btn-invite { background: var(--odtu-dark); color: white; padding: 12px 25px; border-radius: 8px; font-weight: bold; border: none; cursor: pointer; display: flex; align-items: center; gap: 10px; transition: 0.3s; }
+    .btn-invite:hover { background: #1f2937; transform: translateY(-2px); }
+
+    /* GRID */
+    .meetings-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
+    .section-box { background: white; border-radius: 15px; padding: 25px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); min-height: 400px; }
+    .section-title { font-size: 1.2rem; font-weight: bold; color: var(--odtu-dark); margin-bottom: 20px; border-bottom: 1px solid #eee; padding-bottom: 10px; }
+
+    /* KARTLAR */
+    .meeting-card { display: flex; justify-content: space-between; align-items: center; padding: 15px; border: 1px solid #eee; border-radius: 10px; margin-bottom: 15px; transition: 0.2s; background: white; }
+    .meeting-card:hover { border-color: #bbb; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
+    .meeting-card.live { border-left: 5px solid #27ae60; background: #f0fdf4; }
+    
+    .m-date { background: #f8f9fa; color: #555; padding: 8px 12px; border-radius: 8px; text-align: center; min-width: 65px; margin-right: 15px; font-weight: bold; border: 1px solid #eee; }
+    .m-info h4 { margin: 0 0 5px 0; font-size: 1rem; color: #333; }
+    .m-info p { margin: 0; font-size: 0.85rem; color: #666; }
+    
+    .btn-join { background: #27ae60; color: white; padding: 8px 15px; border-radius: 6px; text-decoration: none; font-size: 0.85rem; font-weight: bold; display: flex; align-items: center; gap: 5px; animation: pulse 2s infinite; }
+    .btn-wait { background: #eee; color: #999; padding: 8px 15px; border-radius: 6px; font-size: 0.8rem; cursor: not-allowed; }
+    
+    @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(39, 174, 96, 0.7); } 70% { box-shadow: 0 0 0 10px rgba(39, 174, 96, 0); } 100% { box-shadow: 0 0 0 0 rgba(39, 174, 96, 0); } }
+
+    /* MODAL (Kişi Seçimi) */
+    .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 2000; display: none; justify-content: center; align-items: center; }
+    .modal-content { background: white; padding: 30px; border-radius: 12px; width: 90%; max-width: 500px; position: relative; }
+    .close-modal { position: absolute; top: 15px; right: 20px; font-size: 1.5rem; cursor: pointer; color: #777; }
+    
+    .search-box { position: relative; margin-bottom: 15px; }
+    .search-input { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; outline: none; }
+    .search-results { max-height: 200px; overflow-y: auto; border: 1px solid #eee; border-top: none; display: none; position: absolute; width: 100%; background: white; z-index: 10; box-shadow: 0 5px 15px rgba(0,0,0,0.1); border-radius: 0 0 8px 8px; }
+    .user-item { padding: 10px; border-bottom: 1px solid #f9f9f9; cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
+    .user-item:hover { background: #f0f8ff; }
+    .selected-user { background: #e3f2fd; padding: 10px; border-radius: 6px; margin-bottom: 15px; display: none; color: #1565c0; font-weight: bold; border: 1px solid #90caf9; }
+
     @media (max-width: 900px) {
-        .navbar { 
-            height: auto; 
-            flex-direction: column; 
-            padding: 15px; 
-            position: relative; /* DÜZELTME: Mobilde sabit olmasın, aksın */
-        }
-        .nav-links { flex-wrap: wrap; justify-content: center; width: 100%; gap: 10px; }
-        .main-content { 
-            margin-top: 0; /* DÜZELTME: Navbar relative olduğu için boşluğa gerek yok */
-            padding: 20px; 
-        }
-        .header-area { flex-direction: column; gap: 20px; text-align: center; }
-        .create-btn { width: 100%; justify-content: center; }
-        .rooms-grid { grid-template-columns: 1fr; }
-        .modal-content { width: 95%; padding: 20px; }
+        .navbar { height: auto; flex-direction: column; padding: 15px; }
+        .nav-links { flex-wrap: wrap; justify-content: center; }
+        .main-content { padding: 20px; margin-top: 0; }
+        .meetings-grid { grid-template-columns: 1fr; }
+        .invite-box { flex-direction: column; text-align: center; }
+        .btn-invite { width: 100%; justify-content: center; }
     }
 </style>
 </head>
 <body>
+
     <nav class="navbar">
         <div class="nav-left"><img src="logo.png" class="nav-logo"><div class="nav-title">Hatay ODTÜ MD <span>Üye Portalı</span></div></div>
         <div class="nav-links">
-            <a href="dashboard.html"><i class="fa-solid fa-layer-group"></i> Panel</a>
-            <a href="meeting.html" class="active"><i class="fa-solid fa-video"></i> Meeting Hub</a>
-            <a href="mentor.html"><i class="fa-solid fa-handshake-angle"></i> Mentorluk</a>
-            <a href="career.html"><i class="fa-solid fa-briefcase"></i> Kariyer</a>
-            <a href="network.html"><i class="fa-solid fa-users-viewfinder"></i> Mezun Ağı</a>
-            <a href="profile.html" style="position:relative;">
-                <i class="fa-solid fa-user"></i> Profil 
-                <span id="globalBadge" style="position:absolute; top:-8px; right:-10px; background:#E31E24; color:white; font-size:0.7rem; padding:2px 6px; border-radius:10px; display:none; border:1px solid white;">0</span>
-            </a>
+            <a href="dashboard.html">Panel</a>
+            <a href="meeting.html" class="active" style="background:rgba(255,255,255,0.2); color:white;"><i class="fa-solid fa-video"></i> Meeting Hub</a>
+            <a href="mentor.html">Mentorluk</a>
+            <a href="career.html">Kariyer Lab</a>
+            <a href="network.html">Mezun Ağı</a>
+            <a href="profile.html">Profil</a>
         </div>
-        <div class="nav-right"><a href="#" class="logout-btn" onclick="logout()"><i class="fa-solid fa-right-from-bracket"></i> Çıkış</a></div>
+        <div class="nav-right"><a href="#" class="logout-btn" onclick="logout()">Çıkış</a></div>
     </nav>
 
     <div class="main-content">
-        <div class="header-area">
-            <div><h2>🎥 Etkinlik Üssü</h2><p style="color:#666;">Çalışma grupları kur, linki otomatik üret ve sohbete başla.</p></div>
-            <button class="create-btn" onclick="openModal()"><i class="fa-solid fa-plus"></i> Oda Oluştur</button>
-        </div>
-        <div class="rooms-grid" id="roomsList"><div style="text-align:center; width:100%; padding:40px; color:#999; grid-column: 1/-1;"><i class="fa-solid fa-spinner fa-spin fa-2x"></i><br><br>Yükleniyor...</div></div>
-    </div>
-
-    <div id="roomModal" class="modal-overlay">
-        <div class="modal-content">
-            <div style="display:flex; justify-content:space-between; margin-bottom:20px;"><h3>Yeni Oda Aç</h3><span onclick="closeModal()" style="cursor:pointer; font-size:1.5rem;">&times;</span></div>
-            <div class="form-group"><label>Oda Başlığı</label><input type="text" id="rName" class="form-control" placeholder="Örn: İngilizce Konuşma Kulübü"></div>
-            <div class="form-group"><label>Konu / Açıklama</label><input type="text" id="rTopic" class="form-control" placeholder="Örn: Herkes davetlidir."></div>
-            <div class="form-group">
-                <label>Toplantı Linki</label>
-                <div class="input-wrapper">
-                    <input type="url" id="rLink" class="form-control" placeholder="Link buraya gelecek...">
-                    <button class="btn-generate" type="button" onclick="generateAutoLink()"><i class="fa-solid fa-wand-magic-sparkles"></i> Link Üret</button>
-                </div>
-                <small style="color:#777; font-size:0.75rem;">Google Meet linki yapıştırabilir veya 'Link Üret' diyerek anında oluşturabilirsin.</small>
+        
+        <div class="hub-header">
+            <div>
+                <h2>Meeting Hub</h2>
+                <p>Toplantılarınızı yönetin veya yeni bir görüşme organize edin.</p>
             </div>
-            <button onclick="createRoom()" style="width:100%; padding:12px; background:var(--odtu-dark); color:white; border:none; border-radius:6px; font-weight:bold; cursor:pointer;">Odayı Başlat</button>
+        </div>
+
+        <div class="invite-box">
+            <div class="invite-icon"><i class="fa-solid fa-user-plus"></i></div>
+            <div class="invite-content">
+                <h3 style="margin:0 0 5px 0;">Birebir Görüşme Planla</h3>
+                <p style="margin:0; color:#666;">Topluluktan bir üyeyi (Öğrenci veya Mezun) seçin ve özel bir online görüşme odası oluşturun.</p>
+            </div>
+            <button class="btn-invite" onclick="openInviteModal()"><i class="fa-regular fa-calendar-plus"></i> Toplantı Ayarla</button>
+        </div>
+
+        <div class="meetings-grid">
+            <div class="section-box">
+                <div class="section-title"><i class="fa-solid fa-calendar-day" style="color:#2c3e50;"></i> Randevularım</div>
+                <div id="myMeetingsList">
+                    <div style="text-align:center; padding:20px; color:#999;"><i class="fa-solid fa-spinner fa-spin"></i> Yükleniyor...</div>
+                </div>
+            </div>
+
+            <div class="section-box">
+                <div class="section-title"><i class="fa-solid fa-users" style="color:#2c3e50;"></i> Genel Etkinlikler</div>
+                <div id="publicEventsList">
+                    <div style="text-align:center; padding:20px; color:#999;"><i class="fa-solid fa-spinner fa-spin"></i> Yükleniyor...</div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div id="inviteModal" class="modal-overlay">
+        <div class="modal-content">
+            <span class="close-modal" onclick="document.getElementById('inviteModal').style.display='none'">&times;</span>
+            <h3 style="margin-top:0;">👥 Kişi Seç & Davet Et</h3>
+            
+            <label style="font-weight:bold; display:block; margin-bottom:5px;">Kimi arıyorsunuz?</label>
+            <div class="search-box">
+                <input type="text" id="userSearchInput" class="search-input" placeholder="İsim yazın (En az 3 harf)..." onkeyup="searchUsers(this.value)">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+
+            <div id="selectedUserBox" class="selected-user">
+                Seçilen: <span id="selectedUserName"></span>
+                <input type="hidden" id="selectedUserId">
+                <i class="fa-solid fa-times" style="float:right; cursor:pointer;" onclick="clearSelection()"></i>
+            </div>
+
+            <div style="margin-bottom:15px;">
+                <label style="font-weight:bold; display:block; margin-bottom:5px;">Tarih ve Saat</label>
+                <input type="datetime-local" id="inviteDate" class="search-input">
+            </div>
+            
+            <div style="margin-bottom:20px;">
+                <label style="font-weight:bold; display:block; margin-bottom:5px;">Konu (Başlık)</label>
+                <input type="text" id="inviteTopic" class="search-input" placeholder="Örn: Proje Hakkında...">
+            </div>
+
+            <button class="btn-invite" style="width:100%; justify-content:center;" onclick="sendInvitation()">Daveti Gönder</button>
         </div>
     </div>
 
-    <div id="liveToast" style="position: fixed; top: 20px; right: 20px; background: white; padding: 15px 20px; border-radius: 8px; box-shadow: 0 5px 25px rgba(0,0,0,0.2); border-left: 6px solid #333; z-index: 9999; display: none; min-width: 320px; animation: slideIn 0.4s; font-family: 'Segoe UI', sans-serif;">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-            <strong id="toastTitle" style="font-size:1rem; display:flex; align-items:center; gap:8px;"></strong>
-            <span onclick="document.getElementById('liveToast').style.display='none'" style="cursor:pointer; color:#aaa; font-size:1.2rem;">&times;</span>
-        </div>
-        <p id="toastMessage" style="color:#555; font-size:0.9rem; margin:0; line-height:1.4;">...</p>
-    </div>
+    <div id="liveToast" style="position: fixed; top: 20px; right: 20px; background: white; padding: 15px 20px; border-radius: 8px; box-shadow: 0 5px 25px rgba(0,0,0,0.2); border-left: 6px solid #27ae60; z-index: 9999; display: none; min-width: 300px; animation: slideIn 0.4s;"><strong id="toastTitle" style="color:#27ae60;">Başarılı!</strong><p id="toastMessage" style="margin:5px 0 0 0; color:#555;">...</p></div>
+    <style>@keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }</style>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
@@ -129,86 +169,156 @@
         let currentUser = null;
 
         document.addEventListener("DOMContentLoaded", async () => {
-            if(!supabase) return;
             const { data: { session } } = await supabase.auth.getSession();
             if (!session) { window.location.href = 'index.html'; return; }
-            
             currentUser = session.user;
-            if(!currentUser.user_metadata.full_name) {
-                const { data } = await supabase.from('profiles').select('full_name').eq('id', currentUser.id).single();
-                currentUser.user_metadata.full_name = data?.full_name || "Üye";
-            }
-            loadRooms(); checkGlobalNotifications(); setupRealtime(session.user.id);
+            
+            loadMyMeetings();
+            loadPublicEvents();
         });
 
-        async function loadRooms() {
-            const list = document.getElementById('roomsList');
-            const { data, error } = await supabase.from('virtual_rooms').select('*').order('created_at', { ascending: false });
-            if (error) { console.error(error); return; }
-            if (!data || data.length === 0) { list.innerHTML = '<div style="text-align:center; padding:40px; color:#777; grid-column: 1/-1;">Aktif oda yok.</div>'; return; }
+        // --- KİŞİ ARAMA VE SEÇME ---
+        function openInviteModal() { document.getElementById('inviteModal').style.display='flex'; }
+        
+        async function searchUsers(query) {
+            const resBox = document.getElementById('searchResults');
+            if(query.length < 3) { resBox.style.display='none'; return; }
+
+            const { data } = await supabase.from('profiles').select('id, full_name, user_type')
+                .ilike('full_name', `%${query}%`).limit(5);
+            
+            resBox.innerHTML = '';
+            if(data && data.length > 0) {
+                resBox.style.display = 'block';
+                data.forEach(u => {
+                    if(u.id === currentUser.id) return; // Kendini seçme
+                    resBox.innerHTML += `<div class="user-item" onclick="selectUser('${u.id}', '${u.full_name}')">
+                        <span><b>${u.full_name}</b> <small>(${u.user_type === 'student' ? 'Öğrenci' : 'Mezun'})</small></span>
+                        <i class="fa-solid fa-plus"></i>
+                    </div>`;
+                });
+            } else { resBox.style.display='none'; }
+        }
+
+        function selectUser(id, name) {
+            document.getElementById('selectedUserId').value = id;
+            document.getElementById('selectedUserName').innerText = name;
+            document.getElementById('selectedUserBox').style.display = 'block';
+            document.getElementById('searchResults').style.display = 'none';
+            document.getElementById('userSearchInput').value = '';
+        }
+
+        function clearSelection() {
+            document.getElementById('selectedUserId').value = '';
+            document.getElementById('selectedUserBox').style.display = 'none';
+        }
+
+        // --- DAVETİ KAYDETME ---
+        async function sendInvitation() {
+            const targetId = document.getElementById('selectedUserId').value;
+            const date = document.getElementById('inviteDate').value;
+            const topic = document.getElementById('inviteTopic').value;
+
+            if(!targetId || !date || !topic) { alert("Lütfen tüm alanları doldurun."); return; }
+
+            const btn = event.target; btn.innerText = "Gönderiliyor..."; btn.disabled = true;
+
+            // mock_interviews tablosunu 'Birebir Görüşme' olarak kullanıyoruz
+            // mentor_id sütununu 'davet edilen kişi' olarak kullanacağız.
+            const { error } = await supabase.from('mock_interviews').insert({
+                user_id: currentUser.id,      // Davet eden
+                mentor_id: targetId,          // Davet edilen (Bu sütun UUID tutar, uygundur)
+                interview_type: topic,        // Konu
+                requested_date: date,         // Tarih
+                status: 'accepted'            // Doğrudan onaylı (Veya 'pending' yapılabilir)
+            });
+
+            if(error) {
+                alert("Hata: " + error.message);
+            } else {
+                showToast("Davet Başarıyla Oluşturuldu!");
+                document.getElementById('inviteModal').style.display = 'none';
+                clearSelection();
+                loadMyMeetings(); // Listeyi yenile
+            }
+            btn.innerText = "Daveti Gönder"; btn.disabled = false;
+        }
+
+        // --- LİSTELEME ---
+        async function loadMyMeetings() {
+            const list = document.getElementById('myMeetingsList');
+            // user_id (ben oluşturdum) VEYA mentor_id (bana davet geldi)
+            const { data } = await supabase.from('mock_interviews')
+                .select('*, profiles:mentor_id(full_name), inviter:user_id(full_name)') // İsimleri çekmek için join
+                .or(`user_id.eq.${currentUser.id},mentor_id.eq.${currentUser.id}`)
+                .order('requested_date', { ascending: true });
+
+            if (!data || data.length === 0) {
+                list.innerHTML = '<p style="color:#999; text-align:center;">Görüşmeniz yok.</p>'; return;
+            }
+
             list.innerHTML = '';
-            data.forEach(room => {
-                const isMyRoom = (room.created_by === currentUser.id);
-                const deleteBtn = isMyRoom ? `<button class="delete-btn" onclick="deleteRoom(${room.id})">Odayı Kapat</button>` : '';
-                const avatarInitials = room.creator_name ? room.creator_name.substring(0,2).toUpperCase() : 'ME';
-                list.insertAdjacentHTML('beforeend', `<div class="room-card"><div class="room-status"><div class="pulsing-dot"></div> Canlı</div><div class="room-title">${room.room_name}</div><div class="room-topic">${room.topic || ''}</div><div class="room-host"><div class="host-avatar">${avatarInitials}</div><div>Moderatör: <strong>${room.creator_name}</strong></div></div><a href="${room.meet_link}" target="_blank" class="join-btn"><i class="fa-solid fa-video"></i> Katıl</a>${deleteBtn}</div>`);
+            data.forEach(m => {
+                const date = new Date(m.requested_date);
+                const isMine = m.user_id === currentUser.id;
+                
+                // Eğer ben oluşturduysam karşı tarafın adını, bana geldiyse oluşturanın adını göster
+                // Not: profiles ve inviter verileri bazen dizi bazen obje gelebilir, kontrol edelim.
+                let otherName = "Bilinmeyen";
+                if (isMine) {
+                    otherName = m.profiles ? (Array.isArray(m.profiles) ? m.profiles[0]?.full_name : m.profiles.full_name) : "Silinmiş Üye";
+                } else {
+                    otherName = m.inviter ? (Array.isArray(m.inviter) ? m.inviter[0]?.full_name : m.inviter.full_name) : "Silinmiş Üye";
+                }
+
+                const roomName = `ODTU_Meet_${m.id}`;
+                const link = `https://meet.jit.si/${roomName}`;
+                
+                // Zaman kontrolü
+                const diff = date - new Date();
+                let btn = '';
+                if (diff > 10 * 60 * 1000) btn = `<div class="btn-wait">${date.toLocaleTimeString().substr(0,5)}</div>`; // 10 dk'dan çok var
+                else if (diff > -3600000) btn = `<a href="${link}" target="_blank" class="btn-join">Katıl</a>`; // Aktif
+                else btn = `<div class="btn-wait">Bitti</div>`;
+
+                list.innerHTML += `
+                <div class="meeting-card ${diff > -3600000 && diff < 600000 ? 'live' : ''}">
+                    <div style="display:flex; align-items:center;">
+                        <div class="m-date"><div>${date.getDate()}</div><small>${date.toLocaleString('tr-TR',{month:'short'})}</small></div>
+                        <div class="m-info">
+                            <h4>${m.interview_type}</h4>
+                            <p><i class="fa-solid fa-user"></i> ${otherName} ile</p>
+                        </div>
+                    </div>
+                    ${btn}
+                </div>`;
             });
         }
 
-        function generateAutoLink() {
-            const uniqueId = Math.random().toString(36).substring(7);
-            const link = `https://meet.jit.si/HatayODTU-${uniqueId}`;
-            document.getElementById('rLink').value = link;
-            const input = document.getElementById('rLink');
-            input.style.borderColor = "#27ae60"; input.style.backgroundColor = "#e8f5e9";
-            setTimeout(() => { input.style.borderColor = "#ddd"; input.style.backgroundColor = "white"; }, 500);
-        }
-
-        async function createRoom() {
-            const name = document.getElementById('rName').value;
-            const topic = document.getElementById('rTopic').value;
-            const link = document.getElementById('rLink').value;
-            if (!name || !link) { alert("Başlık ve Link zorunludur!"); return; }
-            const { error } = await supabase.from('virtual_rooms').insert({ room_name: name, topic: topic, meet_link: link, created_by: currentUser.id, creator_name: currentUser.user_metadata.full_name });
-            if (!error) { closeModal(); loadRooms(); alert("Oda açıldı!"); }
-            else alert("Hata: " + error.message);
-        }
-
-        async function deleteRoom(id) { if(confirm("Odayı kapatmak istiyor musunuz?")) { await supabase.from('virtual_rooms').delete().eq('id', id); loadRooms(); } }
-        function openModal() { document.getElementById('roomModal').style.display='flex'; }
-        function closeModal() { document.getElementById('roomModal').style.display='none'; }
-
-        // --- BİLDİRİM FONKSİYONLARI ---
-        async function checkGlobalNotifications() {
-            const { data: { session } } = await supabase.auth.getSession();
-            if(!session) return;
-            const { count } = await supabase.from('direct_messages').select('*', { count: 'exact', head: true }).eq('receiver_id', session.user.id).eq('is_read', false);
-            const badge = document.getElementById('globalBadge');
-            if(badge && count > 0) { badge.style.display = 'inline-block'; badge.innerText = count; } else { badge.style.display = 'none'; }
-        }
-
-        function setupRealtime(userId) {
-            const channel = supabase.channel('global-alerts');
-            channel.on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'broadcasts' }, payload => { showNotification("YÖNETİM DUYURUSU", payload.new.message, "admin"); });
-            channel.on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'direct_messages', filter: `receiver_id=eq.${userId}` }, payload => {
-                showNotification(`💬 ${payload.new.sender_name || 'Bir Üye'}`, payload.new.content, "user");
-                checkGlobalNotifications();
+        async function loadPublicEvents() {
+            const list = document.getElementById('publicEventsList');
+            const { data } = await supabase.from('events').select('*').gte('event_date', new Date().toISOString().split('T')[0]).order('event_date');
+            
+            if(!data || data.length===0) { list.innerHTML='<p style="text-align:center; color:#999">Etkinlik yok.</p>'; return; }
+            
+            list.innerHTML='';
+            data.forEach(e => {
+                const d = new Date(e.event_date);
+                const isToday = new Date().toDateString() === d.toDateString();
+                const btn = isToday ? `<a href="https://meet.jit.si/ODTU_Event_${e.id}" target="_blank" class="btn-join">Katıl</a>` : `<div class="btn-wait">${d.toLocaleDateString()}</div>`;
+                
+                list.innerHTML += `
+                <div class="meeting-card ${isToday?'live':''}">
+                    <div style="display:flex; align-items:center;">
+                        <div class="m-date" style="background:#f3e5f5; color:#7b1fa2;"><div>${d.getDate()}</div><small>${d.toLocaleString('tr-TR',{month:'short'})}</small></div>
+                        <div class="m-info"><h4>${e.title}</h4><p>${e.location}</p></div>
+                    </div>
+                    ${btn}
+                </div>`;
             });
-            channel.subscribe();
         }
 
-        function showNotification(title, msg, type) {
-            const toast = document.getElementById('liveToast');
-            const titleEl = document.getElementById('toastTitle');
-            const msgEl = document.getElementById('toastMessage');
-            msgEl.innerText = msg;
-            if (type === 'admin') { toast.style.borderLeftColor = "#8e44ad"; titleEl.style.color = "#8e44ad"; titleEl.innerHTML = `<i class="fa-solid fa-tower-broadcast"></i> ${title}`; } 
-            else { toast.style.borderLeftColor = "#3498db"; titleEl.style.color = "#3498db"; titleEl.innerHTML = `${title}`; }
-            toast.style.display = 'block';
-            new Audio('https://actions.google.com/sounds/v1/alarms/beep_short.ogg').play().catch(()=>{});
-            setTimeout(() => { toast.style.display = 'none'; }, 6000);
-        }
-
+        function showToast(msg) { const t = document.getElementById('liveToast'); document.getElementById('toastMessage').innerText = msg; t.style.display='block'; setTimeout(()=>t.style.display='none', 3000); }
         async function logout() { await supabase.auth.signOut(); window.location.href = "index.html"; }
     </script>
 </body>
