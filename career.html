@@ -59,7 +59,7 @@
 
     /* --- BÖLÜM 2: HARİTA --- */
     .map-section { background: white; padding: 20px; border-radius: 15px; box-shadow: 0 5px 20px rgba(0,0,0,0.05); margin-bottom: 20px; border: 1px solid #eee; }
-    #alumniMap { width: 100%; height: 400px; border-radius: 10px; z-index: 1; }
+    #alumniMap { width: 100%; height: 450px; border-radius: 10px; z-index: 1; }
 
     /* --- BÖLÜM 3: İŞ İLANLARI --- */
     .job-list { background: white; border-radius: 12px; box-shadow: 0 2px 15px rgba(0,0,0,0.05); overflow: hidden; }
@@ -184,7 +184,7 @@
     
     <div id="applicantsModal" class="modal-overlay"><div class="modal-content"><span class="modal-close" onclick="closeModal('applicantsModal')">&times;</span><div class="modal-h">Başvurular</div><div id="applicantsList"></div></div></div>
 
-    <div id="cvModal" class="modal-overlay"><div class="modal-content"><span class="modal-close" onclick="closeModal('cvModal')">&times;</span><h3>📄 CV İncelemesi</h3><div class="form-group"><label>Dosya Linki</label><input type="url" id="cvLink" class="form-control"></div><div class="form-group"><label>Not</label><textarea id="cvNote" class="form-control"></textarea></div><button class="btn-submit" onclick="submitCV()">Gönder</button></div></div>
+    <div id="cvModal" class="modal-overlay"><div class="modal-content"><span class="modal-close" onclick="closeModal('cvModal')">&times;</span><h3>📄 CV İncelemesi</h3><div class="form-group"><label>Dosya Linki</label><input type="url" id="cvLink" class="form-control" placeholder="https://..."></div><div class="form-group"><label>Not</label><textarea id="cvNote" class="form-control"></textarea></div><button class="btn-submit" onclick="submitCV()">Gönder</button></div></div>
     
     <div id="intModal" class="modal-overlay"><div class="modal-content"><span class="modal-close" onclick="closeModal('intModal')">&times;</span><h3>🎙️ Mülakat</h3><div class="form-group"><label>Tür</label><select id="intType" class="form-control"><option>İK</option><option>Teknik</option></select></div><div class="form-group"><label>Tarih</label><input type="datetime-local" id="intDate" class="form-control"></div><button class="btn-submit" onclick="submitInt()">İste</button></div></div>
     
@@ -192,7 +192,7 @@
     
     <div id="acaModal" class="modal-overlay"><div class="modal-content"><span class="modal-close" onclick="closeModal('acaModal')">&times;</span><h3>🎓 Akademik</h3><div class="form-group"><label>Konu</label><input type="text" id="acaTopic" class="form-control"></div><div class="form-group"><label>Hedef</label><select id="acaDeg" class="form-control"><option>Master</option><option>PhD</option></select></div><button class="btn-submit" onclick="submitAca()">Eşleş</button></div></div>
     
-    <div id="casModal" class="modal-overlay"><div class="modal-content"><span class="modal-close" onclick="closeModal('casModal')">&times;</span><h3>🧩 Vaka</h3><div class="form-group"><label>Konu</label><input type="text" id="casTopic" class="form-control"></div><div class="form-group"><label>Çözüm Linki</label><input type="url" id="casLink" class="form-control"></div><button class="btn-submit" onclick="submitCas()">Gönder</button></div></div>
+    <div id="casModal" class="modal-overlay"><div class="modal-content"><span class="modal-close" onclick="closeModal('casModal')">&times;</span><h3>🧩 Vaka</h3><div class="form-group"><label>Konu</label><input type="text" id="casTopic" class="form-control"></div><div class="form-group"><label>Çözüm Linki</label><input type="url" id="casLink" class="form-control" placeholder="https://..."></div><button class="btn-submit" onclick="submitCas()">Gönder</button></div></div>
 
     <div id="liveToast" style="position: fixed; top: 20px; right: 20px; background: white; padding: 15px 20px; border-radius: 8px; box-shadow: 0 5px 25px rgba(0,0,0,0.2); border-left: 6px solid #27ae60; z-index: 9999; display: none; min-width: 300px; animation: slideIn 0.4s;"><strong id="toastTitle" style="color:#27ae60;">Başarılı!</strong><p id="toastMessage" style="margin:5px 0 0 0; color:#555;">...</p></div>
     <style>@keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }</style>
@@ -216,12 +216,23 @@
             loadJobs();
         });
 
-        // HARİTA
-        function initMap() {
-            var map = L.map('alumniMap').setView([39, 35], 2);
+        // HARİTA (GERÇEK VERİ)
+        async function initMap() {
+            var map = L.map('alumniMap').setView([39, 35], 3);
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
-            const pts = [{lat:39.89,lng:32.78,t:"Ankara"}, {lat:41.00,lng:28.97,t:"İstanbul"}, {lat:52.52,lng:13.40,t:"Berlin"}, {lat:37.77,lng:-122.41,t:"San Francisco"}];
-            pts.forEach(p => L.marker([p.lat,p.lng]).addTo(map).bindPopup(p.t));
+
+            const { data, error } = await supabase
+                .from('profiles')
+                .select('full_name, company, latitude, longitude, user_type')
+                .not('latitude', 'is', null); 
+
+            if (data) {
+                data.forEach(p => {
+                    const role = p.user_type === 'student' ? 'Öğrenci' : 'Mezun';
+                    const detail = p.company ? p.company : role;
+                    L.marker([p.latitude, p.longitude]).addTo(map).bindPopup(`<b>${p.full_name}</b><br>${detail}`);
+                });
+            }
         }
 
         // İŞ İLANLARI MANTIĞI
@@ -268,52 +279,12 @@
             document.getElementById('applicantsList').innerHTML = html || 'Başvuru yok.';
         }
 
-        // --- LAB MODÜLLERİ (DÜZELTİLDİ: student_id -> user_id) ---
-        
-        // 1. CV (Tablo adı: cv_reviews)
-        async function submitCV() { 
-            handleLab('cv_reviews', { 
-                user_id: currentUser.id, // DÜZELTİLDİ
-                cv_url: document.getElementById('cvLink').value, 
-                note: document.getElementById('cvNote').value 
-            }, 'cvModal'); 
-        }
-        
-        // 2. Mülakat (Tablo adı: mock_interviews)
-        async function submitInt() { 
-            handleLab('mock_interviews', { 
-                user_id: currentUser.id, // DÜZELTİLDİ
-                interview_type: document.getElementById('intType').value, 
-                requested_date: document.getElementById('intDate').value 
-            }, 'intModal'); 
-        }
-        
-        // 3. Gölgeleme (Tablo adı: job_shadowing)
-        async function submitSha() { 
-            handleLab('job_shadowing', { 
-                user_id: currentUser.id, // DÜZELTİLDİ
-                sector: document.getElementById('shaSec').value, 
-                motivation: document.getElementById('shaMot').value 
-            }, 'shadowModal'); 
-        }
-        
-        // 4. Akademik (Tablo adı: academic_matches)
-        async function submitAca() { 
-            handleLab('academic_matches', { 
-                user_id: currentUser.id, // DÜZELTİLDİ
-                research_topic: document.getElementById('acaTopic').value, 
-                target_degree: document.getElementById('acaDeg').value 
-            }, 'acaModal'); 
-        }
-        
-        // 5. Vaka (Tablo adı: case_submissions)
-        async function submitCas() { 
-            handleLab('case_submissions', { 
-                user_id: currentUser.id, // DÜZELTİLDİ
-                case_topic: document.getElementById('casTopic').value, 
-                solution_url: document.getElementById('casLink').value 
-            }, 'casModal'); 
-        }
+        // --- LAB MODÜLLERİ (DÜZELTİLDİ: user_id KULLANIMI) ---
+        async function submitCV() { handleLab('cv_reviews', { user_id: currentUser.id, cv_url: document.getElementById('cvLink').value, note: document.getElementById('cvNote').value }, 'cvModal'); }
+        async function submitInt() { handleLab('mock_interviews', { user_id: currentUser.id, interview_type: document.getElementById('intType').value, requested_date: document.getElementById('intDate').value }, 'intModal'); }
+        async function submitSha() { handleLab('job_shadowing', { user_id: currentUser.id, sector: document.getElementById('shaSec').value, motivation: document.getElementById('shaMot').value }, 'shadowModal'); }
+        async function submitAca() { handleLab('academic_matches', { user_id: currentUser.id, research_topic: document.getElementById('acaTopic').value, target_degree: document.getElementById('acaDeg').value }, 'acaModal'); }
+        async function submitCas() { handleLab('case_submissions', { user_id: currentUser.id, case_topic: document.getElementById('casTopic').value, solution_url: document.getElementById('casLink').value }, 'casModal'); }
 
         async function handleLab(table, data, modalId) {
             const { error } = await supabase.from(table).insert(data);
