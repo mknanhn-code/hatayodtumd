@@ -47,6 +47,8 @@
     .badge-student { background: #e0f2fe; color: #0284c7; }
     .badge-grad { background: #dcfce7; color: #166534; }
     .badge-admin { background: #fae8ff; color: #86198f; }
+    .badge-mentor { background: #ffedd5; color: #c2410c; }
+    .badge-user { background: #f1f5f9; color: #64748b; }
     
     /* Talep Türü Rozetleri */
     .badge-cv { background: #dbeafe; color: #1e40af; border: 1px solid #93c5fd; }
@@ -203,58 +205,48 @@
             document.getElementById('pageTitle').innerText = titles[id];
         }
 
-        // --- YENİ: GELİŞİM TALEPLERİNİ YÜKLEME ---
+        // --- YENİLENMİŞ GELİŞİM TALEPLERİ FONKSİYONU ---
         async function loadLabRequests() {
             const tbody = document.getElementById('reqListBody');
-            tbody.innerHTML = '<tr><td colspan="5">Yükleniyor...</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;"><i class="fa-solid fa-spinner fa-spin"></i> Yükleniyor...</td></tr>';
             
             let allReqs = [];
 
-            // 5 Tablodan Veri Çek ve Birleştir
-            const t1 = await supabase.from('cv_requests').select('id, created_at, cv_url, profiles(full_name)').order('created_at',{ascending:false});
-            const t2 = await supabase.from('mock_interviews').select('id, created_at, interview_type, requested_date, profiles(full_name)').order('created_at',{ascending:false});
-            const t3 = await supabase.from('job_shadowing').select('id, created_at, sector, profiles(full_name)').order('created_at',{ascending:false});
-            const t4 = await supabase.from('academic_matches').select('id, created_at, research_topic, profiles(full_name)').order('created_at',{ascending:false});
-            const t5 = await supabase.from('case_submissions').select('id, created_at, case_topic, solution_url, profiles(full_name)').order('created_at',{ascending:false});
+            try {
+                // user_id bağlantısı ile verileri çek
+                const t1 = await supabase.from('cv_requests').select('id, created_at, cv_url, user_id, profiles!user_id(full_name)');
+                const t2 = await supabase.from('mock_interviews').select('id, created_at, interview_type, requested_date, user_id, profiles!user_id(full_name)');
+                const t3 = await supabase.from('job_shadowing').select('id, created_at, sector, user_id, profiles!user_id(full_name)');
+                const t4 = await supabase.from('academic_matches').select('id, created_at, research_topic, user_id, profiles!user_id(full_name)');
+                const t5 = await supabase.from('case_submissions').select('id, created_at, case_topic, solution_url, user_id, profiles!user_id(full_name)');
 
-            if(t1.data) t1.data.forEach(x => allReqs.push({...x, type: 'CV Check', detail: `<a href="${x.cv_url}" target="_blank">Dosyayı Aç</a>`, table:'cv_requests'}));
-            if(t2.data) t2.data.forEach(x => allReqs.push({...x, type: 'Mülakat', detail: `${x.interview_type} - ${new Date(x.requested_date).toLocaleDateString()}`, table:'mock_interviews'}));
-            if(t3.data) t3.data.forEach(x => allReqs.push({...x, type: 'Gölgeleme', detail: x.sector, table:'job_shadowing'}));
-            if(t4.data) t4.data.forEach(x => allReqs.push({...x, type: 'Akademik', detail: x.research_topic, table:'academic_matches'}));
-            if(t5.data) t5.data.forEach(x => allReqs.push({...x, type: 'Vaka', detail: `${x.case_topic} (<a href="${x.solution_url}" target="_blank">Çözüm</a>)`, table:'case_submissions'}));
+                if(t1.data) t1.data.forEach(x => allReqs.push({...x, type: 'CV Check', detail: `<a href="${x.cv_url}" target="_blank">Dosya</a>`, table:'cv_requests'}));
+                if(t2.data) t2.data.forEach(x => allReqs.push({...x, type: 'Mülakat', detail: `${x.interview_type} - ${new Date(x.requested_date).toLocaleDateString()}`, table:'mock_interviews'}));
+                if(t3.data) t3.data.forEach(x => allReqs.push({...x, type: 'Gölgeleme', detail: x.sector, table:'job_shadowing'}));
+                if(t4.data) t4.data.forEach(x => allReqs.push({...x, type: 'Akademik', detail: x.research_topic, table:'academic_matches'}));
+                if(t5.data) t5.data.forEach(x => allReqs.push({...x, type: 'Vaka', detail: x.case_topic, table:'case_submissions'}));
 
-            // Tarihe göre yeniden sırala
+            } catch (err) { console.error(err); }
+
             allReqs.sort((a,b) => new Date(b.created_at) - new Date(a.created_at));
-
-            document.getElementById('statReqs').innerText = allReqs.length; // İstatistik güncelle
+            if(document.getElementById('statReqs')) document.getElementById('statReqs').innerText = allReqs.length;
 
             if(allReqs.length === 0) { tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; color:#999;">Henüz talep yok.</td></tr>'; return; }
 
             tbody.innerHTML = '';
             allReqs.forEach(r => {
-                let badgeClass = r.type==='CV Check'?'badge-cv':(r.type==='Mülakat'?'badge-int':(r.type==='Gölgeleme'?'badge-sha':(r.type==='Akademik'?'badge-aca':'badge-cas')));
-                
-                tbody.innerHTML += `
-                <tr>
-                    <td><b>${r.profiles ? r.profiles.full_name : 'Bilinmeyen'}</b></td>
-                    <td><span class="badge ${badgeClass}">${r.type}</span></td>
-                    <td>${r.detail}</td>
-                    <td>${new Date(r.created_at).toLocaleDateString()}</td>
-                    <td>
-                        <button class="btn btn-sm btn-success" onclick="completeReq('${r.table}', ${r.id})"><i class="fa-solid fa-check"></i></button>
-                        <button class="btn btn-sm btn-danger" onclick="deleteItem('${r.table}', ${r.id}, loadLabRequests)"><i class="fa-solid fa-trash"></i></button>
-                    </td>
-                </tr>`;
+                const badge = r.type==='CV Check'?'badge-cv':(r.type==='Mülakat'?'badge-int':(r.type==='Gölgeleme'?'badge-sha':(r.type==='Akademik'?'badge-aca':'badge-cas')));
+                tbody.innerHTML += `<tr><td><b>${r.profiles?.full_name || 'Silinmiş'}</b></td><td><span class="badge ${badge}">${r.type}</span></td><td>${r.detail}</td><td>${new Date(r.created_at).toLocaleDateString()}</td><td><button class="btn btn-sm btn-success" onclick="completeReq('${r.table}', ${r.id})"><i class="fa-solid fa-check"></i></button></td></tr>`;
             });
         }
-
+        
         async function completeReq(table, id) {
-            if(!confirm("Bu talep tamamlandı olarak işaretlensin mi? (Listeden silinecek)")) return;
-            await supabase.from(table).delete().eq('id', id); // Şimdilik siliyoruz, ileride status='completed' yapılabilir
-            loadLabRequests(); showToast("İşlem tamamlandı.");
+            if(confirm("Tamamlandı olarak işaretlensin mi?")) {
+                await supabase.from(table).delete().eq('id', id);
+                loadLabRequests();
+            }
         }
 
-        // --- DİĞER YÜKLEMELER (User, Job, Stats...) ---
         async function loadStats() {
             const { count: u } = await supabase.from('profiles').select('*', { count: 'exact', head: true });
             const { count: j } = await supabase.from('jobs').select('*', { count: 'exact', head: true });
