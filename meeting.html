@@ -3,7 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Etkinlik Üssü - Hatay ODTÜ MD</title>
+<title>Meeting Hub - Hatay ODTÜ MD</title>
+<script src='https://meet.jit.si/external_api.js'></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
     :root { --odtu-red: #E31E24; --odtu-dark: #2c3e50; --bg-light: #f8f9fa; --white: #ffffff; }
@@ -28,37 +29,51 @@
     .hub-header h2 { font-size: 2rem; color: var(--odtu-dark); margin: 0; }
     .hub-header p { color: #666; margin: 5px 0 0 0; }
 
-    /* --- YENİ: KİŞİ DAVET KUTUSU --- */
-    .invite-box { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 5px 20px rgba(0,0,0,0.05); margin-bottom: 40px; display: flex; align-items: center; gap: 20px; border: 1px solid #e0e0e0; }
-    .invite-icon { width: 60px; height: 60px; background: #e3f2fd; color: #1565c0; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; flex-shrink: 0; }
-    .invite-content { flex: 1; }
-    .btn-invite { background: var(--odtu-dark); color: white; padding: 12px 25px; border-radius: 8px; font-weight: bold; border: none; cursor: pointer; display: flex; align-items: center; gap: 10px; transition: 0.3s; }
-    .btn-invite:hover { background: #1f2937; transform: translateY(-2px); }
+    /* --- AKSİYON ALANI (İKİ KUTU YAN YANA) --- */
+    .actions-row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 40px; }
+    
+    .action-box { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 5px 20px rgba(0,0,0,0.05); display: flex; align-items: center; gap: 15px; border: 1px solid #e0e0e0; transition: 0.3s; }
+    .action-box:hover { transform: translateY(-3px); box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+    
+    .ab-icon { width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; flex-shrink: 0; }
+    .icon-flash { background: #fff3e0; color: #e67e22; } /* Turuncu: Hızlı */
+    .icon-invite { background: #e3f2fd; color: #1565c0; } /* Mavi: Davet */
+    
+    .ab-content h3 { margin: 0 0 5px 0; font-size: 1.1rem; color: #333; }
+    .ab-content p { margin: 0; font-size: 0.85rem; color: #666; }
 
-    /* GRID */
+    .btn-action { background: var(--odtu-dark); color: white; padding: 10px 20px; border-radius: 8px; font-weight: bold; border: none; cursor: pointer; white-space: nowrap; margin-left: auto; transition: 0.2s; }
+    .btn-action:hover { background: #1f2937; }
+
+    /* LİSTE GRID */
     .meetings-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
     .section-box { background: white; border-radius: 15px; padding: 25px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); min-height: 400px; }
     .section-title { font-size: 1.2rem; font-weight: bold; color: var(--odtu-dark); margin-bottom: 20px; border-bottom: 1px solid #eee; padding-bottom: 10px; }
 
-    /* KARTLAR */
+    /* KART TASARIMI */
     .meeting-card { display: flex; justify-content: space-between; align-items: center; padding: 15px; border: 1px solid #eee; border-radius: 10px; margin-bottom: 15px; transition: 0.2s; background: white; }
-    .meeting-card:hover { border-color: #bbb; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
+    .meeting-card:hover { border-color: #bbb; background: #f9f9f9; }
     .meeting-card.live { border-left: 5px solid #27ae60; background: #f0fdf4; }
     
     .m-date { background: #f8f9fa; color: #555; padding: 8px 12px; border-radius: 8px; text-align: center; min-width: 65px; margin-right: 15px; font-weight: bold; border: 1px solid #eee; }
     .m-info h4 { margin: 0 0 5px 0; font-size: 1rem; color: #333; }
     .m-info p { margin: 0; font-size: 0.85rem; color: #666; }
     
-    .btn-join { background: #27ae60; color: white; padding: 8px 15px; border-radius: 6px; text-decoration: none; font-size: 0.85rem; font-weight: bold; display: flex; align-items: center; gap: 5px; animation: pulse 2s infinite; }
+    /* Butonlar */
+    .btn-join { background: #27ae60; color: white; padding: 8px 15px; border-radius: 6px; text-decoration: none; font-size: 0.85rem; font-weight: bold; display: flex; align-items: center; gap: 5px; border: none; cursor: pointer; animation: pulse 2s infinite; }
     .btn-wait { background: #eee; color: #999; padding: 8px 15px; border-radius: 6px; font-size: 0.8rem; cursor: not-allowed; }
-    
     @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(39, 174, 96, 0.7); } 70% { box-shadow: 0 0 0 10px rgba(39, 174, 96, 0); } 100% { box-shadow: 0 0 0 0 rgba(39, 174, 96, 0); } }
 
-    /* MODAL (Kişi Seçimi) */
-    .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 2000; display: none; justify-content: center; align-items: center; }
-    .modal-content { background: white; padding: 30px; border-radius: 12px; width: 90%; max-width: 500px; position: relative; }
+    /* MODAL: SİNEMA MODU (VIDEO) */
+    .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 3000; display: none; justify-content: center; align-items: center; backdrop-filter: blur(5px); }
+    .video-modal-content { width: 95%; height: 90%; max-width: 1400px; background: #000; display: flex; flex-direction: column; border-radius: 12px; overflow: hidden; box-shadow: 0 0 50px rgba(0,0,0,0.5); }
+    .video-header { background: #222; color: white; padding: 15px 25px; display: flex; justify-content: space-between; align-items: center; }
+    #meet-frame { flex: 1; width: 100%; background: #111; }
+    .btn-hangup { background: #e74c3c; color: white; border: none; padding: 8px 20px; border-radius: 4px; cursor: pointer; font-weight: bold; }
+
+    /* MODAL: DAVET */
+    .invite-modal-content { background: white; padding: 30px; border-radius: 12px; width: 90%; max-width: 500px; position: relative; }
     .close-modal { position: absolute; top: 15px; right: 20px; font-size: 1.5rem; cursor: pointer; color: #777; }
-    
     .search-box { position: relative; margin-bottom: 15px; }
     .search-input { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; outline: none; }
     .search-results { max-height: 200px; overflow-y: auto; border: 1px solid #eee; border-top: none; display: none; position: absolute; width: 100%; background: white; z-index: 10; box-shadow: 0 5px 15px rgba(0,0,0,0.1); border-radius: 0 0 8px 8px; }
@@ -66,11 +81,15 @@
     .user-item:hover { background: #f0f8ff; }
     .selected-user { background: #e3f2fd; padding: 10px; border-radius: 6px; margin-bottom: 15px; display: none; color: #1565c0; font-weight: bold; border: 1px solid #90caf9; }
 
+    /* TOAST */
+    #liveToast { position: fixed; top: 20px; right: 20px; background: white; padding: 15px 20px; border-radius: 8px; box-shadow: 0 5px 25px rgba(0,0,0,0.2); border-left: 6px solid #27ae60; z-index: 9999; display: none; min-width: 300px; animation: slideIn 0.4s; }
+    @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+
     @media (max-width: 900px) {
         .navbar { height: auto; flex-direction: column; padding: 15px; }
         .nav-links { flex-wrap: wrap; justify-content: center; }
-        .main-content { padding: 20px; margin-top: 0; }
         .meetings-grid { grid-template-columns: 1fr; }
+        .actions-row { grid-template-columns: 1fr; }
         .invite-box { flex-direction: column; text-align: center; }
         .btn-invite { width: 100%; justify-content: center; }
     }
@@ -95,18 +114,29 @@
         
         <div class="hub-header">
             <div>
-                <h2>Etkinlik Üssü</h2>
-                <p>Toplantılarınızı yönetin veya yeni bir görüşme organize edin.</p>
+                <h2>Meeting Hub</h2>
+                <p>Görüntülü görüşmelerinizi yönetin ve planlayın.</p>
             </div>
         </div>
 
-        <div class="invite-box">
-            <div class="invite-icon"><i class="fa-solid fa-user-plus"></i></div>
-            <div class="invite-content">
-                <h3 style="margin:0 0 5px 0;">Birebir Görüşme Planla</h3>
-                <p style="margin:0; color:#666;">Topluluktan bir üyeyi (Öğrenci veya Mezun) seçin ve özel bir online görüşme odası oluşturun.</p>
+        <div class="actions-row">
+            <div class="action-box">
+                <div class="ab-icon icon-flash"><i class="fa-solid fa-bolt"></i></div>
+                <div class="ab-content">
+                    <h3>Anlık Oda</h3>
+                    <p>Hemen link üret ve görüşmeye başla.</p>
+                </div>
+                <button class="btn-action" onclick="createInstantRoom()"><i class="fa-solid fa-link"></i> Oluştur</button>
             </div>
-            <button class="btn-invite" onclick="openInviteModal()"><i class="fa-regular fa-calendar-plus"></i> Toplantı Ayarla</button>
+
+            <div class="action-box">
+                <div class="ab-icon icon-invite"><i class="fa-solid fa-user-plus"></i></div>
+                <div class="ab-content">
+                    <h3>Randevu Planla</h3>
+                    <p>Sistemden bir üyeyi (Öğrenci/Mezun) davet et.</p>
+                </div>
+                <button class="btn-action" style="background:#1565c0;" onclick="openInviteModal()"><i class="fa-regular fa-calendar-plus"></i> Davet Et</button>
+            </div>
         </div>
 
         <div class="meetings-grid">
@@ -127,8 +157,8 @@
 
     </div>
 
-    <div id="inviteModal" class="modal-overlay">
-        <div class="modal-content">
+    <div id="inviteModal" class="modal-overlay" style="z-index: 2000;">
+        <div class="invite-modal-content">
             <span class="close-modal" onclick="document.getElementById('inviteModal').style.display='none'">&times;</span>
             <h3 style="margin-top:0;">👥 Kişi Seç & Davet Et</h3>
             
@@ -154,7 +184,17 @@
                 <input type="text" id="inviteTopic" class="search-input" placeholder="Örn: Proje Hakkında...">
             </div>
 
-            <button class="btn-invite" style="width:100%; justify-content:center;" onclick="sendInvitation()">Daveti Gönder</button>
+            <button class="btn-action" style="width:100%; justify-content:center;" onclick="sendInvitation()">Daveti Gönder</button>
+        </div>
+    </div>
+
+    <div id="meetingRoomModal" class="modal-overlay" style="z-index: 3000;">
+        <div class="video-modal-content">
+            <div class="video-header">
+                <span id="videoRoomTitle" style="font-size:1.1rem; font-weight:bold;">Toplantı Odası</span>
+                <button class="btn-hangup" onclick="endMeeting()">Görüşmeyi Sonlandır</button>
+            </div>
+            <div id="meet-frame"></div>
         </div>
     </div>
 
@@ -167,6 +207,7 @@
         const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhmdHJtaWlhY3hndGthcnN2dXBuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ3ODUzNzIsImV4cCI6MjA4MDM2MTM3Mn0.BgCk5xuZx6AZuxzfBHcQqg8j8BtxU9FbupDgoFecG_k';
         let supabase; try { supabase = window.supabase.createClient(supabaseUrl, supabaseKey); } catch(e){}
         let currentUser = null;
+        let apiObj = null; // Jitsi API Nesnesi
 
         document.addEventListener("DOMContentLoaded", async () => {
             const { data: { session } } = await supabase.auth.getSession();
@@ -177,7 +218,59 @@
             loadPublicEvents();
         });
 
-        // --- KİŞİ ARAMA VE SEÇME ---
+        // --- 1. JITSI İLE GÖRÜŞME BAŞLATMA (YENİ) ---
+        function startMeeting(roomName, title) {
+            // Modalı Aç
+            document.getElementById('meetingRoomModal').style.display = 'flex';
+            document.getElementById('videoRoomTitle').innerText = title;
+
+            // Önceki görüşme varsa temizle
+            if(apiObj) { apiObj.dispose(); }
+
+            // Jitsi Ayarları
+            const domain = 'meet.jit.si';
+            const options = {
+                roomName: roomName,
+                width: '100%',
+                height: '100%',
+                parentNode: document.querySelector('#meet-frame'),
+                userInfo: {
+                    displayName: currentUser.user_metadata?.full_name || 'Üye'
+                },
+                configOverwrite: { startWithAudioMuted: false, startWithVideoMuted: false },
+                interfaceConfigOverwrite: { SHOW_JITSI_WATERMARK: false }
+            };
+
+            // Görüşmeyi Başlat
+            apiObj = new JitsiMeetExternalAPI(domain, options);
+            
+            // Görüşmeden ayrılınca modalı kapat
+            apiObj.addEventListeners({
+                videoConferenceLeft: function () {
+                    endMeeting();
+                }
+            });
+        }
+
+        function endMeeting() {
+            if(apiObj) { apiObj.dispose(); apiObj = null; }
+            document.getElementById('meetingRoomModal').style.display = 'none';
+        }
+
+        // --- 2. ANLIK ODA (HIZLI LINK) ---
+        function createInstantRoom() {
+            const randomID = Math.random().toString(36).substring(7);
+            const roomName = `ODTU_Hizli_${randomID}`;
+            
+            if(confirm("Oda oluşturuldu! Hemen giriş yapılsın mı?\n(İptal derseniz sadece link kopyalanır)")) {
+                startMeeting(roomName, "Anlık Görüşme");
+            } else {
+                const link = `https://meet.jit.si/${roomName}`;
+                prompt("Bu linki arkadaşınıza gönderin:", link);
+            }
+        }
+
+        // --- 3. DAVET VE ARAMA SİSTEMİ ---
         function openInviteModal() { document.getElementById('inviteModal').style.display='flex'; }
         
         async function searchUsers(query) {
@@ -213,7 +306,6 @@
             document.getElementById('selectedUserBox').style.display = 'none';
         }
 
-        // --- DAVETİ KAYDETME ---
         async function sendInvitation() {
             const targetId = document.getElementById('selectedUserId').value;
             const date = document.getElementById('inviteDate').value;
@@ -223,14 +315,12 @@
 
             const btn = event.target; btn.innerText = "Gönderiliyor..."; btn.disabled = true;
 
-            // mock_interviews tablosunu 'Birebir Görüşme' olarak kullanıyoruz
-            // mentor_id sütununu 'davet edilen kişi' olarak kullanacağız.
             const { error } = await supabase.from('mock_interviews').insert({
-                user_id: currentUser.id,      // Davet eden
-                mentor_id: targetId,          // Davet edilen (Bu sütun UUID tutar, uygundur)
-                interview_type: topic,        // Konu
-                requested_date: date,         // Tarih
-                status: 'accepted'            // Doğrudan onaylı (Veya 'pending' yapılabilir)
+                user_id: currentUser.id,
+                mentor_id: targetId,
+                interview_type: topic,
+                requested_date: date,
+                status: 'accepted'
             });
 
             if(error) {
@@ -244,51 +334,35 @@
             btn.innerText = "Daveti Gönder"; btn.disabled = false;
         }
 
-        // --- LİSTELEME ---
+        // --- 4. LİSTELEME ---
         async function loadMyMeetings() {
             const list = document.getElementById('myMeetingsList');
-            // user_id (ben oluşturdum) VEYA mentor_id (bana davet geldi)
             const { data } = await supabase.from('mock_interviews')
-                .select('*, profiles:mentor_id(full_name), inviter:user_id(full_name)') // İsimleri çekmek için join
+                .select('*, profiles:mentor_id(full_name), inviter:user_id(full_name)')
                 .or(`user_id.eq.${currentUser.id},mentor_id.eq.${currentUser.id}`)
                 .order('requested_date', { ascending: true });
 
-            if (!data || data.length === 0) {
-                list.innerHTML = '<p style="color:#999; text-align:center;">Görüşmeniz yok.</p>'; return;
-            }
+            if (!data || data.length === 0) { list.innerHTML = '<p style="color:#999; text-align:center;">Görüşmeniz yok.</p>'; return; }
 
             list.innerHTML = '';
             data.forEach(m => {
                 const date = new Date(m.requested_date);
                 const isMine = m.user_id === currentUser.id;
-                
-                // Eğer ben oluşturduysam karşı tarafın adını, bana geldiyse oluşturanın adını göster
-                // Not: profiles ve inviter verileri bazen dizi bazen obje gelebilir, kontrol edelim.
-                let otherName = "Bilinmeyen";
-                if (isMine) {
-                    otherName = m.profiles ? (Array.isArray(m.profiles) ? m.profiles[0]?.full_name : m.profiles.full_name) : "Silinmiş Üye";
-                } else {
-                    otherName = m.inviter ? (Array.isArray(m.inviter) ? m.inviter[0]?.full_name : m.inviter.full_name) : "Silinmiş Üye";
-                }
+                let otherName = isMine ? (m.profiles?.full_name || "Silinmiş") : (m.inviter?.full_name || "Silinmiş");
 
                 const roomName = `ODTU_Meet_${m.id}`;
-                const link = `https://meet.jit.si/${roomName}`;
-                
-                // Zaman kontrolü
                 const diff = date - new Date();
+                
                 let btn = '';
-                if (diff > 10 * 60 * 1000) btn = `<div class="btn-wait">${date.toLocaleTimeString().substr(0,5)}</div>`; // 10 dk'dan çok var
-                else if (diff > -3600000) btn = `<a href="${link}" target="_blank" class="btn-join">Katıl</a>`; // Aktif
+                if (diff > 10 * 60 * 1000) btn = `<div class="btn-wait">${date.toLocaleTimeString().substr(0,5)}</div>`;
+                else if (diff > -3600000) btn = `<button class="btn-join" onclick="startMeeting('${roomName}', '${m.interview_type}')"><i class="fa-solid fa-video"></i> Katıl</button>`;
                 else btn = `<div class="btn-wait">Bitti</div>`;
 
                 list.innerHTML += `
                 <div class="meeting-card ${diff > -3600000 && diff < 600000 ? 'live' : ''}">
                     <div style="display:flex; align-items:center;">
                         <div class="m-date"><div>${date.getDate()}</div><small>${date.toLocaleString('tr-TR',{month:'short'})}</small></div>
-                        <div class="m-info">
-                            <h4>${m.interview_type}</h4>
-                            <p><i class="fa-solid fa-user"></i> ${otherName} ile</p>
-                        </div>
+                        <div class="m-info"><h4>${m.interview_type}</h4><p>${otherName} ile</p></div>
                     </div>
                     ${btn}
                 </div>`;
@@ -305,7 +379,8 @@
             data.forEach(e => {
                 const d = new Date(e.event_date);
                 const isToday = new Date().toDateString() === d.toDateString();
-                const btn = isToday ? `<a href="https://meet.jit.si/ODTU_Event_${e.id}" target="_blank" class="btn-join">Katıl</a>` : `<div class="btn-wait">${d.toLocaleDateString()}</div>`;
+                const roomName = `ODTU_Event_${e.id}`;
+                const btn = isToday ? `<button class="btn-join" onclick="startMeeting('${roomName}', '${e.title}')">Katıl</button>` : `<div class="btn-wait">${d.toLocaleDateString()}</div>`;
                 
                 list.innerHTML += `
                 <div class="meeting-card ${isToday?'live':''}">
