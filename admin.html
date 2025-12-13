@@ -11,19 +11,21 @@
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
     body { display: flex; background-color: var(--admin-light); min-height: 100vh; color: var(--text); }
 
-    /* SIDEBAR */
+    /* SIDEBAR (SOL MENÜ) */
     .sidebar { width: 250px; background: var(--admin-dark); color: white; display: flex; flex-direction: column; position: fixed; height: 100%; top: 0; left: 0; padding: 20px; transition: 0.3s; z-index: 100; }
     .logo { font-size: 1.2rem; font-weight: bold; margin-bottom: 40px; display: flex; align-items: center; gap: 10px; color: #fff; text-decoration: none; }
+    
     .menu-item { padding: 12px 15px; color: #94a3b8; cursor: pointer; border-radius: 8px; margin-bottom: 5px; display: flex; align-items: center; gap: 10px; transition: 0.2s; text-decoration: none; }
     .menu-item:hover, .menu-item.active { background: rgba(255,255,255,0.1); color: white; }
+    
     .nav-divider { height: 1px; background: rgba(255,255,255,0.1); margin: 15px 0; }
     .logout-btn { margin-top: auto; color: #ef4444; border: 1px solid #ef4444; }
     
-    /* MAIN CONTENT */
+    /* MAIN CONTENT (SAĞ İÇERİK) */
     .main { margin-left: 250px; padding: 40px; flex: 1; width: calc(100% - 250px); }
     .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
     
-    /* İSTATİSTİK */
+    /* İSTATİSTİK KARTLARI */
     .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 30px; }
     .stat-card { background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); display: flex; align-items: center; gap: 20px; }
     .stat-icon { width: 50px; height: 50px; border-radius: 10px; display: flex; justify-content: center; align-items: center; font-size: 1.5rem; color: white; }
@@ -31,7 +33,7 @@
     .stat-info p { margin: 0; color: #64748b; font-size: 0.9rem; }
     .bg-blue { background: #3b82f6; } .bg-green { background: #10b981; } .bg-orange { background: #f59e0b; } .bg-red { background: #ef4444; } .bg-purple { background: #8e44ad; }
 
-    /* TABLOLAR VE FORMLAR */
+    /* TABLOLAR VE SEKMELER */
     .section { display: none; animation: fadeIn 0.3s; }
     .section.active { display: block; }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
@@ -42,12 +44,14 @@
     th { color: #64748b; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; }
     tr:hover { background-color: #f8fafc; }
 
+    /* ROZETLER */
     .badge { padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: bold; display: inline-block; }
-    .badge-no { background: #fee2e2; color: #991b1b; } 
-    .badge-yes { background: #dcfce7; color: #166534; }
-    .badge-pending { background: #ffedd5; color: #c2410c; }
+    .badge-no { background: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; } /* Onaysız */
+    .badge-yes { background: #dcfce7; color: #166534; border: 1px solid #86efac; } /* Onaylı */
+    .badge-pending { background: #ffedd5; color: #c2410c; } /* Bekleyen */
     
-    .btn { padding: 6px 12px; border-radius: 6px; border: none; cursor: pointer; font-weight: bold; font-size: 0.8rem; margin-right: 5px; white-space: nowrap; transition: 0.2s; }
+    /* BUTONLAR */
+    .btn { padding: 6px 12px; border-radius: 6px; border: none; cursor: pointer; font-weight: bold; font-size: 0.8rem; margin-right: 5px; transition: 0.2s; white-space: nowrap; }
     .btn-approve { background: #10b981; color: white; }
     .btn-block { background: #f59e0b; color: white; }
     .btn-role { background: #3b82f6; color: white; }
@@ -55,7 +59,7 @@
     .btn-view { background: #64748b; color: white; }
     .btn:hover { opacity: 0.9; }
 
-    /* FORM ELEMANLARI */
+    /* FORM */
     .form-control { padding: 10px; border: 1px solid #ddd; border-radius: 6px; outline: none; width: 100%; margin-bottom: 10px; }
     .form-row { display: flex; gap: 15px; }
     .form-row .form-control { flex: 1; }
@@ -64,6 +68,9 @@
     .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 2000; display: none; justify-content: center; align-items: center; }
     .modal-content { background: white; padding: 30px; border-radius: 12px; width: 90%; max-width: 600px; position: relative; max-height: 80vh; overflow-y: auto; }
     .close-modal { position: absolute; top: 15px; right: 20px; font-size: 1.5rem; cursor: pointer; }
+
+    /* TOAST */
+    #liveToast { position: fixed; top: 20px; right: 20px; background: white; padding: 15px; border-radius: 8px; border-left: 5px solid #27ae60; display: none; z-index: 3000; box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
 
     @media (max-width: 900px) {
         .sidebar { transform: translateX(-100%); position: fixed; z-index: 200; }
@@ -77,7 +84,10 @@
         <a href="dashboard.html" class="logo"><i class="fa-solid fa-shield-halved"></i> Yönetim Paneli</a>
         
         <div class="menu-item active" onclick="switchTab('overview', this)"><i class="fa-solid fa-chart-line"></i> Genel Bakış</div>
-        <div class="menu-item" onclick="switchTab('users', this)"><i class="fa-solid fa-users"></i> Üyeler & Onay <span id="pendingCountBadge" style="background:red; color:white; font-size:0.7rem; padding:2px 6px; border-radius:10px; display:none;">0</span></div>
+        <div class="menu-item" onclick="switchTab('users', this)">
+            <i class="fa-solid fa-users"></i> Üyeler & Onay 
+            <span id="pendingCountBadge" style="background:red; color:white; font-size:0.7rem; padding:2px 6px; border-radius:10px; display:none;">0</span>
+        </div>
         <div class="menu-item" onclick="switchTab('events', this)"><i class="fa-solid fa-calendar-plus"></i> Etkinlik Yönetimi</div>
         <div class="menu-item" onclick="switchTab('requests', this)"><i class="fa-solid fa-flask"></i> Talepler (Lab)</div>
         <div class="menu-item" onclick="switchTab('jobs', this)"><i class="fa-solid fa-briefcase"></i> İlan & Başvuru</div>
@@ -151,6 +161,7 @@
         <div id="requests" class="section">
             <div class="table-container">
                 <h3>🧪 Bekleyen Gelişim Talepleri</h3>
+                <p style="color:#666; font-size:0.9rem;">Tüm gelişim modüllerinden gelen başvurular.</p>
                 <table id="reqTable">
                     <thead><tr><th>Öğrenci</th><th>Tür</th><th>Detay</th><th>Tarih</th><th>İşlem</th></tr></thead>
                     <tbody id="reqListBody"><tr><td colspan="5">Yükleniyor...</td></tr></tbody>
@@ -244,48 +255,63 @@
                     : `<button class="btn btn-approve" onclick="toggleApproval('${u.id}', true)">✅ Onayla</button>`;
                 
                 let roleBtn = `<button class="btn btn-role" onclick="manageRole('${u.id}', '${u.roles}')">🛡️ Rol</button>`;
-                let deleteBtn = `<button class="btn btn-delete" onclick="deleteUser('${u.id}')">Sil</button>`;
+                let deleteBtn = `<button class="btn btn-delete" onclick="deleteUser('${u.id}')">🗑️ Sil</button>`;
 
                 tbody.innerHTML += `<tr><td><b>${u.full_name}</b><br><small>${u.email}</small></td><td>${u.user_type}</td><td>${u.department}</td><td>${statusBadge}</td><td>${approveBtn} ${roleBtn} ${deleteBtn}</td></tr>`;
 
                 if(index < 5) recentBody.innerHTML += `<tr><td>${u.full_name}</td><td>${new Date(u.created_at).toLocaleDateString()}</td><td>${statusBadge}</td></tr>`;
             });
 
-            // HATA DÜZELTME: Bu elementler yoksa kod kırılmasın diye kontrol ekledik
+            // Null hatası almamak için güvenli atama
             if(document.getElementById('statTotal')) document.getElementById('statTotal').innerText = data.length;
             if(document.getElementById('statPending')) document.getElementById('statPending').innerText = pendingCount;
             if(document.getElementById('pendingCountBadge')) {
-                if(pendingCount > 0) {
-                    document.getElementById('pendingCountBadge').innerText = pendingCount;
-                    document.getElementById('pendingCountBadge').style.display = 'inline-block';
-                } else {
-                    document.getElementById('pendingCountBadge').style.display = 'none';
-                }
+                const badge = document.getElementById('pendingCountBadge');
+                if(pendingCount > 0) { badge.innerText = pendingCount; badge.style.display = 'inline-block'; } 
+                else { badge.style.display = 'none'; }
             }
         }
 
         async function toggleApproval(id, status) {
-            if(confirm(status ? "Kullanıcı onaylansın mı?" : "Erişim kapatılsın mı?")) {
+            if(confirm(status ? "Kullanıcı onaylanacak. Devam?" : "Erişim kapatılacak. Devam?")) {
                 const { error } = await supabase.from('profiles').update({ is_approved: status }).eq('id', id);
                 if(!error) { showToast("Güncellendi"); refreshAllData(); } else alert(error.message);
             }
         }
+
         async function manageRole(id, currentRoles) {
-            const input = prompt("Roller (virgülle ayırın):", currentRoles);
+            const input = prompt("Rolleri virgülle girin (örn: admin, mentor):", currentRoles);
             if(input!==null) {
                 const newRoles = input.split(',').map(r=>r.trim()).filter(r=>r!=="");
                 await supabase.from('profiles').update({ roles: newRoles }).eq('id', id);
                 showToast("Roller Güncellendi");
             }
         }
+
+        // GÜÇLENDİRİLMİŞ SİLME FONKSİYONU
         async function deleteUser(id) {
-            if(!confirm("Kullanıcı tamamen silinecek!")) return;
-            const { error } = await supabase.rpc('delete_user_fully', { target_user_id: id });
-            if(error) { await supabase.from('profiles').delete().eq('id', id); }
-            showToast("Silindi"); refreshAllData();
+            if(!confirm("⚠️ Kullanıcı ve tüm verileri silinecek! Bu işlem geri alınamaz.")) return;
+            
+            console.log("Siliniyor ID:", id);
+            
+            // 1. Önce RPC (Tam Silme) dene
+            const { error: rpcError } = await supabase.rpc('delete_user_fully', { target_user_id: id });
+
+            if(rpcError) {
+                console.error("RPC Hatası:", rpcError);
+                // 2. RPC yetkisi yoksa veya hata verirse Manuel Silme dene
+                alert("Uyarı: Auth kaydı silinemedi (Yetki sorunu olabilir). Sadece profil siliniyor...");
+                const { error: tableError } = await supabase.from('profiles').delete().eq('id', id);
+                
+                if(tableError) alert("Hata: Profil de silinemedi! " + tableError.message);
+                else { showToast("Profil Silindi"); refreshAllData(); }
+            } else {
+                showToast("Tamamen Silindi");
+                refreshAllData();
+            }
         }
 
-        // --- 2. ETKİNLİK YÖNETİMİ (İSİM DÜZELTİLDİ) ---
+        // --- 2. ETKİNLİK YÖNETİMİ ---
         async function publishNewEvent() {
             const title = document.getElementById('evtTitle').value;
             const date = document.getElementById('evtDate').value;
@@ -309,7 +335,6 @@
         async function loadEvents() {
             const tbody = document.getElementById('eventsListBody');
             const { data } = await supabase.from('events').select('*').order('event_date', {ascending: true});
-            // HATA DÜZELTME: statEvents kontrolü
             if(document.getElementById('statEvents')) document.getElementById('statEvents').innerText = data ? data.length : 0;
             
             tbody.innerHTML = '';
@@ -331,23 +356,25 @@
             results.forEach((res, index) => {
                 if(res.data) res.data.forEach(item => {
                     let detail = item.cv_url ? `<a href="${item.cv_url}" target="_blank">Dosya</a>` : (item.interview_type || item.sector || '-');
-                    allReqs.push({ id: item.id, table: tables[index], type: types[index], name: item.profiles?.full_name, detail: detail, date: item.created_at });
+                    allReqs.push({ id: item.id, table: tables[index], type: types[index], name: item.profiles?.full_name || 'Silinmiş', detail: detail, date: item.created_at });
                 });
             });
-            // HATA DÜZELTME: statReqs kontrolü
             if(document.getElementById('statReqs')) document.getElementById('statReqs').innerText = allReqs.length;
             
             allReqs.sort((a,b)=>new Date(b.date)-new Date(a.date));
             if(allReqs.length===0) { tbody.innerHTML='<tr><td colspan="5">Talep yok.</td></tr>'; return; }
             
             tbody.innerHTML = '';
-            allReqs.forEach(r => tbody.innerHTML += `<tr><td>${r.name}</td><td><span class="badge badge-pending">${r.type}</span></td><td>${r.detail}</td><td>${new Date(r.date).toLocaleDateString()}</td><td><button class="btn btn-delete" onclick="deleteItem('${r.table}', ${r.id}, loadLabRequests)">Sil</button></td></tr>`);
+            allReqs.forEach(r => tbody.innerHTML += `<tr><td>${r.name}</td><td><span class="badge badge-pending">${r.type}</span></td><td>${r.detail}</td><td>${new Date(r.date).toLocaleDateString()}</td><td><button class="btn btn-approve" onclick="completeReq('${r.table}',${r.id})">Tamamla</button> <button class="btn btn-delete" onclick="deleteItem('${r.table}',${r.id}, loadLabRequests)">Sil</button></td></tr>`);
+        }
+
+        async function completeReq(table, id) {
+            if(confirm("Tamamlandı işaretlensin mi?")) { await supabase.from(table).delete().eq('id', id); loadLabRequests(); showToast("Tamamlandı"); }
         }
 
         async function loadJobs() {
             const tbody = document.getElementById('jobListBody');
             const { data: jobs } = await supabase.from('jobs').select('*, profiles(full_name)').order('created_at', { ascending: false });
-            // HATA DÜZELTME: statJobs kontrolü
             if(document.getElementById('statJobs')) document.getElementById('statJobs').innerText = jobs ? jobs.length : 0;
             
             tbody.innerHTML = '';
@@ -367,20 +394,27 @@
             cont.innerHTML = html + '</ul>';
         }
 
-        // ORTAK
         async function sendBroadcast() {
             const msg = document.getElementById('broadcastMsg').value; if(!msg) return;
             await supabase.from('broadcasts').insert({ message: msg });
             await supabase.from('announcements').insert({ title: msg });
             showToast("Yayınlandı"); document.getElementById('broadcastMsg').value = '';
         }
+
         async function deleteItem(table, id, callback) {
             if(confirm("Silinsin mi?")) { await supabase.from(table).delete().eq('id', id); callback(); showToast("Silindi"); }
         }
+
         function filterTable(tableId, query) {
             document.querySelectorAll(`#${tableId} tbody tr`).forEach(row => { row.style.display = row.innerText.toLowerCase().includes(query.toLowerCase()) ? '' : 'none'; });
         }
-        function showToast(msg) { const t = document.getElementById('liveToast'); t.innerText=msg; t.style.display='block'; setTimeout(()=>t.style.display='none',3000); }
+
+        function showToast(msg) {
+            const t = document.getElementById('liveToast');
+            t.innerText = msg; t.style.display='block';
+            setTimeout(()=>t.style.display='none', 3000);
+        }
+
         async function logout() { await supabase.auth.signOut(); window.location.href = "index.html"; }
     </script>
 </body>
