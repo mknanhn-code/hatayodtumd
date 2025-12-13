@@ -6,12 +6,12 @@
 <title>Mezun Ağı - Hatay ODTÜ MD</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
-    /* STİLLER */
-    :root { --odtu-red: #E31E24; --odtu-dark: #2c3e50; --bg-light: #f4f6f9; --white: #ffffff; --navbar-height: 70px; }
+    :root { --odtu-red: #E31E24; --odtu-dark: #2c3e50; --bg-light: #f8f9fa; --white: #ffffff; }
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
-    body { background-color: var(--bg-light); display: block; min-height: 100vh; }
-    
-    .navbar { width: 100%; height: var(--navbar-height); background-color: var(--odtu-dark); display: flex; align-items: center; justify-content: space-between; padding: 0 30px; position: fixed; top: 0; left: 0; z-index: 1000; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+    body { background-color: var(--bg-light); min-height: 100vh; color: #333; }
+
+    /* NAVBAR */
+    .navbar { width: 100%; height: 70px; background-color: var(--odtu-dark); display: flex; align-items: center; justify-content: space-between; padding: 0 30px; position: fixed; top: 0; left: 0; z-index: 1000; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
     .nav-left { display: flex; align-items: center; gap: 15px; }
     .nav-logo { height: 50px; background: white; padding: 2px; border-radius: 5px; }
     .nav-title { color: white; font-size: 1.1rem; font-weight: bold; }
@@ -20,66 +20,110 @@
     .nav-links a:hover, .nav-links a.active { background-color: rgba(255,255,255,0.1); color: white; }
     .nav-right { display: flex; align-items: center; gap: 20px; }
     .logout-btn { color: #e74c3c; border: 1px solid #e74c3c; padding: 6px 15px; border-radius: 20px; text-decoration: none; transition: 0.3s; }
-    .logout-btn:hover { background: #e74c3c; color: white; }
 
-    .main-content { margin-top: var(--navbar-height); padding: 40px; width: 100%; max-width: 1200px; margin-left: auto; margin-right: auto; }
-    .filter-box { background: white; padding: 20px; border-radius: 12px; margin-bottom: 20px; display: flex; gap: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
-    .filter-box input { flex: 1; padding: 12px; border: 1px solid #ddd; border-radius: 6px; outline: none; }
-    .btn-search { background: var(--odtu-dark); color: white; border: none; padding: 0 30px; border-radius: 6px; cursor: pointer; font-weight: bold; }
+    /* LAYOUT */
+    .container { margin-top: 70px; padding: 30px; max-width: 1300px; margin-left: auto; margin-right: auto; display: flex; gap: 30px; }
     
-    .network-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 25px; }
-    .member-card { background: white; padding: 30px 20px; border-radius: 12px; display: flex; flex-direction: column; align-items: center; text-align: center; box-shadow: 0 2px 15px rgba(0,0,0,0.05); position: relative; }
-    .member-avatar { width: 80px; height: 80px; background: #ecf0f1; border-radius: 50%; margin-bottom: 15px; display: flex; justify-content: center; align-items: center; font-size: 1.5rem; font-weight: bold; }
-    .member-btn { margin-top: auto; padding: 8px 25px; background: transparent; border: 1px solid var(--odtu-red); color: var(--odtu-red); border-radius: 20px; cursor: pointer; transition: 0.3s; }
-    .member-btn:hover { background: var(--odtu-red); color: white; }
-    .me-badge { position: absolute; top: 10px; right: 10px; background: #e8f5e9; color: #2e7d32; font-size: 0.7rem; padding: 2px 8px; border-radius: 4px; font-weight: bold; }
+    /* SOL FİLTRE PANELİ */
+    .sidebar { width: 280px; background: white; padding: 25px; border-radius: 12px; height: fit-content; position: sticky; top: 100px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+    .filter-group { margin-bottom: 20px; }
+    .filter-group label { font-weight: bold; display: block; margin-bottom: 8px; font-size: 0.9rem; color: var(--odtu-dark); }
+    .filter-input { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; outline: none; }
+    .btn-filter { width: 100%; background: var(--odtu-dark); color: white; border: none; padding: 10px; border-radius: 6px; cursor: pointer; font-weight: bold; }
+
+    /* SAĞ LİSTE */
+    .network-grid { flex: 1; display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 25px; }
+    
+    /* PROFİL KARTI */
+    .profile-card { background: white; border-radius: 12px; padding: 25px; text-align: center; border: 1px solid #eee; transition: 0.3s; position: relative; }
+    .profile-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.08); border-color: var(--odtu-red); }
+    
+    .p-avatar { width: 80px; height: 80px; background: #eee; border-radius: 50%; margin: 0 auto 15px; display: flex; justify-content: center; align-items: center; font-size: 1.5rem; font-weight: bold; color: #555; border: 3px solid white; box-shadow: 0 3px 10px rgba(0,0,0,0.1); }
+    .p-name { font-size: 1.1rem; font-weight: bold; color: var(--odtu-dark); margin-bottom: 5px; }
+    .p-role { font-size: 0.85rem; color: #666; margin-bottom: 15px; height: 40px; overflow: hidden; }
+    
+    .badges { display: flex; justify-content: center; gap: 5px; margin-bottom: 15px; flex-wrap: wrap; }
+    .badge { font-size: 0.7rem; padding: 3px 8px; border-radius: 12px; font-weight: bold; }
+    .bg-mentor { background: #fff3e0; color: #e67e22; border: 1px solid #ffe0b2; }
+    .bg-admin { background: #f3e5f5; color: #8e44ad; border: 1px solid #e1bee7; }
+    .bg-grad { background: #e8f5e9; color: #27ae60; border: 1px solid #c8e6c9; }
+
+    .btn-msg { background: white; border: 1px solid var(--odtu-dark); color: var(--odtu-dark); padding: 8px 20px; border-radius: 20px; cursor: pointer; font-size: 0.9rem; font-weight: 600; transition: 0.2s; width: 100%; }
+    .btn-msg:hover { background: var(--odtu-dark); color: white; }
+
+    /* MODAL */
+    .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 2000; display: none; justify-content: center; align-items: center; }
+    .modal-content { background: white; padding: 30px; border-radius: 12px; width: 90%; max-width: 500px; position: relative; }
+    .close-modal { position: absolute; top: 15px; right: 20px; font-size: 1.5rem; cursor: pointer; }
+    .msg-area { width: 100%; border: 1px solid #ddd; border-radius: 8px; padding: 15px; margin: 15px 0; outline: none; font-family: inherit; }
+    .btn-send { background: var(--odtu-red); color: white; border: none; padding: 10px 25px; border-radius: 6px; cursor: pointer; font-weight: bold; width: 100%; }
+
+    /* TOAST */
+    #liveToast { position: fixed; top: 20px; right: 20px; background: white; padding: 15px 20px; border-radius: 8px; box-shadow: 0 5px 25px rgba(0,0,0,0.2); border-left: 6px solid #27ae60; z-index: 9999; display: none; min-width: 300px; animation: slideIn 0.4s; }
+    @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
 
     @media (max-width: 900px) {
         .navbar { height: auto; flex-direction: column; padding: 15px; }
-        .nav-links { flex-wrap: wrap; justify-content: center; gap: 10px; width: 100%; }
-        .main-content { margin-top: 0; padding: 20px; }
-        .filter-box { flex-direction: column; }
-        .btn-search { width: 100%; padding: 12px; }
-        .network-grid { grid-template-columns: 1fr; }
+        .nav-links { flex-wrap: wrap; justify-content: center; }
+        .container { flex-direction: column; margin-top: 0; padding: 20px; }
+        .sidebar { width: 100%; position: static; }
     }
 </style>
 </head>
 <body>
+
     <nav class="navbar">
         <div class="nav-left"><img src="logo.png" class="nav-logo"><div class="nav-title">Hatay ODTÜ MD <span>Üye Portalı</span></div></div>
         <div class="nav-links">
-            <a href="dashboard.html"><i class="fa-solid fa-layer-group"></i> Panel</a>
-            <a href="meeting.html"><i class="fa-solid fa-video"></i> Etkinlik Üssü </a>
-            <a href="mentor.html"><i class="fa-solid fa-handshake-angle"></i> Mentorluk</a>
-            <a href="career.html"><i class="fa-solid fa-briefcase"></i> Kariyer</a>
-            <a href="network.html" class="active"><i class="fa-solid fa-users-viewfinder"></i> Mezun Ağı</a>
-            <a href="profile.html" style="position:relative;">
-                <i class="fa-solid fa-user"></i> Profil 
-                <span id="globalBadge" style="position:absolute; top:-8px; right:-10px; background:#E31E24; color:white; font-size:0.7rem; padding:2px 6px; border-radius:10px; display:none; border:1px solid white;">0</span>
-            </a>
+            <a href="dashboard.html">Panel</a>
+            <a href="meeting.html">Meeting Hub</a>
+            <a href="mentor.html">Mentorluk</a>
+            <a href="career.html">Kariyer Lab</a>
+            <a href="network.html" class="active" style="background:rgba(255,255,255,0.2); color:white;"><i class="fa-solid fa-users-viewfinder"></i> Mezun Ağı</a>
+            <a href="profile.html">Profil</a>
         </div>
-        <div class="nav-right"><a href="#" class="logout-btn" onclick="logout()"><i class="fa-solid fa-right-from-bracket"></i> Çıkış</a></div>
+        <div class="nav-right"><a href="#" class="logout-btn" onclick="logout()">Çıkış</a></div>
     </nav>
 
-    <div class="main-content">
-        <h2>🔍 Mezun Ağı</h2><br>
-        <div class="filter-box">
-            <input type="text" id="searchInput" placeholder="İsim ara..." onkeypress="if(event.key==='Enter') searchMembers()">
-            <button class="btn-search" onclick="searchMembers()">Ara</button>
+    <div class="container">
+        
+        <div class="sidebar">
+            <h3 style="margin-top:0;"><i class="fa-solid fa-filter"></i> Filtrele</h3>
+            <div class="filter-group">
+                <label>İsim Ara</label>
+                <input type="text" id="searchName" class="filter-input" placeholder="Ad Soyad..." onkeyup="filterProfiles()">
+            </div>
+            <div class="filter-group">
+                <label>Bölüm</label>
+                <input type="text" id="searchDept" class="filter-input" placeholder="Örn: İnşaat..." onkeyup="filterProfiles()">
+            </div>
+            <div class="filter-group">
+                <label>Şehir</label>
+                <input type="text" id="searchCity" class="filter-input" placeholder="Örn: Ankara..." onkeyup="filterProfiles()">
+            </div>
+            <button class="btn-filter" onclick="fetchProfiles()">Filtreleri Sıfırla</button>
         </div>
-        <div class="network-grid" id="memberList">
-            <div style="grid-column: 1/-1; text-align:center; padding:40px; color:#999;"><i class="fa-solid fa-spinner fa-spin"></i> Yükleniyor...</div>
+
+        <div class="network-grid" id="profileGrid">
+            <div style="grid-column: 1/-1; text-align: center; color: #999; margin-top: 50px;">
+                <i class="fa-solid fa-spinner fa-spin fa-2x"></i><br><br>Yükleniyor...
+            </div>
+        </div>
+
+    </div>
+
+    <div id="msgModal" class="modal-overlay">
+        <div class="modal-content">
+            <span class="close-modal" onclick="document.getElementById('msgModal').style.display='none'">&times;</span>
+            <h3 id="msgTargetName">Mesaj Gönder</h3>
+            <p style="font-size:0.9rem; color:#666;">Profesyonel bir dille iletişime geçin.</p>
+            <input type="hidden" id="msgTargetId">
+            <textarea id="msgContent" class="msg-area" rows="5" placeholder="Merhaba, profilinizi inceledim ve..."></textarea>
+            <button class="btn-send" onclick="sendMessage()">Gönder 🚀</button>
         </div>
     </div>
 
-    <div id="liveToast" style="position: fixed; top: 20px; right: 20px; background: white; padding: 15px 20px; border-radius: 8px; box-shadow: 0 5px 25px rgba(0,0,0,0.2); border-left: 6px solid #333; z-index: 9999; display: none; min-width: 320px; animation: slideIn 0.4s; font-family: 'Segoe UI', sans-serif;">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-            <strong id="toastTitle" style="font-size:1rem; display:flex; align-items:center; gap:8px;"></strong>
-            <span onclick="document.getElementById('liveToast').style.display='none'" style="cursor:pointer; color:#aaa; font-size:1.2rem;">&times;</span>
-        </div>
-        <p id="toastMessage" style="color:#555; font-size:0.9rem; margin:0; line-height:1.4;">...</p>
-    </div>
-    <style>@keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }</style>
+    <div id="liveToast"><strong id="toastTitle">Başarılı!</strong><p id="toastMessage">...</p></div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
@@ -87,60 +131,126 @@
         const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhmdHJtaWlhY3hndGthcnN2dXBuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ3ODUzNzIsImV4cCI6MjA4MDM2MTM3Mn0.BgCk5xuZx6AZuxzfBHcQqg8j8BtxU9FbupDgoFecG_k';
         let supabase; try { supabase = window.supabase.createClient(supabaseUrl, supabaseKey); } catch(e){}
         let currentUser = null;
+        let allProfiles = []; // Tüm veriyi burada tutup JS ile filtreleyeceğiz (Hız için)
 
         document.addEventListener("DOMContentLoaded", async () => {
             const { data: { session } } = await supabase.auth.getSession();
             if (!session) { window.location.href = 'index.html'; return; }
             currentUser = session.user;
-            
-            searchMembers('');
-            checkGlobalNotifications(); setupRealtime(session.user.id);
+            fetchProfiles();
         });
 
-        async function searchMembers(query) {
-            const list = document.getElementById('memberList');
-            if (query === undefined) query = document.getElementById('searchInput').value;
-            let queryBuilder = supabase.from('profiles').select('*');
-            if (query && query.trim() !== "") queryBuilder = queryBuilder.ilike('full_name', `%${query}%`);
-            const { data, error } = await queryBuilder;
-            if (!data || data.length === 0) { list.innerHTML = '<div style="text-align:center; grid-column:1/-1;">Üye bulunamadı.</div>'; return; }
-            list.innerHTML = '';
-            data.forEach(m => {
-                const isMe = (m.id === currentUser.id);
-                const meBadge = isMe ? '<div class="me-badge">SEN</div>' : '';
-                const btnState = isMe ? 'disabled style="opacity:0.5; cursor:default;"' : '';
-                list.insertAdjacentHTML('beforeend', `<div class="member-card">${meBadge}<div class="member-avatar">${m.full_name ? m.full_name.substring(0,2).toUpperCase() : 'ÜY'}</div><h4>${m.full_name}</h4><p>${m.department || ''}<br><small>${m.company || ''}</small></p><button class="member-btn" ${btnState} onclick="window.location.href='profile.html'">${isMe ? 'Profilim' : 'Bağlantı Kur'}</button></div>`);
-            });
-        }
-        
-        async function checkGlobalNotifications() {
-            const { data: { session } } = await supabase.auth.getSession();
-            if(!session) return;
-            const { count } = await supabase.from('direct_messages').select('*', { count: 'exact', head: true }).eq('receiver_id', session.user.id).eq('is_read', false);
-            const badge = document.getElementById('globalBadge');
-            if(badge && count > 0) { badge.style.display = 'inline-block'; badge.innerText = count; } else { badge.style.display = 'none'; }
+        // PROFİLLERİ ÇEK
+        async function fetchProfiles() {
+            // Şehir verisi 'location' sütununda tutuluyorsa veya eklediysek onu da çekelim. 
+            // Şimdilik 'company' ve 'department' üzerinden gidelim.
+            const { data, error } = await supabase.from('profiles').select('*').order('created_at', {ascending:false});
+            
+            if(data) {
+                allProfiles = data;
+                renderProfiles(data);
+            }
         }
 
-        function setupRealtime(userId) {
-            const channel = supabase.channel('global-alerts');
-            channel.on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'broadcasts' }, payload => { showNotification("YÖNETİM DUYURUSU", payload.new.message, "admin"); });
-            channel.on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'direct_messages', filter: `receiver_id=eq.${userId}` }, payload => {
-                showNotification(`💬 ${payload.new.sender_name || 'Bir Üye'}`, payload.new.content, "user");
-                checkGlobalNotifications();
+        // EKRANA YAZDIR
+        function renderProfiles(profiles) {
+            const grid = document.getElementById('profileGrid');
+            grid.innerHTML = '';
+
+            if(profiles.length === 0) {
+                grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; color: #999;">Sonuç bulunamadı.</div>';
+                return;
+            }
+
+            profiles.forEach(p => {
+                if(p.id === currentUser.id) return; // Kendini gösterme
+
+                // Rozet Mantığı
+                let badgesHtml = '';
+                if(p.roles && p.roles.includes('admin')) badgesHtml += `<span class="badge bg-admin">Admin</span>`;
+                if(p.roles && p.roles.includes('mentor')) badgesHtml += `<span class="badge bg-mentor">Mentor</span>`;
+                if(p.user_type === 'grad') badgesHtml += `<span class="badge bg-grad">Mezun</span>`;
+
+                // Şirket veya Sınıf bilgisi
+                const subInfo = p.user_type === 'student' ? `${p.class_level}. Sınıf Öğrencisi` : (p.company || 'Mezun Üye');
+
+                // Şehir bilgisi (Eğer kaydettiyse 'location' sütunu, yoksa boş)
+                // Not: Profil sayfasında haritadan seçtiğinde lat/lng kaydettik ama şehir ismi henüz yok. 
+                // İleride reverse-geocode eklenebilir.
+
+                grid.innerHTML += `
+                <div class="profile-card">
+                    <div class="p-avatar">${p.full_name.substring(0,2).toUpperCase()}</div>
+                    <div class="p-name">${p.full_name}</div>
+                    <div class="p-role">${p.department}<br><small style="color:#888;">${subInfo}</small></div>
+                    <div class="badges">${badgesHtml}</div>
+                    <button class="btn-msg" onclick="openMsgModal('${p.id}', '${p.full_name}')"><i class="fa-regular fa-paper-plane"></i> Mesaj Gönder</button>
+                </div>`;
             });
-            channel.subscribe();
         }
 
-        function showNotification(title, msg, type) {
-            const toast = document.getElementById('liveToast');
-            const titleEl = document.getElementById('toastTitle');
-            const msgEl = document.getElementById('toastMessage');
-            msgEl.innerText = msg;
-            if (type === 'admin') { toast.style.borderLeftColor = "#8e44ad"; titleEl.style.color = "#8e44ad"; titleEl.innerHTML = `<i class="fa-solid fa-tower-broadcast"></i> ${title}`; } 
-            else { toast.style.borderLeftColor = "#3498db"; titleEl.style.color = "#3498db"; titleEl.innerHTML = `${title}`; }
-            toast.style.display = 'block';
-            new Audio('https://actions.google.com/sounds/v1/alarms/beep_short.ogg').play().catch(()=>{});
-            setTimeout(() => { toast.style.display = 'none'; }, 6000);
+        // FİLTRELEME MANTIĞI (Frontend Side)
+        function filterProfiles() {
+            const name = document.getElementById('searchName').value.toLowerCase();
+            const dept = document.getElementById('searchDept').value.toLowerCase();
+            const city = document.getElementById('searchCity').value.toLowerCase(); // Bu şu an company içinde aranabilir
+
+            const filtered = allProfiles.filter(p => {
+                const pName = p.full_name ? p.full_name.toLowerCase() : '';
+                const pDept = p.department ? p.department.toLowerCase() : '';
+                const pComp = p.company ? p.company.toLowerCase() : ''; // Şehir yerine şimdilik şirket/lokasyon
+
+                return pName.includes(name) && pDept.includes(dept) && pComp.includes(city);
+            });
+
+            renderProfiles(filtered);
+        }
+
+        // MESAJ GÖNDERME
+        function openMsgModal(id, name) {
+            document.getElementById('msgTargetId').value = id;
+            document.getElementById('msgTargetName').innerText = `Mesaj: ${name}`;
+            document.getElementById('msgModal').style.display = 'flex';
+        }
+
+        async function sendMessage() {
+            const targetId = document.getElementById('msgTargetId').value;
+            const content = document.getElementById('msgContent').value;
+            const myName = currentUser.user_metadata?.full_name || 'Bir Üye'; // Gönderen ismi
+
+            if(!content) { alert("Mesaj boş olamaz."); return; }
+
+            const btn = event.target; btn.innerText = "Gönderiliyor..."; btn.disabled = true;
+
+            const { error } = await supabase.from('direct_messages').insert({
+                sender_id: currentUser.id,
+                receiver_id: targetId,
+                content: content,
+                sender_name: myName
+            });
+
+            if(error) {
+                alert("Hata: " + error.message);
+            } else {
+                showToast("Mesajınız İletildi! 📨");
+                document.getElementById('msgModal').style.display = 'none';
+                document.getElementById('msgContent').value = '';
+            }
+            btn.innerText = "Gönder 🚀"; btn.disabled = false;
+        }
+
+        // MODAL KAPATMA (DIŞARI TIKLAYINCA)
+        window.onclick = function(event) {
+            if (event.target.className === 'modal-overlay') {
+                event.target.style.display = "none";
+            }
+        }
+
+        function showToast(msg) {
+            const t = document.getElementById('liveToast');
+            document.getElementById('toastMessage').innerText = msg;
+            t.style.display = 'block';
+            setTimeout(() => t.style.display = 'none', 3000);
         }
 
         async function logout() { await supabase.auth.signOut(); window.location.href = "index.html"; }
