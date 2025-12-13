@@ -6,56 +6,119 @@
 <title>Giriş Yap - Hatay ODTÜ MD</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
-    /* REGISTER İLE AYNI TASARIM DİLİ */
-    :root { --odtu-red: #E31E24; --odtu-dark: #2c3e50; --bg-light: #f4f6f9; }
+    :root { --odtu-red: #E31E24; --odtu-dark: #2c3e50; --bg-light: #f8f9fa; }
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
-    body { background-color: var(--bg-light); display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
-
-    .login-container { background: white; padding: 40px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); width: 100%; max-width: 400px; text-align: center; }
     
-    .logo-area img { height: 120px; margin-bottom: 20px; }
-    .logo-area h2 { color: var(--odtu-dark); margin-bottom: 10px; }
-    .logo-area p { color: #777; font-size: 0.9rem; margin-bottom: 30px; }
+    body { 
+        background-color: var(--bg-light); 
+        min-height: 100vh; 
+        display: flex; 
+        align-items: center; 
+        justify-content: center; 
+        padding: 20px;
+    }
+
+    .login-card {
+        background: white;
+        padding: 40px;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        width: 100%;
+        max-width: 400px;
+        text-align: center;
+    }
+
+    .logo-area img { height: 70px; margin-bottom: 20px; }
+    .login-header h2 { color: var(--odtu-dark); margin-bottom: 5px; }
+    .login-header p { color: #666; font-size: 0.9rem; margin-bottom: 30px; }
 
     .form-group { margin-bottom: 20px; text-align: left; }
-    .form-group label { display: block; margin-bottom: 8px; font-weight: bold; color: #555; }
-    .form-control { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; outline: none; transition: 0.3s; font-size: 1rem; }
-    .form-control:focus { border-color: var(--odtu-red); box-shadow: 0 0 5px rgba(227, 30, 36, 0.2); }
+    .form-group label { display: block; font-weight: 600; margin-bottom: 8px; color: #444; font-size: 0.9rem; }
+    
+    .input-wrapper { position: relative; }
+    .input-wrapper i { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #999; }
+    
+    .form-control { 
+        width: 100%; padding: 12px 15px 12px 45px; 
+        border: 1px solid #ddd; border-radius: 8px; 
+        outline: none; font-size: 1rem; transition: 0.3s;
+    }
+    .form-control:focus { border-color: var(--odtu-dark); box-shadow: 0 0 0 3px rgba(44, 62, 80, 0.1); }
 
-    .btn-submit { width: 100%; padding: 14px; background: var(--odtu-red); color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 1rem; transition: 0.3s; }
-    .btn-submit:hover { background: #c0392b; transform: translateY(-2px); }
+    .btn-login { 
+        width: 100%; padding: 14px; 
+        background: var(--odtu-red); color: white; 
+        border: none; border-radius: 8px; 
+        font-size: 1rem; font-weight: bold; 
+        cursor: pointer; transition: 0.3s; margin-top: 10px;
+    }
+    .btn-login:hover { background: #c0392b; }
+    .btn-login:disabled { background: #bdc3c7; cursor: not-allowed; }
 
-    .register-link { margin-top: 25px; font-size: 0.9rem; color: #666; border-top: 1px solid #eee; padding-top: 20px; }
+    .register-link { margin-top: 20px; display: block; font-size: 0.9rem; color: #666; }
     .register-link a { color: var(--odtu-red); text-decoration: none; font-weight: bold; }
-    .register-link a:hover { text-decoration: underline; }
+
+    /* UYARI MODALI */
+    .modal-overlay {
+        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+        background: rgba(0,0,0,0.8); z-index: 9999;
+        display: none; justify-content: center; align-items: center;
+        backdrop-filter: blur(5px);
+    }
+    .modal-box {
+        background: white; padding: 40px; border-radius: 15px;
+        text-align: center; max-width: 450px; width: 90%;
+        box-shadow: 0 20px 50px rgba(0,0,0,0.3); animation: slideUp 0.4s ease;
+    }
+    @keyframes slideUp { from {transform: translateY(50px); opacity:0;} to {transform: translateY(0); opacity:1;} }
+    
+    .modal-icon {
+        width: 70px; height: 70px; background: #f39c12; color: white;
+        border-radius: 50%; display: flex; align-items: center; justify-content: center;
+        font-size: 2rem; margin: 0 auto 20px;
+    }
+    .modal-btn {
+        background: var(--odtu-dark); color: white; padding: 10px 25px;
+        border-radius: 6px; text-decoration: none; font-weight: bold; display: inline-block; cursor: pointer;
+    }
 </style>
 </head>
 <body>
 
-    <div class="login-container">
-        <div class="logo-area">
-            <img src="logo.png" onerror="this.src='https://upload.wikimedia.org/wikipedia/tr/a/a6/Odt%C3%BC_logo.png'">
-            <h2>Hoş Geldiniz</h2>
-            <p>Hatay ODTÜ Mezunları Derneği ve Öğrenci Topluluğu Portalı</p>
+    <div class="login-card">
+        <div class="logo-area"><img src="logo.png" alt="Logo"></div>
+        <div class="login-header">
+            <h2>Giriş Yap</h2>
+            <p>Hatay ODTÜ MD Üye Portalı</p>
         </div>
 
-        <form id="loginForm">
+        <form id="loginForm" onsubmit="handleLogin(event)">
             <div class="form-group">
-                <label><i class="fa-solid fa-envelope"></i> E-posta Adresi</label>
-                <input type="email" id="email" class="form-control" placeholder="ornek@metu.edu.tr" required>
+                <label>E-posta</label>
+                <div class="input-wrapper"><i class="fa-regular fa-envelope"></i><input type="email" id="email" class="form-control" placeholder="E-posta adresiniz" required></div>
             </div>
-            
             <div class="form-group">
-                <label><i class="fa-solid fa-lock"></i> Şifre</label>
-                <input type="password" id="password" class="form-control" placeholder="******" required>
+                <label>Şifre</label>
+                <div class="input-wrapper"><i class="fa-solid fa-lock"></i><input type="password" id="password" class="form-control" placeholder="********" required></div>
             </div>
-
-            <button type="submit" id="loginBtn" class="btn-submit">Giriş Yap</button>
+            <button type="submit" id="loginBtn" class="btn-login">Giriş Yap</button>
         </form>
 
-        <div class="register-link">
-            Henüz hesabın yok mu? <br>
-            <a href="register.html">Hemen Kayıt Ol</a> </div>
+        <span class="register-link">Hesabın yok mu? <a href="register.html">Kayıt Ol</a></span>
+    </div>
+
+    <div id="pendingModal" class="modal-overlay">
+        <div class="modal-box">
+            <div class="modal-icon"><i class="fa-solid fa-lock"></i></div>
+            <h3 style="color:#2c3e50; margin-bottom:15px;">Onay Bekleniyor</h3>
+            <p style="color:#555; line-height:1.6; margin-bottom:25px;">
+                Hesabınız oluşturulmuş ancak henüz yönetici onayı almamıştır.<br><br>
+                Güvenlik prosedürleri gereği erişiminiz kapalıdır. Onay sürecini hızlandırmak için lütfen iletişime geçiniz:
+                <br><br>
+                <strong style="color:#E31E24; font-size:1.1rem;">dernek@hatayodtumd.org</strong>
+            </p>
+            <div class="modal-btn" onclick="document.getElementById('pendingModal').style.display='none'">Tamam</div>
+        </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -64,29 +127,42 @@
         const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhmdHJtaWlhY3hndGthcnN2dXBuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ3ODUzNzIsImV4cCI6MjA4MDM2MTM3Mn0.BgCk5xuZx6AZuxzfBHcQqg8j8BtxU9FbupDgoFecG_k';
         const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
 
-        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+        async function handleLogin(e) {
             e.preventDefault();
-            const btn = document.getElementById('loginBtn');
-            const originalText = btn.innerText;
-            btn.innerText = "Giriş Yapılıyor..."; btn.disabled = true;
-
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
+            const btn = document.getElementById('loginBtn');
 
-            const { data, error } = await supabase.auth.signInWithPassword({
-                email: email,
-                password: password
-            });
+            btn.innerText = "Kontrol Ediliyor...";
+            btn.disabled = true;
+
+            // 1. Önce Giriş Yapmayı Dene
+            const { data, error } = await supabase.auth.signInWithPassword({ email, password });
 
             if (error) {
-                alert("Hata: E-posta veya şifre yanlış.");
-                btn.innerText = originalText; btn.disabled = false;
-            } else {
-                // Giriş başarılı, dashboard'a yönlendir
-                window.location.href = 'dashboard.html';
+                alert("Giriş Başarısız: " + error.message);
+                btn.innerText = "Giriş Yap";
+                btn.disabled = false;
+                return;
             }
-        });
-    </script>
 
+            // 2. KİLİT NOKTASI: Profili ve Onay Durumunu Kontrol Et
+            if (data.user) {
+                const { data: profile } = await supabase.from('profiles').select('is_approved').eq('id', data.user.id).single();
+
+                if (!profile || profile.is_approved !== true) {
+                    // ONAY YOKSA: Hemen çıkış yaptır ve modalı göster
+                    await supabase.auth.signOut();
+                    
+                    document.getElementById('pendingModal').style.display = 'flex';
+                    btn.innerText = "Giriş Yap";
+                    btn.disabled = false;
+                } else {
+                    // ONAY VARSA: Yönlendir
+                    window.location.href = "dashboard.html";
+                }
+            }
+        }
+    </script>
 </body>
 </html>
