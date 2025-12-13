@@ -6,7 +6,6 @@
 <title>Yönetim Paneli - Hatay ODTÜ MD</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
-    /* GENEL STİL */
     :root { --admin-dark: #1e293b; --admin-light: #f1f5f9; --accent: #E31E24; --text: #334155; }
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
     body { display: flex; background-color: var(--admin-light); min-height: 100vh; color: var(--text); }
@@ -14,10 +13,8 @@
     /* SIDEBAR */
     .sidebar { width: 250px; background: var(--admin-dark); color: white; display: flex; flex-direction: column; position: fixed; height: 100%; top: 0; left: 0; padding: 20px; transition: 0.3s; z-index: 100; }
     .logo { font-size: 1.2rem; font-weight: bold; margin-bottom: 40px; display: flex; align-items: center; gap: 10px; color: #fff; text-decoration: none; }
-    
     .menu-item { padding: 12px 15px; color: #94a3b8; cursor: pointer; border-radius: 8px; margin-bottom: 5px; display: flex; align-items: center; gap: 10px; transition: 0.2s; text-decoration: none; }
     .menu-item:hover, .menu-item.active { background: rgba(255,255,255,0.1); color: white; }
-    
     .nav-divider { height: 1px; background: rgba(255,255,255,0.1); margin: 15px 0; }
     .logout-btn { margin-top: auto; color: #ef4444; border: 1px solid #ef4444; }
     
@@ -25,15 +22,15 @@
     .main { margin-left: 250px; padding: 40px; flex: 1; width: calc(100% - 250px); }
     .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
     
-    /* İSTATİSTİK KARTLARI */
+    /* İSTATİSTİK */
     .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 30px; }
     .stat-card { background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); display: flex; align-items: center; gap: 20px; }
     .stat-icon { width: 50px; height: 50px; border-radius: 10px; display: flex; justify-content: center; align-items: center; font-size: 1.5rem; color: white; }
     .stat-info h3 { margin: 0; font-size: 1.8rem; }
     .stat-info p { margin: 0; color: #64748b; font-size: 0.9rem; }
-    .bg-blue { background: #3b82f6; } .bg-green { background: #10b981; } .bg-orange { background: #f59e0b; } .bg-red { background: #ef4444; }
+    .bg-blue { background: #3b82f6; } .bg-green { background: #10b981; } .bg-orange { background: #f59e0b; } .bg-red { background: #ef4444; } .bg-purple { background: #8e44ad; }
 
-    /* TABLOLAR */
+    /* TABLOLAR VE FORMLAR */
     .section { display: none; animation: fadeIn 0.3s; }
     .section.active { display: block; }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
@@ -44,13 +41,11 @@
     th { color: #64748b; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; }
     tr:hover { background-color: #f8fafc; }
 
-    /* BUTONLAR & ROZETLER */
     .badge { padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: bold; display: inline-block; }
-    .badge-no { background: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; } 
-    .badge-yes { background: #dcfce7; color: #166534; border: 1px solid #86efac; }
-    .badge-pending { background: #ffedd5; color: #c2410c; }
+    .badge-no { background: #fee2e2; color: #991b1b; } 
+    .badge-yes { background: #dcfce7; color: #166534; }
     
-    .btn { padding: 6px 12px; border-radius: 6px; border: none; cursor: pointer; font-weight: bold; font-size: 0.8rem; margin-right: 5px; transition: 0.2s; white-space: nowrap; }
+    .btn { padding: 6px 12px; border-radius: 6px; border: none; cursor: pointer; font-weight: bold; font-size: 0.8rem; margin-right: 5px; white-space: nowrap; transition: 0.2s; }
     .btn-approve { background: #10b981; color: white; }
     .btn-block { background: #f59e0b; color: white; }
     .btn-role { background: #3b82f6; color: white; }
@@ -58,11 +53,15 @@
     .btn-view { background: #64748b; color: white; }
     .btn:hover { opacity: 0.9; }
 
-    /* MODAL & FORM */
+    /* FORM ELEMANLARI */
+    .form-control { padding: 10px; border: 1px solid #ddd; border-radius: 6px; outline: none; width: 100%; margin-bottom: 10px; }
+    .form-row { display: flex; gap: 15px; }
+    .form-row .form-control { flex: 1; }
+
+    /* MODAL */
     .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 2000; display: none; justify-content: center; align-items: center; }
     .modal-content { background: white; padding: 30px; border-radius: 12px; width: 90%; max-width: 600px; position: relative; max-height: 80vh; overflow-y: auto; }
     .close-modal { position: absolute; top: 15px; right: 20px; font-size: 1.5rem; cursor: pointer; }
-    .form-control { padding: 8px; border: 1px solid #ddd; border-radius: 6px; outline: none; width: 100%; }
 
     @media (max-width: 900px) {
         .sidebar { transform: translateX(-100%); position: fixed; z-index: 200; }
@@ -83,6 +82,8 @@
             <i class="fa-solid fa-users"></i> Üyeler & Onay 
             <span id="pendingCountBadge" style="background:red; color:white; font-size:0.7rem; padding:2px 6px; border-radius:10px; display:none;">0</span>
         </div>
+        
+        <div class="menu-item" onclick="switchTab('events', this)"><i class="fa-solid fa-calendar-plus"></i> Etkinlik Yönetimi</div>
         <div class="menu-item" onclick="switchTab('requests', this)"><i class="fa-solid fa-flask"></i> Talepler (Lab)</div>
         <div class="menu-item" onclick="switchTab('jobs', this)"><i class="fa-solid fa-briefcase"></i> İlan & Başvuru</div>
         <div class="menu-item" onclick="switchTab('content', this)"><i class="fa-solid fa-bullhorn"></i> Duyuru Yap</div>
@@ -103,11 +104,11 @@
                 <div class="stat-card"><div class="stat-icon bg-orange"><i class="fa-solid fa-user-clock"></i></div><div class="stat-info"><h3 id="statPending">0</h3><p>Onay Bekleyen</p></div></div>
                 <div class="stat-card"><div class="stat-icon bg-green"><i class="fa-solid fa-user-check"></i></div><div class="stat-info"><h3 id="statTotal">0</h3><p>Toplam Üye</p></div></div>
                 <div class="stat-card"><div class="stat-icon bg-blue"><i class="fa-solid fa-briefcase"></i></div><div class="stat-info"><h3 id="statJobs">0</h3><p>Aktif İlan</p></div></div>
-                <div class="stat-card"><div class="stat-icon bg-red"><i class="fa-solid fa-flask"></i></div><div class="stat-info"><h3 id="statReqs">0</h3><p>Bekleyen Talep</p></div></div>
+                <div class="stat-card"><div class="stat-icon bg-purple"><i class="fa-solid fa-calendar-day"></i></div><div class="stat-info"><h3 id="statEvents">0</h3><p>Etkinlik</p></div></div>
             </div>
             <div class="table-container">
                 <h3>🔔 Son Aktiviteler</h3>
-                <p style="color:#666;">Sisteme son katılan 5 kullanıcı aşağıdadır.</p>
+                <p style="color:#666;">En son kayıt olan 5 üye.</p>
                 <table id="recentUsersTable">
                     <thead><tr><th>Ad Soyad</th><th>Tarih</th><th>Durum</th></tr></thead>
                     <tbody id="recentUsersBody"></tbody>
@@ -119,7 +120,7 @@
             <div class="table-container">
                 <div style="display:flex; justify-content:space-between; margin-bottom:15px;">
                     <h3>📋 Kayıtlı Kullanıcılar</h3>
-                    <input type="text" id="userSearch" placeholder="İsim ara..." class="form-control" style="width: 250px;" onkeyup="filterTable('userTable', this.value)">
+                    <input type="text" id="userSearch" placeholder="İsim ara..." class="form-control" style="width: 250px; margin-bottom:0;" onkeyup="filterTable('userTable', this.value)">
                 </div>
                 <table id="userTable">
                     <thead><tr><th>Ad Soyad / Email</th><th>Tip</th><th>Bölüm</th><th>Durum</th><th>İşlemler</th></tr></thead>
@@ -128,10 +129,32 @@
             </div>
         </div>
 
+        <div id="events" class="section">
+            <div class="table-container">
+                <h3>🗓️ Yeni Etkinlik Oluştur</h3>
+                <div style="background:#f8fafc; padding:20px; border-radius:8px; margin-bottom:20px; border:1px solid #e2e8f0;">
+                    <div class="form-row">
+                        <input type="text" id="evtTitle" class="form-control" placeholder="Etkinlik Başlığı">
+                        <input type="date" id="evtDate" class="form-control">
+                    </div>
+                    <div class="form-row">
+                        <input type="text" id="evtLoc" class="form-control" placeholder="Konum (Örn: Zoom, Kültür Merkezi)">
+                    </div>
+                    <textarea id="evtDesc" class="form-control" rows="2" placeholder="Kısa açıklama..."></textarea>
+                    <button class="btn btn-approve" style="width:100%;" onclick="createEvent()">Etkinliği Yayınla</button>
+                </div>
+
+                <h3>Mevcut Etkinlikler</h3>
+                <table id="eventsTable">
+                    <thead><tr><th>Tarih</th><th>Başlık</th><th>Konum</th><th>İşlem</th></tr></thead>
+                    <tbody id="eventsListBody"></tbody>
+                </table>
+            </div>
+        </div>
+
         <div id="requests" class="section">
             <div class="table-container">
                 <h3>🧪 Bekleyen Gelişim Talepleri</h3>
-                <p style="color:#666; font-size:0.9rem;">CV, Mülakat, Gölgeleme vb.</p>
                 <table id="reqTable">
                     <thead><tr><th>Öğrenci</th><th>Tür</th><th>Detay</th><th>Tarih</th><th>İşlem</th></tr></thead>
                     <tbody id="reqListBody"><tr><td colspan="5">Yükleniyor...</td></tr></tbody>
@@ -152,7 +175,7 @@
         <div id="content" class="section">
             <div class="table-container">
                 <h3>📢 Duyuru Yayınla</h3>
-                <textarea id="broadcastMsg" class="form-control" rows="4" style="width:100%; margin:10px 0;" placeholder="Duyuru metni..."></textarea>
+                <textarea id="broadcastMsg" class="form-control" rows="4" placeholder="Duyuru metni..."></textarea>
                 <button class="btn btn-approve" onclick="sendBroadcast()">Yayınla</button>
             </div>
         </div>
@@ -198,11 +221,12 @@
 
         async function refreshAllData() {
             loadUsersAndStats();
+            loadEvents();
             loadLabRequests();
             loadJobs();
         }
 
-        // --- 1. KULLANICILAR & İSTATİSTİKLER ---
+        // --- 1. KULLANICILAR & İSTATİSTİK ---
         async function loadUsersAndStats() {
             const { data } = await supabase.from('profiles').select('*').order('created_at', { ascending: false });
             const tbody = document.getElementById('userListBody');
@@ -219,7 +243,6 @@
                 
                 if (!isApproved) pendingCount++;
 
-                // DÜZELTİLDİ: Erişimi Kapat Butonu
                 let approveBtn = isApproved 
                     ? `<button class="btn btn-block" onclick="toggleApproval('${u.id}', false)">🚫 Erişimi Kapat</button>`
                     : `<button class="btn btn-approve" onclick="toggleApproval('${u.id}', true)">✅ Onayla</button>`;
@@ -227,16 +250,11 @@
                 let roleBtn = `<button class="btn btn-role" onclick="manageRole('${u.id}', '${u.roles}')">🛡️ Rol</button>`;
                 let deleteBtn = `<button class="btn btn-delete" onclick="deleteUser('${u.id}')">Sil</button>`;
 
-                // Ana Tablo
                 tbody.innerHTML += `<tr><td><b>${u.full_name}</b><br><small>${u.email}</small></td><td>${u.user_type}</td><td>${u.department}</td><td>${statusBadge}</td><td>${approveBtn} ${roleBtn} ${deleteBtn}</td></tr>`;
 
-                // Son 5 Kayıt (Overview)
-                if(index < 5) {
-                    recentBody.innerHTML += `<tr><td>${u.full_name}</td><td>${new Date(u.created_at).toLocaleDateString()}</td><td>${statusBadge}</td></tr>`;
-                }
+                if(index < 5) recentBody.innerHTML += `<tr><td>${u.full_name}</td><td>${new Date(u.created_at).toLocaleDateString()}</td><td>${statusBadge}</td></tr>`;
             });
 
-            // İstatistikler
             document.getElementById('statTotal').innerText = data.length;
             document.getElementById('statPending').innerText = pendingCount;
             if(pendingCount > 0) {
@@ -245,32 +263,61 @@
             }
         }
 
+        // KULLANICI İŞLEMLERİ
         async function toggleApproval(id, status) {
-            const action = status ? "ONAYLAMAK" : "ERİŞİMİ KAPATMAK";
-            if(confirm(`Bu kullanıcıyı ${action} istiyor musunuz?`)) {
-                const { error } = await supabase.from('profiles').update({ is_approved: status }).eq('id', id);
-                if(!error) { showToast(status ? "Onaylandı" : "Kapatıldı"); refreshAllData(); }
+            if(confirm(status ? "Kullanıcı onaylansın mı?" : "Erişim kapatılsın mı?")) {
+                await supabase.from('profiles').update({ is_approved: status }).eq('id', id);
+                refreshAllData(); showToast("Güncellendi");
             }
         }
-
         async function manageRole(id, currentRoles) {
-            const input = prompt("Rolleri virgülle girin (örn: admin, mentor):", currentRoles);
-            if(input !== null) {
-                const newRoles = input.split(',').map(r => r.trim()).filter(r => r !== "");
-                await supabase.from('profiles').update({ roles: newRoles }).eq('id', id);
+            const input = prompt("Roller (virgülle ayırın):", currentRoles);
+            if(input!==null) {
+                await supabase.from('profiles').update({ roles: input.split(',').map(r=>r.trim()).filter(r=>r!=="") }).eq('id', id);
                 showToast("Roller Güncellendi");
             }
         }
-
         async function deleteUser(id) {
-            if(!confirm("Kullanıcı tamamen silinecek. Emin misiniz?")) return;
+            if(!confirm("Kullanıcı tamamen silinecek!")) return;
             const { error } = await supabase.rpc('delete_user_fully', { target_user_id: id });
-            if(error) { alert("Auth silinemedi, profil siliniyor..."); await supabase.from('profiles').delete().eq('id', id); }
+            if(error) { await supabase.from('profiles').delete().eq('id', id); }
             showToast("Silindi"); refreshAllData();
         }
 
-        // --- 2. TALEPLER ---
+        // --- 2. ETKİNLİK YÖNETİMİ (YENİ) ---
+        async function createEvent() {
+            const title = document.getElementById('evtTitle').value;
+            const date = document.getElementById('evtDate').value;
+            const loc = document.getElementById('evtLoc').value;
+            const desc = document.getElementById('evtDesc').value;
+
+            if(!title || !date) return alert("Başlık ve Tarih zorunludur.");
+
+            const { error } = await supabase.from('events').insert({ title, event_date: date, location: loc, description: desc });
+            if(error) alert("Hata: " + error.message);
+            else { 
+                showToast("Etkinlik Eklendi!"); 
+                document.getElementById('evtTitle').value=''; 
+                document.getElementById('evtLoc').value=''; 
+                document.getElementById('evtDesc').value='';
+                loadEvents(); 
+            }
+        }
+
+        async function loadEvents() {
+            const tbody = document.getElementById('eventsListBody');
+            const { data } = await supabase.from('events').select('*').order('event_date', {ascending: true});
+            document.getElementById('statEvents').innerText = data ? data.length : 0;
+            
+            tbody.innerHTML = '';
+            if(data) data.forEach(e => {
+                tbody.innerHTML += `<tr><td>${new Date(e.event_date).toLocaleDateString()}</td><td>${e.title}</td><td>${e.location}</td><td><button class="btn btn-delete" onclick="deleteItem('events', ${e.id}, loadEvents)">Sil</button></td></tr>`;
+            });
+        }
+
+        // --- 3. DİĞER MODÜLLER ---
         async function loadLabRequests() {
+            // ... (Aynı Mantık: Tüm tablolardan çekip birleştirme) ...
             const tbody = document.getElementById('reqListBody');
             let allReqs = [];
             const tables = ['cv_requests', 'mock_interviews', 'job_shadowing', 'academic_matches', 'case_submissions'];
@@ -281,57 +328,57 @@
 
             results.forEach((res, index) => {
                 if(res.data) res.data.forEach(item => {
-                    let detail = item.cv_url ? `<a href="${item.cv_url}" target="_blank">Dosya</a>` : (item.interview_type || item.sector || item.research_topic || item.case_topic || '-');
+                    let detail = item.cv_url ? `<a href="${item.cv_url}" target="_blank">Dosya</a>` : (item.interview_type || item.sector || '-');
                     allReqs.push({ id: item.id, table: tables[index], type: types[index], name: item.profiles?.full_name, detail: detail, date: item.created_at });
                 });
             });
-
-            document.getElementById('statReqs').innerText = allReqs.length; // İstatistik
-            allReqs.sort((a,b) => new Date(b.date) - new Date(a.date));
+            document.getElementById('statReqs').innerText = allReqs.length;
             
-            if(allReqs.length === 0) { tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">Talep yok.</td></tr>'; return; }
             tbody.innerHTML = '';
-            allReqs.forEach(r => tbody.innerHTML += `<tr><td>${r.name}</td><td><span class="badge badge-pending">${r.type}</span></td><td>${r.detail}</td><td>${new Date(r.date).toLocaleDateString()}</td><td><button class="btn btn-approve" onclick="completeReq('${r.table}',${r.id})">Tamamla</button> <button class="btn btn-delete" onclick="deleteItem('${r.table}',${r.id}, loadLabRequests)">Sil</button></td></tr>`);
-        }
-        async function completeReq(table, id) {
-            if(confirm("Tamamlandı işaretlensin mi?")) { await supabase.from(table).delete().eq('id', id); refreshAllData(); showToast("Tamamlandı"); }
+            if(allReqs.length===0) tbody.innerHTML='<tr><td colspan="5">Talep yok.</td></tr>';
+            allReqs.sort((a,b)=>new Date(b.date)-new Date(a.date));
+            allReqs.forEach(r => tbody.innerHTML += `<tr><td>${r.name}</td><td><span class="badge badge-pending">${r.type}</span></td><td>${r.detail}</td><td>${new Date(r.date).toLocaleDateString()}</td><td><button class="btn btn-delete" onclick="deleteItem('${r.table}', ${r.id}, loadLabRequests)">Sil</button></td></tr>`);
         }
 
-        // --- 3. İLANLAR ---
         async function loadJobs() {
             const tbody = document.getElementById('jobListBody');
             const { data: jobs } = await supabase.from('jobs').select('*, profiles(full_name)').order('created_at', { ascending: false });
-            document.getElementById('statJobs').innerText = jobs ? jobs.length : 0; // İstatistik
-
+            document.getElementById('statJobs').innerText = jobs ? jobs.length : 0;
+            
             tbody.innerHTML = '';
-            for (const job of jobs) {
+            if(jobs) for (const job of jobs) {
                 const { count } = await supabase.from('job_applications').select('*', { count: 'exact', head: true }).eq('job_id', job.id);
                 tbody.innerHTML += `<tr><td>${job.title}</td><td>${job.company}</td><td>${job.profiles?.full_name}</td><td><button class="btn btn-view" onclick="viewApplicants(${job.id})">${count} Başvuru</button></td><td><button class="btn btn-delete" onclick="deleteItem('jobs', ${job.id}, loadJobs)">Sil</button></td></tr>`;
             }
         }
+
         async function viewApplicants(jobId) {
-            document.getElementById('applicantsModal').style.display = 'flex';
-            const cont = document.getElementById('applicantsListContent'); cont.innerHTML = 'Yükleniyor...';
+            document.getElementById('applicantsModal').style.display='flex';
+            const el = document.getElementById('applicantsListContent'); el.innerHTML='Yükleniyor...';
             const { data } = await supabase.from('job_applications').select('*, profiles!applicant_id(full_name, email, department)').eq('job_id', jobId);
-            let html = '<ul style="list-style:none; padding:0;">';
-            if(!data || data.length===0) html+='<li>Başvuru yok.</li>';
-            else data.forEach(a => html += `<li style="padding:10px; border-bottom:1px solid #eee;"><b>${a.profiles.full_name}</b> (${a.profiles.department})<br>${a.profiles.email}</li>`);
-            cont.innerHTML = html + '</ul>';
+            let h='<ul style="padding:0; list-style:none;">';
+            if(!data || data.length===0) h+='<li>Başvuru yok.</li>';
+            else data.forEach(a=>h+=`<li style="padding:10px; border-bottom:1px solid #eee;"><b>${a.profiles.full_name}</b><br><small>${a.profiles.email}</small></li>`);
+            el.innerHTML = h+'</ul>';
         }
 
-        // ORTAK
+        // --- ORTAK ---
         async function sendBroadcast() {
             const msg = document.getElementById('broadcastMsg').value; if(!msg) return;
-            await supabase.from('broadcasts').insert({ message: msg });
-            showToast("Duyuru Gönderildi"); document.getElementById('broadcastMsg').value = '';
+            await supabase.from('announcements').insert({ title: msg, color: '#E31E24' }); // Kalıcı duyuru
+            await supabase.from('broadcasts').insert({ message: msg }); // Anlık bildirim
+            showToast("Yayınlandı!"); document.getElementById('broadcastMsg').value = '';
         }
+
         async function deleteItem(table, id, callback) {
             if(confirm("Silinsin mi?")) { await supabase.from(table).delete().eq('id', id); callback(); showToast("Silindi"); }
         }
+
         function filterTable(tableId, query) {
-            document.querySelectorAll(`#${tableId} tbody tr`).forEach(row => { row.style.display = row.innerText.toLowerCase().includes(query.toLowerCase()) ? '' : 'none'; });
+            document.querySelectorAll(`#${tableId} tbody tr`).forEach(row => row.style.display = row.innerText.toLowerCase().includes(query.toLowerCase()) ? '' : 'none');
         }
-        function showToast(msg) { const t = document.getElementById('liveToast'); t.innerText=msg; t.style.display='block'; setTimeout(()=>t.style.display='none',3000); }
+
+        function showToast(msg) { const t = document.getElementById('liveToast'); t.innerText=msg; t.style.display='block'; setTimeout(()=>t.style.display='none', 3000); }
         async function logout() { await supabase.auth.signOut(); window.location.href = "index.html"; }
     </script>
 </body>
