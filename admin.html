@@ -6,6 +6,7 @@
 <title>Yönetim Paneli - Hatay ODTÜ MD</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
+    /* GENEL STİL */
     :root { --admin-dark: #1e293b; --admin-light: #f1f5f9; --accent: #E31E24; --text: #334155; }
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
     body { display: flex; background-color: var(--admin-light); min-height: 100vh; color: var(--text); }
@@ -44,6 +45,7 @@
     .badge { padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: bold; display: inline-block; }
     .badge-no { background: #fee2e2; color: #991b1b; } 
     .badge-yes { background: #dcfce7; color: #166534; }
+    .badge-pending { background: #ffedd5; color: #c2410c; }
     
     .btn { padding: 6px 12px; border-radius: 6px; border: none; cursor: pointer; font-weight: bold; font-size: 0.8rem; margin-right: 5px; white-space: nowrap; transition: 0.2s; }
     .btn-approve { background: #10b981; color: white; }
@@ -74,15 +76,8 @@
     <div class="sidebar">
         <a href="dashboard.html" class="logo"><i class="fa-solid fa-shield-halved"></i> Yönetim Paneli</a>
         
-        <div class="menu-item active" onclick="switchTab('overview', this)">
-            <i class="fa-solid fa-chart-line"></i> Genel Bakış
-        </div>
-        
-        <div class="menu-item" onclick="switchTab('users', this)">
-            <i class="fa-solid fa-users"></i> Üyeler & Onay 
-            <span id="pendingCountBadge" style="background:red; color:white; font-size:0.7rem; padding:2px 6px; border-radius:10px; display:none;">0</span>
-        </div>
-        
+        <div class="menu-item active" onclick="switchTab('overview', this)"><i class="fa-solid fa-chart-line"></i> Genel Bakış</div>
+        <div class="menu-item" onclick="switchTab('users', this)"><i class="fa-solid fa-users"></i> Üyeler & Onay <span id="pendingCountBadge" style="background:red; color:white; font-size:0.7rem; padding:2px 6px; border-radius:10px; display:none;">0</span></div>
         <div class="menu-item" onclick="switchTab('events', this)"><i class="fa-solid fa-calendar-plus"></i> Etkinlik Yönetimi</div>
         <div class="menu-item" onclick="switchTab('requests', this)"><i class="fa-solid fa-flask"></i> Talepler (Lab)</div>
         <div class="menu-item" onclick="switchTab('jobs', this)"><i class="fa-solid fa-briefcase"></i> İlan & Başvuru</div>
@@ -104,6 +99,7 @@
                 <div class="stat-card"><div class="stat-icon bg-orange"><i class="fa-solid fa-user-clock"></i></div><div class="stat-info"><h3 id="statPending">0</h3><p>Onay Bekleyen</p></div></div>
                 <div class="stat-card"><div class="stat-icon bg-green"><i class="fa-solid fa-user-check"></i></div><div class="stat-info"><h3 id="statTotal">0</h3><p>Toplam Üye</p></div></div>
                 <div class="stat-card"><div class="stat-icon bg-blue"><i class="fa-solid fa-briefcase"></i></div><div class="stat-info"><h3 id="statJobs">0</h3><p>Aktif İlan</p></div></div>
+                <div class="stat-card"><div class="stat-icon bg-red"><i class="fa-solid fa-flask"></i></div><div class="stat-info"><h3 id="statReqs">0</h3><p>Bekleyen Talep</p></div></div>
                 <div class="stat-card"><div class="stat-icon bg-purple"><i class="fa-solid fa-calendar-day"></i></div><div class="stat-info"><h3 id="statEvents">0</h3><p>Etkinlik</p></div></div>
             </div>
             <div class="table-container">
@@ -141,7 +137,7 @@
                         <input type="text" id="evtLoc" class="form-control" placeholder="Konum (Örn: Zoom, Kültür Merkezi)">
                     </div>
                     <textarea id="evtDesc" class="form-control" rows="2" placeholder="Kısa açıklama..."></textarea>
-                    <button class="btn btn-approve" style="width:100%;" onclick="createEvent()">Etkinliği Yayınla</button>
+                    <button class="btn btn-approve" style="width:100%;" onclick="publishNewEvent()">Etkinliği Yayınla</button>
                 </div>
 
                 <h3>Mevcut Etkinlikler</h3>
@@ -255,25 +251,30 @@
                 if(index < 5) recentBody.innerHTML += `<tr><td>${u.full_name}</td><td>${new Date(u.created_at).toLocaleDateString()}</td><td>${statusBadge}</td></tr>`;
             });
 
-            document.getElementById('statTotal').innerText = data.length;
-            document.getElementById('statPending').innerText = pendingCount;
-            if(pendingCount > 0) {
-                document.getElementById('pendingCountBadge').innerText = pendingCount;
-                document.getElementById('pendingCountBadge').style.display = 'inline-block';
+            // HATA DÜZELTME: Bu elementler yoksa kod kırılmasın diye kontrol ekledik
+            if(document.getElementById('statTotal')) document.getElementById('statTotal').innerText = data.length;
+            if(document.getElementById('statPending')) document.getElementById('statPending').innerText = pendingCount;
+            if(document.getElementById('pendingCountBadge')) {
+                if(pendingCount > 0) {
+                    document.getElementById('pendingCountBadge').innerText = pendingCount;
+                    document.getElementById('pendingCountBadge').style.display = 'inline-block';
+                } else {
+                    document.getElementById('pendingCountBadge').style.display = 'none';
+                }
             }
         }
 
-        // KULLANICI İŞLEMLERİ
         async function toggleApproval(id, status) {
             if(confirm(status ? "Kullanıcı onaylansın mı?" : "Erişim kapatılsın mı?")) {
-                await supabase.from('profiles').update({ is_approved: status }).eq('id', id);
-                refreshAllData(); showToast("Güncellendi");
+                const { error } = await supabase.from('profiles').update({ is_approved: status }).eq('id', id);
+                if(!error) { showToast("Güncellendi"); refreshAllData(); } else alert(error.message);
             }
         }
         async function manageRole(id, currentRoles) {
             const input = prompt("Roller (virgülle ayırın):", currentRoles);
             if(input!==null) {
-                await supabase.from('profiles').update({ roles: input.split(',').map(r=>r.trim()).filter(r=>r!=="") }).eq('id', id);
+                const newRoles = input.split(',').map(r=>r.trim()).filter(r=>r!=="");
+                await supabase.from('profiles').update({ roles: newRoles }).eq('id', id);
                 showToast("Roller Güncellendi");
             }
         }
@@ -284,8 +285,8 @@
             showToast("Silindi"); refreshAllData();
         }
 
-        // --- 2. ETKİNLİK YÖNETİMİ (YENİ) ---
-        async function createEvent() {
+        // --- 2. ETKİNLİK YÖNETİMİ (İSİM DÜZELTİLDİ) ---
+        async function publishNewEvent() {
             const title = document.getElementById('evtTitle').value;
             const date = document.getElementById('evtDate').value;
             const loc = document.getElementById('evtLoc').value;
@@ -298,6 +299,7 @@
             else { 
                 showToast("Etkinlik Eklendi!"); 
                 document.getElementById('evtTitle').value=''; 
+                document.getElementById('evtDate').value='';
                 document.getElementById('evtLoc').value=''; 
                 document.getElementById('evtDesc').value='';
                 loadEvents(); 
@@ -307,17 +309,17 @@
         async function loadEvents() {
             const tbody = document.getElementById('eventsListBody');
             const { data } = await supabase.from('events').select('*').order('event_date', {ascending: true});
-            document.getElementById('statEvents').innerText = data ? data.length : 0;
+            // HATA DÜZELTME: statEvents kontrolü
+            if(document.getElementById('statEvents')) document.getElementById('statEvents').innerText = data ? data.length : 0;
             
             tbody.innerHTML = '';
             if(data) data.forEach(e => {
-                tbody.innerHTML += `<tr><td>${new Date(e.event_date).toLocaleDateString()}</td><td>${e.title}</td><td>${e.location}</td><td><button class="btn btn-delete" onclick="deleteItem('events', ${e.id}, loadEvents)">Sil</button></td></tr>`;
+                tbody.innerHTML += `<tr><td>${new Date(e.event_date).toLocaleDateString()}</td><td>${e.title}</td><td>${e.location||'-'}</td><td><button class="btn btn-delete" onclick="deleteItem('events', ${e.id}, loadEvents)">Sil</button></td></tr>`;
             });
         }
 
         // --- 3. DİĞER MODÜLLER ---
         async function loadLabRequests() {
-            // ... (Aynı Mantık: Tüm tablolardan çekip birleştirme) ...
             const tbody = document.getElementById('reqListBody');
             let allReqs = [];
             const tables = ['cv_requests', 'mock_interviews', 'job_shadowing', 'academic_matches', 'case_submissions'];
@@ -332,18 +334,21 @@
                     allReqs.push({ id: item.id, table: tables[index], type: types[index], name: item.profiles?.full_name, detail: detail, date: item.created_at });
                 });
             });
-            document.getElementById('statReqs').innerText = allReqs.length;
+            // HATA DÜZELTME: statReqs kontrolü
+            if(document.getElementById('statReqs')) document.getElementById('statReqs').innerText = allReqs.length;
+            
+            allReqs.sort((a,b)=>new Date(b.date)-new Date(a.date));
+            if(allReqs.length===0) { tbody.innerHTML='<tr><td colspan="5">Talep yok.</td></tr>'; return; }
             
             tbody.innerHTML = '';
-            if(allReqs.length===0) tbody.innerHTML='<tr><td colspan="5">Talep yok.</td></tr>';
-            allReqs.sort((a,b)=>new Date(b.date)-new Date(a.date));
             allReqs.forEach(r => tbody.innerHTML += `<tr><td>${r.name}</td><td><span class="badge badge-pending">${r.type}</span></td><td>${r.detail}</td><td>${new Date(r.date).toLocaleDateString()}</td><td><button class="btn btn-delete" onclick="deleteItem('${r.table}', ${r.id}, loadLabRequests)">Sil</button></td></tr>`);
         }
 
         async function loadJobs() {
             const tbody = document.getElementById('jobListBody');
             const { data: jobs } = await supabase.from('jobs').select('*, profiles(full_name)').order('created_at', { ascending: false });
-            document.getElementById('statJobs').innerText = jobs ? jobs.length : 0;
+            // HATA DÜZELTME: statJobs kontrolü
+            if(document.getElementById('statJobs')) document.getElementById('statJobs').innerText = jobs ? jobs.length : 0;
             
             tbody.innerHTML = '';
             if(jobs) for (const job of jobs) {
@@ -353,32 +358,29 @@
         }
 
         async function viewApplicants(jobId) {
-            document.getElementById('applicantsModal').style.display='flex';
-            const el = document.getElementById('applicantsListContent'); el.innerHTML='Yükleniyor...';
+            document.getElementById('applicantsModal').style.display = 'flex';
+            const cont = document.getElementById('applicantsListContent'); cont.innerHTML = 'Yükleniyor...';
             const { data } = await supabase.from('job_applications').select('*, profiles!applicant_id(full_name, email, department)').eq('job_id', jobId);
-            let h='<ul style="padding:0; list-style:none;">';
-            if(!data || data.length===0) h+='<li>Başvuru yok.</li>';
-            else data.forEach(a=>h+=`<li style="padding:10px; border-bottom:1px solid #eee;"><b>${a.profiles.full_name}</b><br><small>${a.profiles.email}</small></li>`);
-            el.innerHTML = h+'</ul>';
+            let html = '<ul style="list-style:none; padding:0;">';
+            if(!data || data.length===0) html+='<li>Başvuru yok.</li>';
+            else data.forEach(a => html += `<li style="padding:10px; border-bottom:1px solid #eee;"><b>${a.profiles.full_name}</b><br><small>${a.profiles.email}</small></li>`);
+            cont.innerHTML = html + '</ul>';
         }
 
-        // --- ORTAK ---
+        // ORTAK
         async function sendBroadcast() {
             const msg = document.getElementById('broadcastMsg').value; if(!msg) return;
-            await supabase.from('announcements').insert({ title: msg, color: '#E31E24' }); // Kalıcı duyuru
-            await supabase.from('broadcasts').insert({ message: msg }); // Anlık bildirim
-            showToast("Yayınlandı!"); document.getElementById('broadcastMsg').value = '';
+            await supabase.from('broadcasts').insert({ message: msg });
+            await supabase.from('announcements').insert({ title: msg });
+            showToast("Yayınlandı"); document.getElementById('broadcastMsg').value = '';
         }
-
         async function deleteItem(table, id, callback) {
             if(confirm("Silinsin mi?")) { await supabase.from(table).delete().eq('id', id); callback(); showToast("Silindi"); }
         }
-
         function filterTable(tableId, query) {
-            document.querySelectorAll(`#${tableId} tbody tr`).forEach(row => row.style.display = row.innerText.toLowerCase().includes(query.toLowerCase()) ? '' : 'none');
+            document.querySelectorAll(`#${tableId} tbody tr`).forEach(row => { row.style.display = row.innerText.toLowerCase().includes(query.toLowerCase()) ? '' : 'none'; });
         }
-
-        function showToast(msg) { const t = document.getElementById('liveToast'); t.innerText=msg; t.style.display='block'; setTimeout(()=>t.style.display='none', 3000); }
+        function showToast(msg) { const t = document.getElementById('liveToast'); t.innerText=msg; t.style.display='block'; setTimeout(()=>t.style.display='none',3000); }
         async function logout() { await supabase.auth.signOut(); window.location.href = "index.html"; }
     </script>
 </body>
