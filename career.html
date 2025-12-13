@@ -1,180 +1,4 @@
-<!DOCTYPE html>
-<html lang="tr">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Kariyer Merkezi - Hatay ODTÜ MD</title>
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-<style>
-    :root { --odtu-red: #E31E24; --odtu-dark: #2c3e50; --bg-light: #f8f9fa; --white: #ffffff; }
-    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
-    body { background-color: var(--bg-light); min-height: 100vh; color: #333; }
-
-    /* NAVBAR */
-    .navbar { width: 100%; height: 70px; background-color: var(--odtu-dark); display: flex; align-items: center; justify-content: space-between; padding: 0 30px; position: fixed; top: 0; left: 0; z-index: 1000; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-    .nav-left { display: flex; align-items: center; gap: 15px; }
-    .nav-logo { height: 50px; background: white; padding: 2px; border-radius: 5px; }
-    .nav-title { color: white; font-size: 1.1rem; font-weight: bold; }
-    .nav-links { display: flex; gap: 20px; }
-    .nav-links a { color: #bdc3c7; text-decoration: none; font-size: 0.95rem; display: flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 6px; transition: 0.3s; }
-    .nav-links a:hover, .nav-links a.active { background-color: rgba(255,255,255,0.1); color: white; }
-    .nav-right { display: flex; align-items: center; gap: 20px; }
-    .logout-btn { color: #e74c3c; border: 1px solid #e74c3c; padding: 6px 15px; border-radius: 20px; text-decoration: none; transition: 0.3s; }
-
-    /* ANA İÇERİK */
-    .main-content { margin-top: 70px; padding: 40px; width: 100%; max-width: 1200px; margin-left: auto; margin-right: auto; }
-    
-    /* BÖLÜM BAŞLIKLARI */
-    .section-title { font-size: 1.8rem; color: var(--odtu-dark); margin-bottom: 20px; border-left: 5px solid var(--odtu-red); padding-left: 15px; display: flex; align-items: center; justify-content: space-between; }
-
-    /* --- BÖLÜM 1: LAB GRID (Gelişim Araçları) --- */
-    .lab-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; margin-bottom: 60px; }
-    .lab-card { background: white; border-radius: 15px; padding: 25px; transition: 0.3s; border: 1px solid #eee; display: flex; flex-direction: column; min-height: 250px; }
-    .lab-card:hover { transform: translateY(-5px); box-shadow: 0 10px 25px rgba(0,0,0,0.1); border-color: var(--odtu-red); }
-    
-    .icon-box { width: 50px; height: 50px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; margin-bottom: 15px; }
-    .theme-cv { background: #e3f2fd; color: #1565c0; }
-    .theme-int { background: #e8f5e9; color: #2e7d32; }
-    .theme-sha { background: #fff3e0; color: #ef6c00; }
-    .theme-aca { background: #f3e5f5; color: #7b1fa2; }
-    .theme-cas { background: #e0f7fa; color: #0097a7; }
-
-    .lab-card h3 { font-size: 1.2rem; margin-bottom: 10px; color: #333; }
-    .lab-card p { color: #666; font-size: 0.9rem; line-height: 1.4; margin-bottom: 20px; flex: 1; }
-    .btn-lab { width: 100%; padding: 10px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; color: white; margin-top: auto; }
-    .btn-cv { background: #1565c0; } .btn-int { background: #2e7d32; } .btn-sha { background: #ef6c00; } .btn-aca { background: #7b1fa2; } .btn-cas { background: #0097a7; }
-
-    /* --- BÖLÜM 2: HARİTA --- */
-    .map-section { background: white; padding: 20px; border-radius: 15px; box-shadow: 0 5px 20px rgba(0,0,0,0.05); margin-bottom: 60px; }
-    #alumniMap { width: 100%; height: 400px; border-radius: 10px; z-index: 1; }
-
-    /* --- BÖLÜM 3: İŞ İLANLARI (Eski Career) --- */
-    .job-list { background: white; border-radius: 12px; box-shadow: 0 2px 15px rgba(0,0,0,0.05); overflow: hidden; }
-    .job-row { display: flex; justify-content: space-between; align-items: center; padding: 20px; border-bottom: 1px solid #eee; transition: 0.2s; }
-    .job-row:hover { background-color: #f9f9f9; }
-    .job-main { display: flex; gap: 15px; align-items: center; }
-    .company-logo { width: 50px; height: 50px; background: #eee; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: bold; color: #777; font-size: 1rem; flex-shrink: 0; }
-    .job-details h4 { color: var(--odtu-dark); margin: 0 0 5px 0; font-size: 1rem; }
-    .job-meta { display: flex; gap: 10px; font-size: 0.85rem; color: #777; }
-    
-    .job-type { background: #e3f2fd; color: #1565c0; padding: 4px 10px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; }
-    .btn-apply { padding: 8px 20px; border: 1px solid var(--odtu-red); color: var(--odtu-red); background: transparent; border-radius: 6px; cursor: pointer; transition: 0.3s; font-weight: bold; font-size: 0.9rem; }
-    .btn-apply:hover { background: var(--odtu-red); color: white; }
-    .btn-manage { padding: 8px 20px; border: 1px solid var(--odtu-dark); color: var(--odtu-dark); background: transparent; border-radius: 6px; cursor: pointer; font-weight: bold; }
-    .btn-applied { background: #e0e0e0; color: #777; border: 1px solid #ccc; cursor: default; padding: 8px 20px; border-radius: 6px; font-weight: bold; }
-
-    /* MODAL STİLLERİ */
-    .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 2000; display: none; justify-content: center; align-items: center; backdrop-filter: blur(2px); }
-    .modal-content { background: white; padding: 30px; border-radius: 12px; width: 90%; max-width: 500px; position: relative; max-height: 80vh; overflow-y: auto; }
-    .modal-close { position: absolute; top: 15px; right: 20px; font-size: 1.5rem; cursor: pointer; color: #777; }
-    .modal-h { font-size: 1.4rem; color: var(--odtu-dark); margin-bottom: 20px; }
-    
-    .form-group { margin-bottom: 15px; }
-    .form-group label { display: block; margin-bottom: 5px; font-weight: bold; font-size: 0.9rem; }
-    .form-control { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; outline: none; }
-    .btn-submit { width: 100%; padding: 12px; background: var(--odtu-dark); color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; }
-
-    /* Başvuru Listesi Satırı */
-    .applicant-row { display: flex; justify-content: space-between; align-items: center; padding: 10px; border-bottom: 1px solid #eee; }
-
-    @media (max-width: 900px) {
-        .navbar { height: auto; flex-direction: column; padding: 15px; }
-        .nav-links { flex-wrap: wrap; justify-content: center; width: 100%; gap: 10px; }
-        .main-content { margin-top: 0; padding: 20px; }
-        .job-row { flex-direction: column; align-items: flex-start; gap: 15px; }
-        .btn-apply { width: 100%; }
-    }
-</style>
-</head>
-<body>
-
-    <nav class="navbar">
-        <div class="nav-left"><img src="logo.png" class="nav-logo"><div class="nav-title">Hatay ODTÜ MD <span>Üye Portalı</span></div></div>
-        <div class="nav-links">
-            <a href="dashboard.html">Panel</a>
-            <a href="meeting.html">Meeting Hub</a>
-            <a href="mentor.html">Mentorluk</a>
-            <a href="career.html" class="active" style="background:rgba(255,255,255,0.2); color:white;"><i class="fa-solid fa-briefcase"></i> Kariyer Merkezi</a>
-            <a href="network.html">Mezun Ağı</a>
-            <a href="profile.html">Profil</a>
-        </div>
-        <div class="nav-right"><a href="#" class="logout-btn" onclick="logout()">Çıkış</a></div>
-    </nav>
-
-    <div class="main-content">
-        
-        <div class="section-title">
-            <span>🧪 Kariyer Laboratuvarı</span>
-        </div>
-        <div class="lab-grid">
-            <div class="lab-card">
-                <div class="icon-box theme-cv"><i class="fa-solid fa-file-pdf"></i></div>
-                <h3>CV Check-Up</h3>
-                <p>CV'nizi yükleyin, uzmanlar incelesin.</p>
-                <button class="btn-lab btn-cv" onclick="openModal('cvModal')">İncelet</button>
-            </div>
-            <div class="lab-card">
-                <div class="icon-box theme-int"><i class="fa-solid fa-microphone-lines"></i></div>
-                <h3>Deneme Mülakatı</h3>
-                <p>Mülakat simülasyonu ile hazırlanın.</p>
-                <button class="btn-lab btn-int" onclick="openModal('intModal')">Randevu</button>
-            </div>
-            <div class="lab-card">
-                <div class="icon-box theme-sha"><i class="fa-solid fa-user-tie"></i></div>
-                <h3>İş Gölgeleme</h3>
-                <p>Bir günlüğüne mezunlarımıza eşlik edin.</p>
-                <button class="btn-lab btn-sha" onclick="openModal('shadowModal')">Başvur</button>
-            </div>
-            <div class="lab-card">
-                <div class="icon-box theme-aca"><i class="fa-solid fa-graduation-cap"></i></div>
-                <h3>Akademik Eşleşme</h3>
-                <p>Tez ve araştırma partnerinizi bulun.</p>
-                <button class="btn-lab btn-aca" onclick="openModal('acaModal')">Eşleş</button>
-            </div>
-            <div class="lab-card">
-                <div class="icon-box theme-cas"><i class="fa-solid fa-puzzle-piece"></i></div>
-                <h3>Vaka Kampı</h3>
-                <p>Sektör problemlerine çözüm üretin.</p>
-                <button class="btn-lab btn-cas" onclick="openModal('casModal')">Vaka Çöz</button>
-            </div>
-        </div>
-
-        <div class="map-section">
-            <h3 style="margin-bottom:15px; color:var(--odtu-dark);"><i class="fa-solid fa-earth-americas" style="color:#7b1fa2;"></i> ODTÜ Global Mezun Haritası</h3>
-            <div id="alumniMap"></div>
-        </div>
-
-        <div class="section-title">
-            <span>💼 İş & Staj Fırsatları</span>
-            <button id="addJobBtn" onclick="openModal('jobModal')" style="display:none; font-size:0.9rem; background:var(--odtu-dark); color:white; border:none; padding:8px 15px; border-radius:6px; cursor:pointer;">+ İlan Ekle</button>
-        </div>
-        <div class="job-list" id="jobList">
-            <div style="padding:40px; text-align:center; color:#999;"><i class="fa-solid fa-spinner fa-spin fa-2x"></i><br>Yükleniyor...</div>
-        </div>
-
-    </div>
-
-    <div id="jobModal" class="modal-overlay"><div class="modal-content"><span class="modal-close" onclick="closeModal('jobModal')">&times;</span><div class="modal-h">Yeni İlan Ekle</div><div class="form-group"><label>Başlık</label><input type="text" id="jTitle" class="form-control"></div><div class="form-group"><label>Şirket</label><input type="text" id="jComp" class="form-control"></div><div class="form-group"><label>Şehir</label><input type="text" id="jLoc" class="form-control"></div><div class="form-group"><label>Tip</label><select id="jType" class="form-control"><option>Tam Zamanlı</option><option>Staj</option></select></div><button class="btn-submit" onclick="postJob()">Yayınla</button></div></div>
-    
-    <div id="applicantsModal" class="modal-overlay"><div class="modal-content"><span class="modal-close" onclick="closeModal('applicantsModal')">&times;</span><div class="modal-h">Başvurular</div><div id="applicantsList"></div></div></div>
-
-    <div id="cvModal" class="modal-overlay"><div class="modal-content"><span class="modal-close" onclick="closeModal('cvModal')">&times;</span><h3>📄 CV İncelemesi</h3><div class="form-group"><label>Dosya Linki</label><input type="url" id="cvLink" class="form-control"></div><div class="form-group"><label>Not</label><textarea id="cvNote" class="form-control"></textarea></div><button class="btn-submit" onclick="submitCV()">Gönder</button></div></div>
-    
-    <div id="intModal" class="modal-overlay"><div class="modal-content"><span class="modal-close" onclick="closeModal('intModal')">&times;</span><h3>🎙️ Mülakat</h3><div class="form-group"><label>Tür</label><select id="intType" class="form-control"><option>İK</option><option>Teknik</option></select></div><div class="form-group"><label>Tarih</label><input type="datetime-local" id="intDate" class="form-control"></div><button class="btn-submit" onclick="submitInt()">İste</button></div></div>
-    
-    <div id="shadowModal" class="modal-overlay"><div class="modal-content"><span class="modal-close" onclick="closeModal('shadowModal')">&times;</span><h3>🕵️‍♂️ Gölgeleme</h3><div class="form-group"><label>Sektör</label><input type="text" id="shaSec" class="form-control"></div><div class="form-group"><label>Motivasyon</label><textarea id="shaMot" class="form-control"></textarea></div><button class="btn-submit" onclick="submitSha()">Başvur</button></div></div>
-    
-    <div id="acaModal" class="modal-overlay"><div class="modal-content"><span class="modal-close" onclick="closeModal('acaModal')">&times;</span><h3>🎓 Akademik</h3><div class="form-group"><label>Konu</label><input type="text" id="acaTopic" class="form-control"></div><div class="form-group"><label>Hedef</label><select id="acaDeg" class="form-control"><option>Master</option><option>PhD</option></select></div><button class="btn-submit" onclick="submitAca()">Eşleş</button></div></div>
-    
-    <div id="casModal" class="modal-overlay"><div class="modal-content"><span class="modal-close" onclick="closeModal('casModal')">&times;</span><h3>🧩 Vaka</h3><div class="form-group"><label>Konu</label><input type="text" id="casTopic" class="form-control"></div><div class="form-group"><label>Çözüm Linki</label><input type="url" id="casLink" class="form-control"></div><button class="btn-submit" onclick="submitCas()">Gönder</button></div></div>
-
-    <div id="liveToast" style="position: fixed; top: 20px; right: 20px; background: white; padding: 15px 20px; border-radius: 8px; box-shadow: 0 5px 25px rgba(0,0,0,0.2); border-left: 6px solid #27ae60; z-index: 9999; display: none; min-width: 300px; animation: slideIn 0.4s;"><strong id="toastTitle" style="color:#27ae60;">Başarılı!</strong><p id="toastMessage" style="margin:5px 0 0 0; color:#555;">...</p></div>
-    <style>@keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }</style>
-
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script>
+<script>
         const supabaseUrl = 'https://hftrmiiacxgtkarsvupn.supabase.co';
         const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhmdHJtaWlhY3hndGthcnN2dXBuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ3ODUzNzIsImV4cCI6MjA4MDM2MTM3Mn0.BgCk5xuZx6AZuxzfBHcQqg8j8BtxU9FbupDgoFecG_k';
         let supabase; try { supabase = window.supabase.createClient(supabaseUrl, supabaseKey); } catch(e){}
@@ -244,12 +68,52 @@
             document.getElementById('applicantsList').innerHTML = html || 'Başvuru yok.';
         }
 
-        // LAB MODÜLLERİ (KISA VE ÖZ)
-        async function submitCV() { handleLab('cv_requests', { student_id: currentUser.id, cv_url: document.getElementById('cvLink').value, note: document.getElementById('cvNote').value }, 'cvModal'); }
-        async function submitInt() { handleLab('mock_interviews', { student_id: currentUser.id, interview_type: document.getElementById('intType').value, requested_date: document.getElementById('intDate').value }, 'intModal'); }
-        async function submitSha() { handleLab('job_shadowing', { student_id: currentUser.id, sector: document.getElementById('shaSec').value, motivation: document.getElementById('shaMot').value }, 'shadowModal'); }
-        async function submitAca() { handleLab('academic_matches', { student_id: currentUser.id, research_topic: document.getElementById('acaTopic').value, target_degree: document.getElementById('acaDeg').value }, 'acaModal'); }
-        async function submitCas() { handleLab('case_submissions', { student_id: currentUser.id, case_topic: document.getElementById('casTopic').value, solution_url: document.getElementById('casLink').value }, 'casModal'); }
+        // --- LAB MODÜLLERİ (DÜZELTİLDİ: student_id -> user_id) ---
+        
+        // 1. CV (Tablo adı: cv_reviews)
+        async function submitCV() { 
+            handleLab('cv_reviews', { 
+                user_id: currentUser.id, // DÜZELTİLDİ
+                cv_url: document.getElementById('cvLink').value, 
+                note: document.getElementById('cvNote').value 
+            }, 'cvModal'); 
+        }
+        
+        // 2. Mülakat (Tablo adı: mock_interviews)
+        async function submitInt() { 
+            handleLab('mock_interviews', { 
+                user_id: currentUser.id, // DÜZELTİLDİ
+                interview_type: document.getElementById('intType').value, 
+                requested_date: document.getElementById('intDate').value 
+            }, 'intModal'); 
+        }
+        
+        // 3. Gölgeleme (Tablo adı: job_shadowing)
+        async function submitSha() { 
+            handleLab('job_shadowing', { 
+                user_id: currentUser.id, // DÜZELTİLDİ
+                sector: document.getElementById('shaSec').value, 
+                motivation: document.getElementById('shaMot').value 
+            }, 'shadowModal'); 
+        }
+        
+        // 4. Akademik (Tablo adı: academic_matches)
+        async function submitAca() { 
+            handleLab('academic_matches', { 
+                user_id: currentUser.id, // DÜZELTİLDİ
+                research_topic: document.getElementById('acaTopic').value, 
+                target_degree: document.getElementById('acaDeg').value 
+            }, 'acaModal'); 
+        }
+        
+        // 5. Vaka (Tablo adı: case_submissions)
+        async function submitCas() { 
+            handleLab('case_submissions', { 
+                user_id: currentUser.id, // DÜZELTİLDİ
+                case_topic: document.getElementById('casTopic').value, 
+                solution_url: document.getElementById('casLink').value 
+            }, 'casModal'); 
+        }
 
         async function handleLab(table, data, modalId) {
             const { error } = await supabase.from(table).insert(data);
@@ -263,5 +127,3 @@
         function showToast(msg) { const t = document.getElementById('liveToast'); document.getElementById('toastMessage').innerText = msg; t.style.display='block'; setTimeout(()=>t.style.display='none', 3000); }
         async function logout() { await supabase.auth.signOut(); window.location.href = "index.html"; }
     </script>
-</body>
-</html>
