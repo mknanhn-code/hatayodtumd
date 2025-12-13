@@ -11,24 +11,24 @@
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
     body { background-color: var(--bg-light); min-height: 100vh; display: block; }
 
-    /* --- NAVBAR (SABİT) --- */
+    /* --- NAVBAR (MOBİL UYUMLU & SABİT) --- */
     .navbar { 
         width: 100%; height: 70px; background-color: var(--odtu-dark); 
         display: flex; align-items: center; justify-content: space-between; 
-        padding: 0 20px; position: fixed; top: 0; left: 0; z-index: 1000; 
+        padding: 0 20px; position: fixed; top: 0; left: 0; z-index: 5000; 
         box-shadow: 0 4px 10px rgba(0,0,0,0.1); 
     }
     
-    .nav-left { display: flex; align-items: center; gap: 15px; z-index: 1001; }
+    .nav-left { display: flex; align-items: center; gap: 15px; z-index: 5002; }
     .nav-logo { height: 40px; background: white; padding: 2px; border-radius: 5px; }
     .nav-title { color: white; font-size: 1.1rem; font-weight: bold; }
     
-    /* Linkler */
+    /* Menü Linkleri */
     .nav-links { display: flex; gap: 20px; align-items: center; }
     .nav-links a { color: #bdc3c7; text-decoration: none; font-size: 0.95rem; display: flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 6px; transition: 0.3s; position: relative; }
     .nav-links a:hover, .nav-links a.active { background-color: rgba(255,255,255,0.1); color: white; }
     
-    /* Admin Butonu */
+    /* Admin Butonu (Varsayılan Gizli) */
     #adminBtn { display: none; color: #ff6b6b; font-weight: bold; }
     #adminBtn:hover { background-color: rgba(231, 76, 60, 0.2); }
 
@@ -41,11 +41,11 @@
     .logout-btn:hover { background: #e74c3c; color: white; }
 
     /* Hamburger İkonu */
-    .hamburger { display: none; font-size: 1.5rem; color: white; cursor: pointer; z-index: 1001; }
+    .hamburger { display: none; font-size: 1.5rem; color: white; cursor: pointer; z-index: 5002; }
 
-    /* --- ANA İÇERİK --- */
+    /* --- ANA İÇERİK (BOŞLUK AYARLANDI) --- */
     .main-content { 
-        margin-top: 100px; /* Navbar'dan kurtarmak için boşluk */
+        margin-top: 100px; /* Navbar çakışmasını önler */
         padding: 40px; 
         width: 100%; 
         max-width: 1200px; 
@@ -82,29 +82,26 @@
     #liveToast { position: fixed; top: 20px; right: 20px; background: white; padding: 15px 20px; border-radius: 8px; box-shadow: 0 5px 25px rgba(0,0,0,0.2); border-left: 6px solid #333; z-index: 9999; display: none; min-width: 320px; animation: slideIn 0.4s; font-family: 'Segoe UI', sans-serif; }
     @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
 
-    /* --- MOBİL UYUMLULUK (DÜZELTİLDİ) --- */
+    /* --- MOBİL UYUMLULUK (MEDIA QUERY) --- */
     @media (max-width: 900px) {
         .navbar { padding: 0 15px; }
         .hamburger { display: block; } /* İkonu göster */
         
-        /* Menüyü Gizle ve Yana Kaydır */
+        /* Menüyü Gizle ve Yana Kaydır (Tam Ekran ve Opak) */
         .nav-links {
             position: fixed; top: 70px; left: -100%; width: 100%; height: calc(100vh - 70px);
             background-color: var(--odtu-dark); flex-direction: column;
             align-items: center; justify-content: flex-start; padding-top: 40px;
             transition: 0.4s ease-in-out; box-shadow: inset 0 10px 20px rgba(0,0,0,0.2);
+            z-index: 4999;
         }
         .nav-links.active { left: 0; } /* Menü Açılınca */
         
         .nav-links a { font-size: 1.2rem; margin: 15px 0; width: 80%; justify-content: center; padding: 15px; color: white; }
         .nav-right { display: none; } /* Masaüstü butonu gizle */
         
-        /* Mobilde İçerik Düzeni (BURASI DÜZELTİLDİ) */
-        .main-content { 
-            margin-top: 100px; /* Mobilde de üst boşluk zorunlu */
-            padding: 20px; 
-        }
-        
+        /* Mobilde İçerik Düzeni */
+        .main-content { margin-top: 90px; padding: 20px; }
         .top-header { flex-direction: column; text-align: center; gap: 15px; }
         .dashboard-grid { grid-template-columns: 1fr; }
     }
@@ -132,6 +129,7 @@
                 <i class="fa-solid fa-user"></i> Profil 
                 <span id="globalBadge">0</span>
             </a>
+            
             <a href="admin.html" id="adminBtn"><i class="fa-solid fa-user-shield"></i> Yönetim</a>
             
             <a href="#" onclick="logout()" style="color: #ff6b6b; border: 1px solid #ff6b6b; margin-top: 20px;">Çıkış Yap</a>
@@ -223,10 +221,21 @@
             if (!session) { window.location.href = 'index.html'; return; }
 
             const { data: profile } = await supabase.from('profiles').select('*').eq('id', session.user.id).single();
+            
+            // --- KAPI BEKÇİSİ (GATEKEEPER) ---
+            // Eğer profil yoksa veya is_approved true değilse içeri alma
+            if (!profile || profile.is_approved !== true) {
+                alert("⛔ Üyeliğiniz oluşturuldu ancak henüz yönetici onayı almadı.\n\nGüvenlik nedeniyle, yöneticimiz bilgilerinizi doğruladıktan sonra erişiminiz açılacaktır.\nLütfen daha sonra tekrar deneyin.");
+                await supabase.auth.signOut(); 
+                window.location.href = 'index.html'; 
+                return;
+            }
+
+            // --- İÇERİDEYİZ ---
             if(profile) {
                 document.getElementById("userName").innerText = profile.full_name || "Üye";
                 
-                // Admin Butonu Kontrolü
+                // Admin Butonu Göster/Gizle
                 if(profile.roles && profile.roles.includes('admin') && document.getElementById('adminBtn')) {
                     document.getElementById('adminBtn').style.display = 'flex';
                 }
