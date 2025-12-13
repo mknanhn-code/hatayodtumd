@@ -8,12 +8,17 @@
 <style>
     :root { --odtu-red: #E31E24; --odtu-dark: #2c3e50; --bg-light: #f8f9fa; --white: #ffffff; }
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
-    body { background-color: var(--bg-light); min-height: 100vh; color: #333; }
+    body { background-color: var(--bg-light); min-height: 100vh; color: #333; overflow-x: hidden; }
 
-    /* --- NAVBAR (MOBİL UYUMLU) --- */
-    .navbar { width: 100%; height: 70px; background-color: var(--odtu-dark); display: flex; align-items: center; justify-content: space-between; padding: 0 20px; position: fixed; top: 0; left: 0; z-index: 1000; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+    /* --- NAVBAR (SABİT ÜST MENÜ) --- */
+    .navbar { 
+        width: 100%; height: 70px; background-color: var(--odtu-dark); 
+        display: flex; align-items: center; justify-content: space-between; 
+        padding: 0 20px; position: fixed; top: 0; left: 0; z-index: 5000; 
+        box-shadow: 0 4px 10px rgba(0,0,0,0.1); 
+    }
     
-    .nav-left { display: flex; align-items: center; gap: 15px; z-index: 1001; }
+    .nav-left { display: flex; align-items: center; gap: 15px; z-index: 5002; }
     .nav-logo { height: 40px; background: white; padding: 2px; border-radius: 5px; }
     .nav-title { color: white; font-size: 1.1rem; font-weight: bold; }
     
@@ -25,29 +30,39 @@
     .logout-btn { color: #e74c3c; border: 1px solid #e74c3c; padding: 6px 15px; border-radius: 20px; text-decoration: none; transition: 0.3s; font-size: 0.9rem; }
     .logout-btn:hover { background: #e74c3c; color: white; }
 
-    .hamburger { display: none; font-size: 1.5rem; color: white; cursor: pointer; z-index: 1001; }
+    /* Hamburger İkonu */
+    .hamburger { display: none; font-size: 1.5rem; color: white; cursor: pointer; z-index: 5002; }
 
-    /* LAYOUT */
-    .container { margin-top: 70px; padding: 30px; max-width: 1300px; margin-left: auto; margin-right: auto; display: flex; gap: 30px; }
+    /* --- LAYOUT (ÇAKIŞMA DÜZELTİLDİ) --- */
+    .container { 
+        margin-top: 100px; /* Navbar'dan kurtarmak için boşluk artırıldı */
+        padding: 30px; 
+        max-width: 1300px; 
+        margin-left: auto; 
+        margin-right: auto; 
+        display: flex; 
+        gap: 30px; 
+        position: relative; 
+        z-index: 1; 
+    }
     
-    /* SOL PANEL (FİLTRE + NOTLAR) */
+    /* SOL PANEL (Sticky) */
     .sidebar { width: 300px; height: fit-content; position: sticky; top: 100px; display: flex; flex-direction: column; gap: 20px; }
     
     .sidebar-box { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
-    
     .filter-group { margin-bottom: 15px; }
     .filter-group label { font-weight: bold; display: block; margin-bottom: 5px; font-size: 0.9rem; color: var(--odtu-dark); }
     .filter-input { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; outline: none; }
     .btn-filter { width: 100%; background: var(--odtu-dark); color: white; border: none; padding: 10px; border-radius: 6px; cursor: pointer; font-weight: bold; }
 
-    /* NOTLAR BÖLÜMÜ (SIDEBAR) */
+    /* NOTLAR (SIDEBAR) */
     .note-list-mini { list-style: none; padding: 0; margin: 15px 0 0 0; max-height: 200px; overflow-y: auto; }
     .note-item-mini { background: #fff3e0; padding: 10px; border-radius: 6px; margin-bottom: 8px; font-size: 0.85rem; border: 1px solid #ffe0b2; position: relative; }
     .note-del { position: absolute; right: 5px; top: 5px; color: #e74c3c; cursor: pointer; font-size: 0.8rem; }
     .btn-add-note { background: #f39c12; color: white; border: none; padding: 8px; border-radius: 6px; cursor: pointer; font-weight: bold; width: 100%; margin-top: 5px; }
 
     /* SAĞ LİSTE */
-    .content-area { flex: 1; }
+    .content-area { flex: 1; min-width: 0; }
     .results-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid #e9ecef; }
     .results-header h2 { margin: 0; color: var(--odtu-dark); font-size: 1.5rem; }
     .result-count { background: #e3f2fd; color: #1565c0; padding: 5px 15px; border-radius: 20px; font-weight: bold; font-size: 0.9rem; }
@@ -57,10 +72,8 @@
     /* PROFİL KARTI */
     .profile-card { background: white; border-radius: 12px; padding: 25px; text-align: center; border: 1px solid #eee; transition: 0.3s; position: relative; }
     .profile-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.08); border-color: var(--odtu-red); }
-    
-    /* ÇOKLU SEÇİM CHECKBOX */
     .profile-select { position: absolute; top: 15px; left: 15px; transform: scale(1.5); accent-color: var(--odtu-dark); cursor: pointer; z-index: 2; }
-
+    
     .p-avatar { width: 80px; height: 80px; background: #eee; border-radius: 50%; margin: 0 auto 15px; display: flex; justify-content: center; align-items: center; font-size: 1.5rem; font-weight: bold; color: #555; border: 3px solid white; box-shadow: 0 3px 10px rgba(0,0,0,0.1); }
     .p-name { font-size: 1.1rem; font-weight: bold; color: var(--odtu-dark); margin-bottom: 5px; }
     .p-role { font-size: 0.85rem; color: #666; margin-bottom: 15px; height: 40px; overflow: hidden; }
@@ -74,40 +87,73 @@
     .btn-msg { background: white; border: 1px solid var(--odtu-dark); color: var(--odtu-dark); padding: 8px 20px; border-radius: 20px; cursor: pointer; font-size: 0.9rem; font-weight: 600; transition: 0.2s; width: 100%; }
     .btn-msg:hover { background: var(--odtu-dark); color: white; }
 
-    /* TOPLU İŞLEM BUTONU (FLOATING) */
-    .bulk-action-bar { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: var(--odtu-dark); color: white; padding: 15px 30px; border-radius: 50px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); display: none; align-items: center; gap: 20px; z-index: 2000; animation: slideUp 0.3s; }
+    /* TOPLU İŞLEM BUTONU */
+    .bulk-action-bar { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: var(--odtu-dark); color: white; padding: 15px 30px; border-radius: 50px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); display: none; align-items: center; gap: 20px; z-index: 4000; animation: slideUp 0.3s; }
     .btn-bulk-send { background: white; color: var(--odtu-dark); border: none; padding: 8px 20px; border-radius: 20px; font-weight: bold; cursor: pointer; }
 
-    /* MODAL */
-    .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 2000; display: none; justify-content: center; align-items: center; }
-    .modal-content { background: white; padding: 30px; border-radius: 12px; width: 90%; max-width: 500px; position: relative; }
-    .close-modal { position: absolute; top: 15px; right: 20px; font-size: 1.5rem; cursor: pointer; }
-    .msg-area { width: 100%; border: 1px solid #ddd; border-radius: 8px; padding: 15px; margin: 15px 0; outline: none; font-family: inherit; }
-    .btn-send { background: var(--odtu-red); color: white; border: none; padding: 10px 25px; border-radius: 6px; cursor: pointer; font-weight: bold; width: 100%; }
+    /* --- MESAJ PENCERESİ --- */
+    .msg-window-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 6000; display: none; justify-content: center; align-items: center; backdrop-filter: blur(4px); }
+    .msg-window { background: white; width: 600px; max-width: 90%; border-radius: 12px; box-shadow: 0 20px 50px rgba(0,0,0,0.3); display: flex; flex-direction: column; overflow: hidden; animation: zoomIn 0.3s; }
+    @keyframes zoomIn { from {transform: scale(0.9); opacity: 0;} to {transform: scale(1); opacity: 1;} }
+
+    .msg-header { background: var(--odtu-dark); color: white; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; }
+    .msg-title { font-weight: bold; font-size: 1.1rem; display: flex; align-items: center; gap: 10px; }
+    .msg-close { cursor: pointer; font-size: 1.2rem; opacity: 0.8; transition: 0.2s; }
+    
+    .msg-body { padding: 20px; background: #f9f9f9; }
+    .msg-info-row { display: flex; gap: 10px; margin-bottom: 15px; align-items: center; }
+    .msg-label { font-weight: bold; font-size: 0.9rem; color: #666; width: 50px; }
+    .msg-value { background: white; border: 1px solid #ddd; padding: 8px 12px; border-radius: 6px; flex: 1; font-size: 0.95rem; color: #333; }
+    
+    .msg-textarea { width: 100%; height: 200px; padding: 15px; border: 1px solid #ddd; border-radius: 8px; resize: none; outline: none; font-family: inherit; font-size: 1rem; }
+    .btn-send-main { background: var(--odtu-red); color: white; border: none; padding: 10px 30px; border-radius: 6px; cursor: pointer; font-weight: bold; }
 
     /* TOAST */
     #liveToast { position: fixed; top: 20px; right: 20px; background: white; padding: 15px 20px; border-radius: 8px; box-shadow: 0 5px 25px rgba(0,0,0,0.2); border-left: 6px solid #27ae60; z-index: 9999; display: none; min-width: 300px; animation: slideIn 0.4s; }
     @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
     @keyframes slideUp { from { transform: translate(-50%, 50px); opacity: 0; } to { transform: translate(-50%, 0); opacity: 1; } }
 
-    /* MOBİL UYUMLULUK */
+    /* --- MOBİL UYUMLULUK (MEDIA QUERY) --- */
     @media (max-width: 900px) {
         .navbar { padding: 0 15px; }
         .hamburger { display: block; }
-        .nav-links { position: fixed; top: 70px; left: -100%; width: 100%; height: calc(100vh - 70px); background-color: var(--odtu-dark); flex-direction: column; align-items: center; justify-content: flex-start; padding-top: 40px; transition: 0.4s ease-in-out; box-shadow: inset 0 10px 20px rgba(0,0,0,0.2); }
+        
+        /* Menüyü Gizle ve Yana Kaydır */
+        .nav-links { 
+            position: fixed; top: 70px; left: -100%; width: 100%; height: calc(100vh - 70px); 
+            background-color: var(--odtu-dark); flex-direction: column; 
+            align-items: center; justify-content: flex-start; padding-top: 40px; 
+            transition: 0.4s ease-in-out; 
+            z-index: 4999; 
+        }
         .nav-links.active { left: 0; }
-        .nav-links a { font-size: 1.2rem; margin: 15px 0; width: 80%; justify-content: center; }
-        .nav-right { display: none; }
-        .container { flex-direction: column; margin-top: 0; padding: 20px; }
+        
+        .nav-links a { font-size: 1.2rem; margin: 15px 0; width: 80%; justify-content: center; color: white; }
+        .nav-right { display: none; } /* Masaüstü butonu gizle */
+
+        .container { 
+            margin-top: 80px; /* Mobilde header çakışmasını önler */
+            flex-direction: column; 
+            padding: 20px; 
+        }
+        
         .sidebar { width: 100%; position: static; }
+        .results-header { flex-direction: column; gap: 10px; align-items: flex-start; }
     }
 </style>
 </head>
 <body>
 
     <nav class="navbar">
-        <div class="nav-left"><img src="logo.png" class="nav-logo"><div class="nav-title">Hatay ODTÜ MD</div></div>
-        <div class="hamburger" onclick="toggleMenu()"><i class="fa-solid fa-bars"></i></div>
+        <div class="nav-left">
+            <img src="logo.png" class="nav-logo">
+            <div class="nav-title">Hatay ODTÜ MD</div>
+        </div>
+        
+        <div class="hamburger" onclick="toggleMenu()">
+            <i class="fa-solid fa-bars"></i>
+        </div>
+
         <div class="nav-links" id="navLinks">
             <a href="dashboard.html">Panel</a>
             <a href="meeting.html">Meeting Hub</a>
@@ -115,9 +161,13 @@
             <a href="career.html">Kariyer Lab</a>
             <a href="network.html" class="active">Mezun Ağı</a>
             <a href="profile.html">Profil</a>
+            
             <a href="#" onclick="logout()" style="color: #ff6b6b; border: 1px solid #ff6b6b; margin-top: 20px;">Çıkış Yap</a>
         </div>
-        <div class="nav-right"><a href="#" class="logout-btn" onclick="logout()">Çıkış</a></div>
+
+        <div class="nav-right">
+            <a href="#" class="logout-btn" onclick="logout()">Çıkış</a>
+        </div>
     </nav>
 
     <div class="container">
@@ -157,17 +207,32 @@
 
     <div id="bulkActionBar" class="bulk-action-bar">
         <span id="bulkCount">0 Kişi Seçildi</span>
-        <button class="btn-bulk-send" onclick="openBulkMsgModal()"><i class="fa-regular fa-paper-plane"></i> Toplu Mesaj At</button>
+        <button class="btn-bulk-send" onclick="openBulkMsgModal()"><i class="fa-regular fa-paper-plane"></i> Toplu Mesaj</button>
         <i class="fa-solid fa-times" style="cursor:pointer; font-size:1.2rem;" onclick="clearBulkSelection()"></i>
     </div>
 
-    <div id="msgModal" class="modal-overlay">
-        <div class="modal-content">
-            <span class="close-modal" onclick="closeModal()">&times;</span>
-            <h3 id="msgTargetName">Mesaj Gönder</h3>
-            <p style="font-size:0.9rem; color:#666;" id="msgSubtext">Profesyonel bir dille iletişime geçin.</p>
-            <input type="hidden" id="msgTargetId"> <input type="hidden" id="isBulk" value="false"> <textarea id="msgContent" class="msg-area" rows="5" placeholder="Merhaba..."></textarea>
-            <button class="btn-send" onclick="sendMessage()">Gönder 🚀</button>
+    <div id="msgModal" class="msg-window-overlay">
+        <div class="msg-window">
+            <div class="msg-header">
+                <div class="msg-title"><i class="fa-solid fa-pen-nib"></i> Yeni İleti</div>
+                <div class="msg-close" onclick="closeModal()"><i class="fa-solid fa-times"></i></div>
+            </div>
+            
+            <div class="msg-body">
+                <div class="msg-info-row">
+                    <span class="msg-label">Kime:</span>
+                    <div class="msg-value" id="msgTargetName">...</div>
+                </div>
+                
+                <input type="hidden" id="msgTargetId">
+                <input type="hidden" id="isBulk" value="false">
+
+                <textarea id="msgContent" class="msg-textarea" placeholder="Mesajınızı buraya yazın... Profesyonel bir dil kullanmaya özen gösterin."></textarea>
+            </div>
+
+            <div class="msg-footer">
+                <button class="btn-send-main" onclick="sendMessage()">Gönder <i class="fa-regular fa-paper-plane"></i></button>
+            </div>
         </div>
     </div>
 
@@ -180,7 +245,7 @@
         let supabase; try { supabase = window.supabase.createClient(supabaseUrl, supabaseKey); } catch(e){}
         let currentUser = null;
         let allProfiles = [];
-        let selectedUserIds = new Set(); // Çoklu seçim için
+        let selectedUserIds = new Set(); 
 
         document.addEventListener("DOMContentLoaded", async () => {
             const { data: { session } } = await supabase.auth.getSession();
@@ -210,7 +275,7 @@
             const visible = profiles.filter(p => p.id !== currentUser.id);
             document.getElementById('resultCount').innerText = `${visible.length} Üye Bulundu`;
 
-            if(visible.length === 0) { grid.innerHTML = '<div style="text-align:center; width:100%; color:#999;">Sonuç yok.</div>'; return; }
+            if(visible.length === 0) { grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; color: #999;">Sonuç yok.</div>'; return; }
 
             visible.forEach(p => {
                 let badges = '';
@@ -219,8 +284,6 @@
                 if(p.user_type === 'grad') badges += `<span class="badge bg-grad">Mezun</span>`;
 
                 const detail = p.user_type === 'student' ? `${p.class_level}. Sınıf` : (p.company || 'Mezun');
-
-                // Checkbox checked mi?
                 const isChecked = selectedUserIds.has(p.id) ? 'checked' : '';
 
                 grid.innerHTML += `
@@ -248,42 +311,32 @@
             renderProfiles(filtered);
         }
 
-        // --- ÇOKLU SEÇİM & TOPLU MESAJ ---
+        // --- ÇOKLU SEÇİM ---
         function toggleSelection(id, checked) {
             if(checked) selectedUserIds.add(id); else selectedUserIds.delete(id);
             updateBulkBar();
         }
-
         function updateBulkBar() {
             const bar = document.getElementById('bulkActionBar');
-            const count = selectedUserIds.size;
-            if(count > 0) {
+            if(selectedUserIds.size > 0) {
                 bar.style.display = 'flex';
-                document.getElementById('bulkCount').innerText = `${count} Kişi Seçildi`;
-            } else {
-                bar.style.display = 'none';
-            }
+                document.getElementById('bulkCount').innerText = `${selectedUserIds.size} Kişi Seçildi`;
+            } else { bar.style.display = 'none'; }
         }
-
         function clearBulkSelection() {
-            selectedUserIds.clear();
-            updateBulkBar();
-            renderProfiles(allProfiles); // Checkboxları temizle
+            selectedUserIds.clear(); updateBulkBar(); renderProfiles(allProfiles);
         }
 
-        function openBulkMsgModal() {
-            document.getElementById('isBulk').value = 'true';
-            document.getElementById('msgTargetName').innerText = `Toplu Mesaj (${selectedUserIds.size} Kişi)`;
-            document.getElementById('msgSubtext').innerText = "Bu mesaj seçilen herkese ayrı ayrı gönderilecektir.";
-            document.getElementById('msgModal').style.display = 'flex';
-        }
-
-        // --- MESAJ GÖNDERME (TEKLİ ve ÇOKLU) ---
+        // --- MESAJ GÖNDERME ---
         function openMsgModal(id, name) {
             document.getElementById('isBulk').value = 'false';
             document.getElementById('msgTargetId').value = id;
-            document.getElementById('msgTargetName').innerText = `Mesaj: ${name}`;
-            document.getElementById('msgSubtext').innerText = "Profesyonel bir dille iletişime geçin.";
+            document.getElementById('msgTargetName').innerText = name;
+            document.getElementById('msgModal').style.display = 'flex';
+        }
+        function openBulkMsgModal() {
+            document.getElementById('isBulk').value = 'true';
+            document.getElementById('msgTargetName').innerText = `${selectedUserIds.size} Kişi (Toplu Gönderim)`;
             document.getElementById('msgModal').style.display = 'flex';
         }
 
@@ -297,23 +350,16 @@
             const btn = event.target; btn.innerText = "Gönderiliyor..."; btn.disabled = true;
 
             if (isBulk) {
-                // Toplu Gönderim
                 const promises = Array.from(selectedUserIds).map(receiverId => 
-                    supabase.from('direct_messages').insert({
-                        sender_id: currentUser.id, receiver_id: receiverId, content: content, sender_name: myName
-                    })
+                    supabase.from('direct_messages').insert({ sender_id: currentUser.id, receiver_id: receiverId, content: content, sender_name: myName })
                 );
                 await Promise.all(promises);
                 showToast(`${selectedUserIds.size} Kişiye Gönderildi!`);
                 clearBulkSelection();
             } else {
-                // Tekli Gönderim
                 const targetId = document.getElementById('msgTargetId').value;
-                const { error } = await supabase.from('direct_messages').insert({
-                    sender_id: currentUser.id, receiver_id: targetId, content: content, sender_name: myName
-                });
-                if(error) alert(error.message);
-                else showToast("Mesaj İletildi!");
+                const { error } = await supabase.from('direct_messages').insert({ sender_id: currentUser.id, receiver_id: targetId, content: content, sender_name: myName });
+                if(error) alert(error.message); else showToast("Mesaj İletildi!");
             }
 
             closeModal();
@@ -323,23 +369,19 @@
 
         function closeModal() { document.getElementById('msgModal').style.display = 'none'; }
 
-        // --- NOTLAR (SIDEBAR) ---
+        // --- NOTLAR ---
         async function loadSideNotes() {
             const { data } = await supabase.from('personal_notes').select('*').eq('user_id', currentUser.id).order('created_at', {ascending:false});
             const list = document.getElementById('sideNoteList');
             if(!data || data.length===0) { list.innerHTML='<li style="text-align:center; color:#999;">Not yok.</li>'; return; }
-            list.innerHTML = data.map(n => 
-                `<li class="note-item-mini">${n.content} <i class="fa-solid fa-times note-del" onclick="delSideNote(${n.id})"></i></li>`
-            ).join('');
+            list.innerHTML = data.map(n => `<li class="note-item-mini">${n.content} <i class="fa-solid fa-times note-del" onclick="delSideNote(${n.id})"></i></li>`).join('');
         }
         async function addSideNote() {
             const txt = document.getElementById('sideNoteInput').value; if(!txt)return;
             await supabase.from('personal_notes').insert({user_id: currentUser.id, content: txt});
             document.getElementById('sideNoteInput').value=''; loadSideNotes();
         }
-        async function delSideNote(id) {
-            await supabase.from('personal_notes').delete().eq('id', id); loadSideNotes();
-        }
+        async function delSideNote(id) { await supabase.from('personal_notes').delete().eq('id', id); loadSideNotes(); }
 
         function showToast(msg) {
             const t = document.getElementById('liveToast');
