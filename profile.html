@@ -4,505 +4,193 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Profilim - Hatay ODTÜ MD</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
-    /* --- TEMEL AYARLAR --- */
-    :root { --odtu-red: #E31E24; --odtu-dark: #2c3e50; --bg-light: #f0f2f5; --white: #ffffff; --sidebar-width: 280px; }
+    :root { --odtu-red: #E31E24; --odtu-dark: #2c3e50; --bg-light: #f8f9fa; }
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
-    body { background-color: var(--bg-light); display: flex; flex-direction: column; min-height: 100vh; }
+    body { background-color: var(--bg-light); padding-bottom: 50px; }
 
-    /* NAVBAR (SABİT) */
-    .navbar { width: 100%; height: 70px; background-color: var(--odtu-dark); display: flex; align-items: center; justify-content: space-between; padding: 0 30px; position: fixed; top: 0; left: 0; z-index: 1000; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+    /* NAVBAR */
+    .navbar { width: 100%; height: 70px; background-color: var(--odtu-dark); display: flex; align-items: center; justify-content: space-between; padding: 0 30px; position: fixed; top: 0; left: 0; z-index: 1000; }
     .nav-left { display: flex; align-items: center; gap: 15px; }
-    .nav-logo { height: 45px; background: white; padding: 2px; border-radius: 5px; }
+    .nav-logo { height: 50px; background: white; padding: 2px; border-radius: 5px; }
     .nav-title { color: white; font-size: 1.1rem; font-weight: bold; }
-    .nav-links { display: flex; gap: 20px; }
-    .nav-links a { color: #bdc3c7; text-decoration: none; font-size: 0.95rem; display: flex; align-items: center; gap: 8px; transition: 0.3s; position: relative; }
+    .nav-links a { color: #bdc3c7; text-decoration: none; margin-left: 20px; transition: 0.3s; }
     .nav-links a:hover, .nav-links a.active { color: white; }
-    .nav-right { display: flex; align-items: center; gap: 20px; }
-    .logout-btn { color: #e74c3c; border: 1px solid #e74c3c; padding: 5px 15px; border-radius: 20px; text-decoration: none; font-size: 0.9rem; transition: 0.3s; }
-    .logout-btn:hover { background: #e74c3c; color: white; }
-    .badge-count { position: absolute; top: -8px; right: -8px; background: var(--odtu-red); color: white; font-size: 0.7rem; padding: 2px 5px; border-radius: 50%; display: none; }
+    .logout-btn { color: #e74c3c !important; }
 
-    /* --- ANA YERLEŞİM (LAYOUT) --- */
-    .layout-container { 
-        display: flex; 
-        margin-top: 70px; 
-        min-height: calc(100vh - 70px); 
-        width: 100%; 
-        max-width: 1200px; 
-        margin-left: auto; 
-        margin-right: auto;
-        padding: 30px;
-        gap: 30px;
-    }
+    /* KART TASARIMI */
+    .main-container { max-width: 800px; margin: 100px auto 0; background: white; padding: 40px; border-radius: 12px; box-shadow: 0 5px 20px rgba(0,0,0,0.05); }
+    .header h2 { color: var(--odtu-dark); margin-bottom: 5px; }
+    .form-group { margin-bottom: 20px; }
+    .form-group label { display: block; font-weight: bold; margin-bottom: 8px; color: #555; }
+    .form-control { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; outline: none; }
+    .btn-save { background: var(--odtu-dark); color: white; border: none; padding: 15px 30px; border-radius: 8px; font-weight: bold; cursor: pointer; width: 100%; font-size: 1rem; }
+    .btn-save:hover { background: #1f2937; }
 
-    /* SOL KENAR ÇUBUĞU (SIDEBAR) */
-    .profile-sidebar { 
-        width: var(--sidebar-width); 
-        flex-shrink: 0; 
-        background: transparent;
-    }
-
-    .profile-card {
-        background: white; border-radius: 15px; padding: 30px 20px; 
-        text-align: center; box-shadow: 0 5px 20px rgba(0,0,0,0.05); margin-bottom: 20px;
-    }
-    .profile-avatar { 
-        width: 100px; height: 100px; background: #ecf0f1; border-radius: 50%; 
-        margin: 0 auto 15px; display: flex; justify-content: center; align-items: center; 
-        font-size: 2.5rem; color: var(--odtu-dark); font-weight: bold; border: 4px solid #f8f9fa;
-    }
-    .profile-name { font-size: 1.2rem; font-weight: bold; color: var(--odtu-dark); margin-bottom: 5px; }
-    .profile-role { color: #777; font-size: 0.9rem; margin-bottom: 20px; }
-
-    /* MENÜ BUTONLARI */
-    .sidebar-menu { display: flex; flex-direction: column; gap: 10px; }
-    .menu-btn { 
-        background: white; border: none; padding: 15px 20px; border-radius: 12px; 
-        text-align: left; font-size: 1rem; color: #555; cursor: pointer; transition: 0.3s; 
-        display: flex; align-items: center; gap: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.02);
-    }
-    .menu-btn:hover { transform: translateX(5px); color: var(--odtu-red); }
-    .menu-btn.active { background: var(--odtu-dark); color: white; box-shadow: 0 5px 15px rgba(44, 62, 80, 0.3); }
-    .menu-btn i { width: 25px; text-align: center; }
-    .menu-badge { background: var(--odtu-red); color: white; font-size: 0.75rem; padding: 2px 8px; border-radius: 10px; margin-left: auto; display: none; }
-
-    /* SAĞ İÇERİK ALANI */
-    .content-area { flex: 1; min-width: 0; }
-    .content-section { display: none; animation: fadeIn 0.4s; }
-    .content-section.active { display: block; }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-    .section-title { font-size: 1.5rem; font-weight: bold; margin-bottom: 20px; color: var(--odtu-dark); display: flex; align-items: center; gap: 10px; }
-
-    /* 1. AYARLAR FORMU */
-    .settings-box { background: white; padding: 30px; border-radius: 15px; box-shadow: 0 5px 20px rgba(0,0,0,0.05); }
-    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-    .form-group label { display: block; margin-bottom: 8px; font-weight: 600; color: #444; }
-    .form-group input { width: 100%; padding: 12px; border: 1px solid #eee; border-radius: 8px; background: #f9f9f9; transition: 0.3s; outline: none; }
-    .form-group input:focus { border-color: var(--odtu-dark); background: white; }
-    .form-group input[readonly] { background: #eee; cursor: not-allowed; color: #777; }
-    .btn-save { background: var(--odtu-red); color: white; border: none; padding: 12px 30px; border-radius: 8px; cursor: pointer; font-weight: bold; margin-top: 20px; float: right; transition: 0.3s; }
-    .btn-save:hover { background: #c0392b; transform: translateY(-2px); }
-
-    /* 2. NOTLAR */
-    .notes-wrapper { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-    .note-editor { background: white; padding: 20px; border-radius: 15px; box-shadow: 0 5px 20px rgba(0,0,0,0.05); height: fit-content; }
-    .note-editor textarea { width: 100%; height: 120px; border: 1px solid #eee; border-radius: 8px; padding: 15px; resize: none; outline: none; margin-bottom: 10px; }
-    .btn-add-note { background: var(--odtu-dark); color: white; width: 100%; padding: 10px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; }
-    
-    .notes-list { display: flex; flex-direction: column; gap: 15px; max-height: 500px; overflow-y: auto; }
-    .note-card { background: #fff8e1; padding: 15px; border-radius: 10px; border-left: 5px solid #f1c40f; position: relative; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-    .delete-note { position: absolute; top: 10px; right: 10px; color: #e74c3c; cursor: pointer; opacity: 0.6; transition: 0.2s; }
-    .delete-note:hover { opacity: 1; transform: scale(1.1); }
-
-    /* 3. MESAJLAR (GELİŞMİŞ) */
-    .messages-container { display: flex; height: 600px; background: white; border-radius: 15px; overflow: hidden; box-shadow: 0 5px 20px rgba(0,0,0,0.05); border: 1px solid #eee; }
-    .msg-list-col { width: 35%; border-right: 1px solid #eee; background: #fdfdfd; display: flex; flex-direction: column; }
-    .msg-chat-col { flex: 1; display: flex; flex-direction: column; background: white; }
-    
-    .msg-header { padding: 15px; border-bottom: 1px solid #eee; }
-    .new-msg-btn { width: 100%; padding: 10px; background: var(--odtu-dark); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; }
-    
-    .inbox-scroll { flex: 1; overflow-y: auto; }
-    .msg-item { padding: 15px; border-bottom: 1px solid #eee; cursor: pointer; transition: 0.2s; position: relative; }
-    .msg-item:hover { background: #f0f2f5; }
-    .msg-item.unread { background: #eefff5; border-left: 4px solid var(--odtu-dark); }
-    .msg-name { font-weight: bold; font-size: 0.95rem; color: #333; margin-bottom: 4px; }
-    .msg-preview { font-size: 0.85rem; color: #888; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-
-    .chat-header { padding: 15px; border-bottom: 1px solid #eee; font-weight: bold; color: var(--odtu-dark); background: #f9f9f9; text-align: center; }
-    .chat-box { flex: 1; overflow-y: auto; padding: 20px; background-color: #ffffff; display: flex; flex-direction: column; gap: 10px; }
-    
-    .chat-bubble { max-width: 70%; padding: 10px 15px; border-radius: 15px; font-size: 0.95rem; line-height: 1.4; position: relative; word-wrap: break-word; }
-    .mine { background: var(--odtu-dark); color: white; align-self: flex-end; border-bottom-right-radius: 2px; }
-    .theirs { background: #f1f0f0; color: #333; align-self: flex-start; border-bottom-left-radius: 2px; }
-    
-    .chat-input-area { padding: 15px; border-top: 1px solid #eee; display: flex; gap: 10px; align-items: center; background: #fff; }
-    .chat-input { flex: 1; padding: 12px; border: 1px solid #ddd; border-radius: 20px; outline: none; resize: none; height: 45px; font-family: inherit; }
-    .chat-send-btn { width: 45px; height: 45px; background: var(--odtu-red); color: white; border: none; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.3s; }
-    .chat-send-btn:hover { transform: scale(1.1); }
-
-    /* MODAL */
-    .modal { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:2000; justify-content:center; align-items:center; }
-    .modal-box { background: white; padding: 20px; border-radius: 10px; width: 90%; max-width: 400px; max-height: 500px; overflow-y: auto; }
-    .user-row { padding: 10px; border-bottom: 1px solid #eee; display: flex; align-items: center; gap: 10px; cursor: pointer; }
-    .user-checkbox { width: 18px; height: 18px; }
-    .btn-multi-send { width: 100%; background: var(--odtu-red); color: white; border: none; padding: 12px; margin-top: 10px; border-radius: 6px; font-weight: bold; cursor: pointer; }
-    .btn-multi-send:disabled { background: #ccc; cursor: not-allowed; }
-
-    /* RESPONSIVE */
-    @media (max-width: 900px) {
-        .navbar { height: auto; flex-direction: column; padding: 15px; }
-        .nav-links { flex-wrap: wrap; justify-content: center; gap: 10px; width: 100%; }
-        
-        .layout-container { flex-direction: column; margin-top: 20px; padding: 15px; }
-        .profile-sidebar { width: 100%; }
-        .sidebar-menu { flex-direction: row; overflow-x: auto; gap: 10px; padding-bottom: 5px; }
-        .menu-btn { padding: 10px; font-size: 0.9rem; white-space: nowrap; flex: 1; justify-content: center; }
-        
-        .form-grid, .notes-wrapper { grid-template-columns: 1fr; }
-        .messages-container { flex-direction: column; height: auto; }
-        .msg-list-col { width: 100%; height: 200px; border-right: none; border-bottom: 1px solid #eee; }
-        .msg-chat-col { height: 400px; }
-    }
+    /* HARİTA KUTUSU */
+    #locationMap { width: 100%; height: 300px; border-radius: 8px; border: 2px solid #eee; margin-top: 10px; cursor: crosshair; }
+    .location-info { font-size: 0.9rem; color: #666; margin-top: 5px; }
 </style>
 </head>
 <body>
 
     <nav class="navbar">
-        <div class="nav-left">
-            <img src="logo.png" class="nav-logo" onerror="this.onerror=null; this.src='https://upload.wikimedia.org/wikipedia/tr/a/a6/Odt%C3%BC_logo.png';">
-            <div class="nav-title">Hatay ODTÜ MD <span>Üye Portalı</span></div>
-        </div>
+        <div class="nav-left"><img src="logo.png" class="nav-logo"><div class="nav-title">Hatay ODTÜ MD</div></div>
         <div class="nav-links">
             <a href="dashboard.html">Panel</a>
             <a href="meeting.html">Meeting Hub</a>
             <a href="mentor.html">Mentorluk</a>
-            <a href="career.html">Kariyer</a>
+            <a href="career.html">Kariyer Lab</a>
             <a href="network.html">Mezun Ağı</a>
-            <a href="profile.html" class="active">
-                <i class="fa-solid fa-user"></i> Profil 
-                <span id="navBadge" class="badge-count">0</span>
-            </a>
+            <a href="profile.html" class="active">Profil</a>
+            <a href="#" class="logout-btn" onclick="logout()">Çıkış</a>
         </div>
-        <div class="nav-right"><a href="#" class="logout-btn" onclick="logout()">Çıkış</a></div>
     </nav>
 
-    <div class="layout-container">
-        
-        <aside class="profile-sidebar">
-            <div class="profile-card">
-                <div class="profile-avatar" id="avatarInitials">?</div>
-                <div class="profile-name" id="sidebarName">Yükleniyor...</div>
-                <div class="profile-role" id="sidebarDept">...</div>
+    <div class="main-container">
+        <div class="header">
+            <h2>Profil Düzenle</h2>
+            <p style="color:#777;">Bilgilerinizi güncel tutarak ağa katkıda bulunun.</p>
+        </div>
+        <hr style="margin: 20px 0; border: 0; border-top: 1px solid #eee;">
+
+        <form id="profileForm">
+            <div class="form-group">
+                <label>Ad Soyad</label>
+                <input type="text" id="fullName" class="form-control" readonly style="background:#f9f9f9;">
             </div>
-
-            <nav class="sidebar-menu">
-                <button class="menu-btn active" onclick="switchSection('settings', this)">
-                    <i class="fa-solid fa-gear"></i> Ayarlar
-                </button>
-                <button class="menu-btn" onclick="switchSection('notes', this)">
-                    <i class="fa-solid fa-sticky-note"></i> Notlarım
-                </button>
-                <button class="menu-btn" onclick="switchSection('messages', this)">
-                    <i class="fa-solid fa-envelope"></i> Mesajlar
-                    <span id="menuBadge" class="menu-badge">0</span>
-                </button>
-            </nav>
-        </aside>
-
-        <main class="content-area">
+            <div class="form-group">
+                <label>Bölüm</label>
+                <input type="text" id="dept" class="form-control">
+            </div>
             
-            <div id="settings" class="content-section active">
-                <div class="section-title"><i class="fa-solid fa-sliders"></i> Profil Ayarları</div>
-                <div class="settings-box">
-                    <form id="profileForm">
-                        <div class="form-grid">
-                            <div class="form-group"><label>Ad Soyad</label><input type="text" id="pName" readonly></div>
-                            <div class="form-group"><label>E-posta</label><input type="email" id="pEmail" readonly></div>
-                            <div class="form-group"><label>Bölüm</label><input type="text" id="pDept" placeholder="Bölümünüz"></div>
-                            <div class="form-group"><label>Mezuniyet Yılı</label><input type="number" id="pYear" placeholder="20XX"></div>
-                            <div class="form-group"><label>Kurum / Şirket</label><input type="text" id="pComp"></div>
-                            <div class="form-group"><label>Telefon</label><input type="text" id="pPhone"></div>
-                        </div>
-                        <button type="submit" id="saveBtn" class="btn-save">Değişiklikleri Kaydet</button>
-                        <div style="clear:both;"></div>
-                    </form>
+            <div id="gradFields" style="display:none;">
+                <div class="form-group"><label>Şirket</label><input type="text" id="company" class="form-control"></div>
+                <div class="form-group"><label>Sektör</label><input type="text" id="sector" class="form-control"></div>
+                <div class="form-group"><label>Mezuniyet Yılı</label><input type="number" id="gradYear" class="form-control"></div>
+            </div>
+
+            <div id="studentFields" style="display:none;">
+                <div class="form-group">
+                    <label>Sınıf Seviyesi</label>
+                    <select id="classLevel" class="form-control">
+                        <option value="0">Hazırlık</option>
+                        <option value="1">1. Sınıf</option>
+                        <option value="2">2. Sınıf</option>
+                        <option value="3">3. Sınıf</option>
+                        <option value="4">4. Sınıf</option>
+                        <option value="5">Yüksek Lisans</option>
+                        <option value="6">Doktora</option>
+                    </select>
                 </div>
             </div>
 
-            <div id="notes" class="content-section">
-                <div class="section-title"><i class="fa-solid fa-pen-to-square"></i> Kişisel Notlar</div>
-                <div class="notes-wrapper">
-                    <div class="note-editor">
-                        <textarea id="noteInput" placeholder="Aklına gelenleri buraya not al..."></textarea>
-                        <button class="btn-add-note" onclick="saveNote()">Notu Kaydet</button>
-                    </div>
-                    <div class="notes-list" id="notesList">
-                        <div style="text-align:center; color:#999; padding:20px;">Yükleniyor...</div>
-                    </div>
-                </div>
+            <div class="form-group">
+                <label><i class="fa-solid fa-location-dot" style="color:var(--odtu-red);"></i> Konumunuzu İşaretleyin</label>
+                <p class="location-info">Global haritada görünmek için yaşadığınız şehri seçin.</p>
+                <div id="locationMap"></div>
+                <input type="hidden" id="lat">
+                <input type="hidden" id="lng">
             </div>
 
-            <div id="messages" class="content-section">
-                <div class="section-title"><i class="fa-solid fa-comments"></i> Mesajlar</div>
-                <div class="messages-container">
-                    <div class="msg-list-col">
-                        <div class="msg-header">
-                            <button class="new-msg-btn" onclick="openUserModal()">+ Yeni / Çoklu Mesaj</button>
-                        </div>
-                        <div class="inbox-scroll" id="inboxList">
-                            <div style="padding:20px; text-align:center; color:#999;">Yükleniyor...</div>
-                        </div>
-                    </div>
-                    <div class="msg-chat-col">
-                        <div id="chatBoxHeader" class="chat-header">Bir sohbet seçin</div>
-                        <div id="chatBox" class="chat-box">
-                            <div style="text-align:center; color:#ccc; margin-top:50px;">
-                                <i class="fa-regular fa-paper-plane" style="font-size:3rem; opacity:0.5;"></i><br><br>
-                                Sol taraftan bir kişi seçin veya yeni mesaj gönderin.
-                            </div>
-                        </div>
-                        <div class="chat-input-area" id="sendArea" style="display:none;">
-                            <textarea id="msgInput" class="chat-input" placeholder="Mesaj yaz... (Enter: Gönder)"></textarea>
-                            <button class="chat-send-btn" onclick="sendMessage()"><i class="fa-solid fa-paper-plane"></i></button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-        </main>
+            <button type="submit" class="btn-save">Değişiklikleri Kaydet</button>
+        </form>
     </div>
 
-    <div id="userModal" class="modal" onclick="this.style.display='none'">
-        <div class="modal-box" onclick="event.stopPropagation()">
-            <div style="display:flex; justify-content:space-between; margin-bottom:15px;">
-                <h3>Kişi Seç</h3>
-                <span onclick="document.getElementById('userModal').style.display='none'" style="cursor:pointer; font-size:1.5rem;">&times;</span>
-            </div>
-            <div style="max-height: 250px; overflow-y: auto;" id="userList"></div>
-            <div class="multi-send-area">
-                <input type="text" id="multiMsgInput" placeholder="Çoklu mesajınızı yazın..." style="width:100%; padding:10px; margin-bottom:10px; border:1px solid #ddd; border-radius:6px; display:none;">
-                <button id="btnMultiSend" class="btn-multi-send" disabled onclick="sendMultiMessage()">Seçilenlere Gönder (0)</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="liveToast" style="position: fixed; top: 20px; right: 20px; background: white; padding: 15px 20px; border-radius: 8px; box-shadow: 0 5px 25px rgba(0,0,0,0.2); border-left: 6px solid #333; z-index: 9999; display: none; min-width: 320px; animation: slideIn 0.4s;">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-            <strong id="toastTitle" style="font-size:1rem; display:flex; align-items:center; gap:8px;"></strong>
-            <span onclick="document.getElementById('liveToast').style.display='none'" style="cursor:pointer; color:#aaa; font-size:1.2rem;">&times;</span>
-        </div>
-        <p id="toastMessage" style="color:#555; font-size:0.9rem; margin:0; line-height:1.4;">...</p>
-    </div>
-    <style>@keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }</style>
+    <div id="liveToast" style="position:fixed; top:20px; right:20px; background:white; padding:15px; border-radius:8px; border-left:5px solid #27ae60; box-shadow:0 5px 15px rgba(0,0,0,0.2); display:none;">✅ Kaydedildi!</div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
         const supabaseUrl = 'https://hftrmiiacxgtkarsvupn.supabase.co';
         const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhmdHJtaWlhY3hndGthcnN2dXBuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ3ODUzNzIsImV4cCI6MjA4MDM2MTM3Mn0.BgCk5xuZx6AZuxzfBHcQqg8j8BtxU9FbupDgoFecG_k';
         let supabase; try { supabase = window.supabase.createClient(supabaseUrl, supabaseKey); } catch(e){}
-        let currentUser = null;
-        let activeChatUserId = null;
-        let selectedUsers = new Set(); 
+        let map, marker;
 
         document.addEventListener("DOMContentLoaded", async () => {
             const { data: { session } } = await supabase.auth.getSession();
             if (!session) { window.location.href = 'index.html'; return; }
-            currentUser = session.user;
-
-            loadProfile(); loadNotes(); loadInbox(); checkNotifications(); setupRealtime();
             
-            // Enter ile gönderme
-            document.getElementById('msgInput').addEventListener('keydown', function(e) {
-                if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
-            });
+            initMap();
+            loadProfile(session.user.id);
         });
 
-        // --- SEKME GEÇİŞLERİ ---
-        function switchSection(id, btn) {
-            document.querySelectorAll('.content-section').forEach(el => el.classList.remove('active'));
-            document.querySelectorAll('.menu-btn').forEach(el => el.classList.remove('active'));
-            
-            document.getElementById(id).classList.add('active');
-            btn.classList.add('active');
+        // HARİTA BAŞLATMA
+        function initMap() {
+            map = L.map('locationMap').setView([39.9334, 32.8597], 5); // Türkiye merkezli
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+
+            // Haritaya tıklayınca
+            map.on('click', function(e) {
+                const lat = e.latlng.lat;
+                const lng = e.latlng.lng;
+                
+                if (marker) map.removeLayer(marker);
+                marker = L.marker([lat, lng]).addTo(map);
+                
+                document.getElementById('lat').value = lat;
+                document.getElementById('lng').value = lng;
+            });
         }
 
-        // --- PROFİL VERİLERİ & YAN MENÜ ---
-        async function loadProfile() {
-            const { data: profile } = await supabase.from('profiles').select('*').eq('id', currentUser.id).single();
-            if (profile) {
-                document.getElementById('pName').value = profile.full_name;
-                document.getElementById('pEmail').value = profile.email;
-                document.getElementById('pDept').value = profile.department || "";
-                document.getElementById('pYear').value = profile.grad_year || "";
-                document.getElementById('pComp').value = profile.company || "";
-                document.getElementById('pPhone').value = profile.phone || "";
+        // PROFİL YÜKLEME
+        async function loadProfile(uid) {
+            const { data } = await supabase.from('profiles').select('*').eq('id', uid).single();
+            if(data) {
+                document.getElementById('fullName').value = data.full_name;
+                document.getElementById('dept').value = data.department;
                 
-                // Sidebar Güncelle
-                document.getElementById('sidebarName').innerText = profile.full_name || "Üye";
-                document.getElementById('sidebarDept').innerText = profile.department || "Bölüm Yok";
-                document.getElementById('avatarInitials').innerText = profile.full_name ? profile.full_name.substring(0,2).toUpperCase() : "ÜY";
+                if(data.user_type === 'grad' || data.role === 'admin') {
+                    document.getElementById('gradFields').style.display='block';
+                    document.getElementById('company').value = data.company || '';
+                    document.getElementById('sector').value = data.sector || '';
+                    document.getElementById('gradYear').value = data.grad_year || '';
+                } else {
+                    document.getElementById('studentFields').style.display='block';
+                    document.getElementById('classLevel').value = data.class_level || 1;
+                }
+
+                // Varsa Kayıtlı Konumu Göster
+                if(data.latitude && data.longitude) {
+                    marker = L.marker([data.latitude, data.longitude]).addTo(map);
+                    map.setView([data.latitude, data.longitude], 10);
+                    document.getElementById('lat').value = data.latitude;
+                    document.getElementById('lng').value = data.longitude;
+                }
             }
         }
-        
+
+        // KAYDETME
         document.getElementById('profileForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-            const updates = { id: currentUser.id, department: document.getElementById('pDept').value, grad_year: document.getElementById('pYear').value, company: document.getElementById('pComp').value, phone: document.getElementById('pPhone').value, updated_at: new Date() };
-            const { error } = await supabase.from('profiles').upsert(updates);
-            const btn = document.getElementById('saveBtn');
-            if(!error) { btn.innerText="Kaydedildi! ✅"; setTimeout(()=>btn.innerText="Değişiklikleri Kaydet", 2000); loadProfile(); }
-            else alert("Hata!");
-        });
+            const btn = e.target.querySelector('button'); btn.innerText = "Kaydediliyor..."; btn.disabled=true;
 
-        // --- NOTLAR ---
-        async function saveNote() {
-            const content = document.getElementById('noteInput').value;
-            if(!content) return;
-            await supabase.from('personal_notes').insert({ user_id: currentUser.id, content: content });
-            document.getElementById('noteInput').value = ""; loadNotes();
-        }
-        async function loadNotes() {
-            const { data } = await supabase.from('personal_notes').select('*').eq('user_id', currentUser.id).order('created_at', {ascending: false});
-            const list = document.getElementById('notesList');
-            if(!data || data.length === 0) list.innerHTML = '<p style="text-align:center;color:#ccc;">Henüz notun yok.</p>';
-            else list.innerHTML = data.map(n => `<div class="note-card">${n.content}<i class="fa-solid fa-trash delete-note" onclick="deleteNote(${n.id})"></i></div>`).join('');
-        }
-        async function deleteNote(id) { if(confirm("Sil?")) { await supabase.from('personal_notes').delete().eq('id', id); loadNotes(); }}
+            const updates = {
+                department: document.getElementById('dept').value,
+                latitude: document.getElementById('lat').value || null,
+                longitude: document.getElementById('lng').value || null
+            };
 
-        // --- MESAJLAŞMA ---
-        async function loadInbox() {
-            const inboxList = document.getElementById('inboxList');
-            inboxList.innerHTML = "";
-
-            // 1. Duyuru
-            const { data: broadcastData } = await supabase.from('broadcasts').select('*').order('created_at', {ascending: false}).limit(1);
-            let lastMsg = "Henüz duyuru yok."; let lastDate = "";
-            if (broadcastData && broadcastData.length > 0) { lastMsg = broadcastData[0].message; lastDate = new Date(broadcastData[0].created_at).toLocaleDateString(); }
-            inboxList.innerHTML += `
-            <div class="msg-item" onclick="openChat('broadcast', '📢 Topluluk Duyuruları')" style="background-color:#fef9e7; border-left: 4px solid #f1c40f;">
-                <div class="msg-name" style="color:#d35400;">📢 Topluluk Duyuruları <span style="font-weight:normal; font-size:0.7rem; color:#999; float:right;">${lastDate}</span></div>
-                <div class="msg-preview">${lastMsg}</div>
-            </div>`;
-
-            // 2. Mesajlar
-            const { data } = await supabase.from('direct_messages').select('*').or(`sender_id.eq.${currentUser.id},receiver_id.eq.${currentUser.id}`).order('created_at', {ascending: false});
-            const uniqueContacts = new Set();
-            const contactIds = new Set();
-            const conversationMap = [];
-
-            if(data) {
-                data.forEach(msg => {
-                    const partnerId = (msg.sender_id === currentUser.id) ? msg.receiver_id : msg.sender_id;
-                    if(!uniqueContacts.has(partnerId)) {
-                        uniqueContacts.add(partnerId);
-                        contactIds.add(partnerId);
-                        conversationMap.push({ partnerId, msg });
-                    }
-                });
-            }
-
-            const { data: profiles } = await supabase.from('profiles').select('id, full_name').in('id', Array.from(contactIds));
-            const nameMap = {};
-            if(profiles) profiles.forEach(p => nameMap[p.id] = p.full_name);
-
-            conversationMap.forEach(item => {
-                const partnerId = item.partnerId;
-                const msg = item.msg;
-                const realName = nameMap[partnerId] || "Bilinmeyen Üye";
-                const isUnread = (!msg.is_read && msg.receiver_id === currentUser.id) ? 'unread' : '';
-                const isMe = (msg.sender_id === currentUser.id);
-
-                inboxList.innerHTML += `
-                <div class="msg-item ${isUnread}" onclick="openChat('${partnerId}', '${realName}')">
-                    <div class="msg-name">${realName}</div>
-                    <div class="msg-preview" style="color:${isMe ? '#999' : '#555'}">${isMe ? '↪️ ' : ''}${msg.content}</div>
-                </div>`;
-            });
-        }
-
-        async function openChat(partnerId, partnerName) {
-            activeChatUserId = partnerId;
-            const chatBox = document.getElementById('chatBox');
-            const sendArea = document.getElementById('sendArea');
-            document.getElementById('chatBoxHeader').innerHTML = `<i class="fa-solid fa-user"></i> ${partnerName}`;
-
-            if (partnerId === 'broadcast') {
-                sendArea.style.display = 'none';
-                const { data } = await supabase.from('broadcasts').select('*').order('created_at', {ascending: true});
-                chatBox.innerHTML = "";
-                if (data) data.forEach(msg => {
-                    const date = new Date(msg.created_at).toLocaleDateString();
-                    chatBox.innerHTML += `<div class="chat-bubble theirs" style="background:#fff3cd; color:#856404; width:100%;"><div style="font-size:0.7rem; font-weight:bold; margin-bottom:5px;">YÖNETİM - ${date}</div>${msg.message}</div>`;
-                });
+            // Görünür olan alanları ekle
+            if(document.getElementById('gradFields').style.display !== 'none') {
+                updates.company = document.getElementById('company').value;
+                updates.sector = document.getElementById('sector').value;
+                updates.grad_year = document.getElementById('gradYear').value;
             } else {
-                sendArea.style.display = 'flex';
-                chatBox.innerHTML = "";
-                const { data } = await supabase.from('direct_messages').select('*').or(`and(sender_id.eq.${currentUser.id},receiver_id.eq.${partnerId}),and(sender_id.eq.${partnerId},receiver_id.eq.${currentUser.id})`).order('created_at', {ascending: true});
-                data.forEach(msg => {
-                    chatBox.innerHTML += `<div class="chat-bubble ${msg.sender_id === currentUser.id ? 'mine' : 'theirs'}">${msg.content}</div>`;
-                });
-                await supabase.from('direct_messages').update({is_read: true}).eq('sender_id', partnerId).eq('receiver_id', currentUser.id);
-                checkNotifications();
+                updates.class_level = document.getElementById('classLevel').value;
             }
-            chatBox.scrollTop = chatBox.scrollHeight;
-        }
 
-        async function sendMessage() {
-            const input = document.getElementById('msgInput');
-            if(!input.value || !activeChatUserId || activeChatUserId === 'broadcast') return;
-            const myName = currentUser.user_metadata.full_name || "Üye";
-            await supabase.from('direct_messages').insert({ sender_id: currentUser.id, receiver_id: activeChatUserId, content: input.value, sender_name: myName });
-            document.getElementById('chatBox').innerHTML += `<div class="chat-bubble mine">${input.value}</div>`;
-            document.getElementById('chatBox').scrollTop = document.getElementById('chatBox').scrollHeight;
-            input.value = "";
-            loadInbox();
-        }
-
-        // --- DİĞER FONKSİYONLAR ---
-        async function openUserModal() {
-            document.getElementById('userModal').style.display = 'flex';
-            const { data } = await supabase.from('profiles').select('id, full_name').neq('id', currentUser.id).limit(100);
-            const list = document.getElementById('userList');
-            list.innerHTML = ""; selectedUsers.clear(); updateMultiSendButton();
-            data.forEach(u => {
-                list.innerHTML += `<div class="user-row"><input type="checkbox" class="user-checkbox" value="${u.id}" onchange="toggleUser('${u.id}', '${u.full_name}', this)"><span onclick="startNewChat('${u.id}', '${u.full_name}')" style="flex:1;">${u.full_name}</span></div>`;
-            });
-        }
-        function toggleUser(id, name, checkbox) { if (checkbox.checked) selectedUsers.add(id); else selectedUsers.delete(id); updateMultiSendButton(); }
-        function updateMultiSendButton() { 
-            const btn = document.getElementById('btnMultiSend'); const input = document.getElementById('multiMsgInput');
-            btn.innerText = `Seçilenlere Gönder (${selectedUsers.size})`;
-            if (selectedUsers.size > 0) { btn.disabled = false; input.style.display = 'block'; } else { btn.disabled = true; input.style.display = 'none'; }
-        }
-        async function sendMultiMessage() {
-            const text = document.getElementById('multiMsgInput').value;
-            if(!text || selectedUsers.size === 0) return;
-            const myName = currentUser.user_metadata.full_name || "Üye";
-            document.getElementById('btnMultiSend').innerText = "Gönderiliyor...";
-            for (const receiverId of selectedUsers) { await supabase.from('direct_messages').insert({ sender_id: currentUser.id, receiver_id: receiverId, content: text, sender_name: myName }); }
-            alert("Mesajlar iletildi! 🚀");
-            document.getElementById('userModal').style.display = 'none'; document.getElementById('multiMsgInput').value = ""; selectedUsers.clear(); loadInbox();
-        }
-        function startNewChat(id, name) { document.getElementById('userModal').style.display = 'none'; openChat(id, name); }
-
-        function setupRealtime() {
-            supabase.channel('public:broadcasts').on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'broadcasts' }, payload => { showNotification("YÖNETİM DUYURUSU", payload.new.message, "admin"); loadInbox(); }).subscribe();
-            supabase.channel('chat-room').on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'direct_messages', filter: `receiver_id=eq.${currentUser.id}` }, payload => {
-                if (activeChatUserId && payload.new.sender_id === activeChatUserId) {
-                    const chatBox = document.getElementById('chatBox');
-                    chatBox.innerHTML += `<div class="chat-bubble theirs">${payload.new.content}</div>`;
-                    chatBox.scrollTop = chatBox.scrollHeight;
-                    supabase.from('direct_messages').update({is_read: true}).eq('id', payload.new.id).then();
-                } else { showNotification(`💬 ${payload.new.sender_name}`, payload.new.content, "user"); }
-                loadInbox(); checkNotifications();
-            }).subscribe();
-        }
-
-        function showNotification(title, msg, type) {
-            const toast = document.getElementById('liveToast');
-            document.getElementById('toastTitle').innerHTML = type==='admin' ? `<i class="fa-solid fa-tower-broadcast" style="color:#8e44ad"></i> ${title}` : `${title}`;
-            document.getElementById('toastMessage').innerText = msg;
-            toast.style.borderLeftColor = type==='admin' ? "#8e44ad" : "#3498db";
-            toast.style.display = 'block';
-            new Audio('https://actions.google.com/sounds/v1/alarms/beep_short.ogg').play().catch(()=>{});
-            setTimeout(() => { toast.style.display = 'none'; }, 6000);
-        }
-
-        async function checkNotifications() {
-            const { count } = await supabase.from('direct_messages').select('*', { count: 'exact', head: true }).eq('receiver_id', currentUser.id).eq('is_read', false);
-            const navBadge = document.getElementById('navBadge');
-            const menuBadge = document.getElementById('menuBadge');
-            if(count > 0) { 
-                if(navBadge) { navBadge.style.display = 'inline-block'; navBadge.innerText = count; }
-                if(menuBadge) { menuBadge.style.display = 'inline-block'; menuBadge.innerText = count; }
-            } else { 
-                if(navBadge) navBadge.style.display = 'none'; 
-                if(menuBadge) menuBadge.style.display = 'none';
+            const { error } = await supabase.from('profiles').update(updates).eq('id', (await supabase.auth.getUser()).data.user.id);
+            
+            if(error) alert("Hata: " + error.message);
+            else {
+                document.getElementById('liveToast').style.display='block';
+                setTimeout(()=>document.getElementById('liveToast').style.display='none', 3000);
             }
-        }
+            btn.innerText = "Değişiklikleri Kaydet"; btn.disabled=false;
+        });
 
         async function logout() { await supabase.auth.signOut(); window.location.href = "index.html"; }
     </script>
