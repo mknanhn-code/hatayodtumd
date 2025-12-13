@@ -15,8 +15,13 @@
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
     body { background-color: var(--bg-light); min-height: 100vh; color: #333; }
 
-    /* --- NAVBAR (MOBİL GÜNCELLEMELİ) --- */
-    .navbar { width: 100%; height: 70px; background-color: var(--odtu-dark); display: flex; align-items: center; justify-content: space-between; padding: 0 20px; position: fixed; top: 0; left: 0; z-index: 1000; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+    /* --- NAVBAR (Sabit Üst Menü) --- */
+    .navbar { 
+        width: 100%; height: 70px; background-color: var(--odtu-dark); 
+        display: flex; align-items: center; justify-content: space-between; 
+        padding: 0 20px; position: fixed; top: 0; left: 0; z-index: 1000; 
+        box-shadow: 0 4px 10px rgba(0,0,0,0.1); 
+    }
     
     .nav-left { display: flex; align-items: center; gap: 15px; z-index: 1001; }
     .nav-logo { height: 40px; background: white; padding: 2px; border-radius: 5px; }
@@ -27,22 +32,28 @@
     .nav-links a { color: #bdc3c7; text-decoration: none; font-size: 0.95rem; display: flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 6px; transition: 0.3s; }
     .nav-links a:hover, .nav-links a.active { background-color: rgba(255,255,255,0.1); color: white; }
     
-    /* Sağ Taraf (Çıkış) */
     .nav-right { display: flex; align-items: center; }
     .logout-btn { color: #e74c3c; border: 1px solid #e74c3c; padding: 6px 15px; border-radius: 20px; text-decoration: none; transition: 0.3s; font-size: 0.9rem; }
     .logout-btn:hover { background: #e74c3c; color: white; }
 
-    /* Hamburger İkonu (Masaüstünde Gizli) */
+    /* Hamburger İkonu */
     .hamburger { display: none; font-size: 1.5rem; color: white; cursor: pointer; z-index: 1001; }
 
-    /* --- ANA İÇERİK --- */
-    .main-content { margin-top: 70px; padding: 40px; width: 100%; max-width: 1200px; margin-left: auto; margin-right: auto; }
+    /* --- ANA İÇERİK (DÜZELTİLDİ: margin-top artırıldı) --- */
+    .main-content { 
+        margin-top: 100px; /* Navbar yüksekliğinden (70px) daha fazla boşluk bıraktık */
+        padding: 30px; 
+        width: 100%; 
+        max-width: 1200px; 
+        margin-left: auto; 
+        margin-right: auto; 
+    }
     
     .header-area { text-align: center; margin-bottom: 50px; }
     .header-area h2 { font-size: 2.5rem; color: var(--odtu-dark); margin-bottom: 10px; }
     .header-area p { color: #666; font-size: 1.1rem; }
 
-    /* Bölüm Başlıkları */
+    /* BÖLÜM AYRAÇLARI */
     .section-title { font-size: 1.5rem; color: var(--odtu-dark); margin-bottom: 25px; border-left: 5px solid var(--odtu-red); padding-left: 15px; display: flex; align-items: center; justify-content: space-between; margin-top: 60px; }
     .section-title:first-child { margin-top: 0; }
 
@@ -111,11 +122,15 @@
         }
         .nav-links.active { left: 0; } /* Menü Açılınca */
         
-        .nav-links a { font-size: 1.2rem; margin: 15px 0; width: 80%; justify-content: center; padding: 15px; }
+        .nav-links a { font-size: 1.2rem; margin: 15px 0; width: 80%; justify-content: center; padding: 15px; color: white; }
         .nav-right { display: none; } /* Masaüstü butonu gizle */
         
-        /* İçerik Düzeni */
-        .main-content { margin-top: 0; padding: 20px; }
+        /* İçerik Düzeni Düzeltmesi */
+        .main-content { 
+            margin-top: 90px; /* Mobilde de boşluk bırak */
+            padding: 20px; 
+        }
+        
         .header-area h2 { font-size: 2rem; }
         .job-row { flex-direction: column; align-items: flex-start; gap: 15px; }
         .btn-apply { width: 100%; }
@@ -137,7 +152,7 @@
 
         <div class="nav-links" id="navLinks">
             <a href="dashboard.html">Panel</a>
-            <a href="meeting.html">Etkinlik Üssü</a>
+            <a href="meeting.html">Meeting Hub</a>
             <a href="mentor.html">Mentorluk</a>
             <a href="career.html" class="active" style="background:rgba(255,255,255,0.2); color:white;"><i class="fa-solid fa-flask"></i> Kariyer Lab</a>
             <a href="network.html">Mezun Ağı</a>
