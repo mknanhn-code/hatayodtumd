@@ -10,16 +10,23 @@
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
     body { background-color: var(--bg-light); min-height: 100vh; color: #333; }
 
-    /* NAVBAR */
-    .navbar { width: 100%; height: 70px; background-color: var(--odtu-dark); display: flex; align-items: center; justify-content: space-between; padding: 0 30px; position: fixed; top: 0; left: 0; z-index: 1000; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-    .nav-left { display: flex; align-items: center; gap: 15px; }
-    .nav-logo { height: 50px; background: white; padding: 2px; border-radius: 5px; }
+    /* --- NAVBAR (MOBİL GÜNCELLEMELİ) --- */
+    .navbar { width: 100%; height: 70px; background-color: var(--odtu-dark); display: flex; align-items: center; justify-content: space-between; padding: 0 20px; position: fixed; top: 0; left: 0; z-index: 1000; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+    
+    .nav-left { display: flex; align-items: center; gap: 15px; z-index: 1001; }
+    .nav-logo { height: 40px; background: white; padding: 2px; border-radius: 5px; }
     .nav-title { color: white; font-size: 1.1rem; font-weight: bold; }
-    .nav-links { display: flex; gap: 20px; }
+    
+    .nav-links { display: flex; gap: 20px; align-items: center; }
     .nav-links a { color: #bdc3c7; text-decoration: none; font-size: 0.95rem; display: flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 6px; transition: 0.3s; }
     .nav-links a:hover, .nav-links a.active { background-color: rgba(255,255,255,0.1); color: white; }
-    .nav-right { display: flex; align-items: center; gap: 20px; }
-    .logout-btn { color: #e74c3c; border: 1px solid #e74c3c; padding: 6px 15px; border-radius: 20px; text-decoration: none; transition: 0.3s; }
+    
+    .nav-right { display: flex; align-items: center; }
+    .logout-btn { color: #e74c3c; border: 1px solid #e74c3c; padding: 6px 15px; border-radius: 20px; text-decoration: none; transition: 0.3s; font-size: 0.9rem; }
+    .logout-btn:hover { background: #e74c3c; color: white; }
+
+    /* Hamburger */
+    .hamburger { display: none; font-size: 1.5rem; color: white; cursor: pointer; z-index: 1001; }
 
     /* LAYOUT */
     .container { margin-top: 70px; padding: 30px; max-width: 1300px; margin-left: auto; margin-right: auto; display: flex; gap: 30px; }
@@ -31,7 +38,7 @@
     .filter-input { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; outline: none; }
     .btn-filter { width: 100%; background: var(--odtu-dark); color: white; border: none; padding: 10px; border-radius: 6px; cursor: pointer; font-weight: bold; }
 
-    /* SAĞ LİSTE VE SONUÇ BAŞLIĞI */
+    /* SAĞ LİSTE */
     .content-area { flex: 1; }
     .results-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid #e9ecef; }
     .results-header h2 { margin: 0; color: var(--odtu-dark); font-size: 1.5rem; }
@@ -67,27 +74,54 @@
     #liveToast { position: fixed; top: 20px; right: 20px; background: white; padding: 15px 20px; border-radius: 8px; box-shadow: 0 5px 25px rgba(0,0,0,0.2); border-left: 6px solid #27ae60; z-index: 9999; display: none; min-width: 300px; animation: slideIn 0.4s; }
     @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
 
+    /* --- MOBİL UYUMLULUK (MEDIA QUERY) --- */
     @media (max-width: 900px) {
-        .navbar { height: auto; flex-direction: column; padding: 15px; }
-        .nav-links { flex-wrap: wrap; justify-content: center; }
+        .navbar { padding: 0 15px; }
+        .hamburger { display: block; }
+        
+        .nav-links {
+            position: fixed; top: 70px; left: -100%; width: 100%; height: calc(100vh - 70px);
+            background-color: var(--odtu-dark); flex-direction: column;
+            align-items: center; justify-content: flex-start; padding-top: 40px;
+            transition: 0.4s ease-in-out; box-shadow: inset 0 10px 20px rgba(0,0,0,0.2);
+        }
+        .nav-links.active { left: 0; }
+        
+        .nav-links a { font-size: 1.2rem; margin: 15px 0; width: 80%; justify-content: center; padding: 15px; }
+        .nav-right { display: none; }
+
         .container { flex-direction: column; margin-top: 0; padding: 20px; }
         .sidebar { width: 100%; position: static; }
+        .results-header { flex-direction: column; gap: 10px; align-items: flex-start; }
     }
 </style>
 </head>
 <body>
 
     <nav class="navbar">
-        <div class="nav-left"><img src="logo.png" class="nav-logo"><div class="nav-title">Hatay ODTÜ MD <span>Üye Portalı</span></div></div>
-        <div class="nav-links">
+        <div class="nav-left">
+            <img src="logo.png" class="nav-logo">
+            <div class="nav-title">Hatay ODTÜ MD</div>
+        </div>
+        
+        <div class="hamburger" onclick="toggleMenu()">
+            <i class="fa-solid fa-bars"></i>
+        </div>
+
+        <div class="nav-links" id="navLinks">
             <a href="dashboard.html">Panel</a>
             <a href="meeting.html">Meeting Hub</a>
             <a href="mentor.html">Mentorluk</a>
             <a href="career.html">Kariyer Lab</a>
-            <a href="network.html" class="active" style="background:rgba(255,255,255,0.2); color:white;"><i class="fa-solid fa-users-viewfinder"></i> Mezun Ağı</a>
+            <a href="network.html" class="active">Mezun Ağı</a>
             <a href="profile.html">Profil</a>
+            
+            <a href="#" onclick="logout()" style="color: #ff6b6b; border: 1px solid #ff6b6b; margin-top: 20px;">Çıkış Yap</a>
         </div>
-        <div class="nav-right"><a href="#" class="logout-btn" onclick="logout()">Çıkış</a></div>
+
+        <div class="nav-right">
+            <a href="#" class="logout-btn" onclick="logout()">Çıkış</a>
+        </div>
     </nav>
 
     <div class="container">
@@ -153,31 +187,28 @@
             fetchProfiles();
         });
 
+        // --- MOBİL MENÜ ---
+        function toggleMenu() {
+            document.getElementById('navLinks').classList.toggle('active');
+        }
+
         async function fetchProfiles() {
-            // Şehir bilgisini 'company' veya ilerde eklenecek 'location' sütunundan arayacağız.
             const { data, error } = await supabase.from('profiles').select('*').order('created_at', {ascending:false});
-            
             if(data) {
                 allProfiles = data;
                 renderProfiles(data);
-                
-                // Formu temizle
                 document.getElementById('searchName').value = '';
                 document.getElementById('searchDept').value = '';
                 document.getElementById('searchCity').value = '';
             }
         }
 
-        // PROFİLLERİ LİSTELE VE SAYIYI GÜNCELLE
         function renderProfiles(profiles) {
             const grid = document.getElementById('profileGrid');
-            const countSpan = document.getElementById('resultCount'); // Sayaç
+            const countSpan = document.getElementById('resultCount');
             grid.innerHTML = '';
 
-            // Kendimi listeden çıkar (Filtreleme)
             const visibleProfiles = profiles.filter(p => p.id !== currentUser.id);
-
-            // Sayacı Güncelle
             countSpan.innerText = `${visibleProfiles.length} Üye Bulundu`;
 
             if(visibleProfiles.length === 0) {
@@ -236,10 +267,7 @@
             const btn = event.target; btn.innerText = "Gönderiliyor..."; btn.disabled = true;
 
             const { error } = await supabase.from('direct_messages').insert({
-                sender_id: currentUser.id,
-                receiver_id: targetId,
-                content: content,
-                sender_name: myName
+                sender_id: currentUser.id, receiver_id: targetId, content: content, sender_name: myName
             });
 
             if(error) { alert("Hata: " + error.message); } 
@@ -251,17 +279,12 @@
             btn.innerText = "Gönder 🚀"; btn.disabled = false;
         }
 
-        window.onclick = function(event) {
-            if (event.target.className === 'modal-overlay') {
-                event.target.style.display = "none";
-            }
-        }
+        window.onclick = function(event) { if (event.target.className === 'modal-overlay') { event.target.style.display = "none"; } }
 
         function showToast(msg) {
             const t = document.getElementById('liveToast');
             document.getElementById('toastMessage').innerText = msg;
-            t.style.display = 'block';
-            setTimeout(() => t.style.display = 'none', 3000);
+            t.style.display = 'block'; setTimeout(() => t.style.display = 'none', 3000);
         }
 
         async function logout() { await supabase.auth.signOut(); window.location.href = "index.html"; }
