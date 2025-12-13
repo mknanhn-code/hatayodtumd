@@ -31,8 +31,13 @@
     .filter-input { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; outline: none; }
     .btn-filter { width: 100%; background: var(--odtu-dark); color: white; border: none; padding: 10px; border-radius: 6px; cursor: pointer; font-weight: bold; }
 
-    /* SAĞ LİSTE */
-    .network-grid { flex: 1; display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 25px; }
+    /* SAĞ LİSTE VE SONUÇ BAŞLIĞI */
+    .content-area { flex: 1; }
+    .results-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid #e9ecef; }
+    .results-header h2 { margin: 0; color: var(--odtu-dark); font-size: 1.5rem; }
+    .result-count { background: #e3f2fd; color: #1565c0; padding: 5px 15px; border-radius: 20px; font-weight: bold; font-size: 0.9rem; }
+
+    .network-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 25px; }
     
     /* PROFİL KARTI */
     .profile-card { background: white; border-radius: 12px; padding: 25px; text-align: center; border: 1px solid #eee; transition: 0.3s; position: relative; }
@@ -98,15 +103,23 @@
                 <input type="text" id="searchDept" class="filter-input" placeholder="Örn: İnşaat..." onkeyup="filterProfiles()">
             </div>
             <div class="filter-group">
-                <label>Şehir</label>
+                <label>Şehir / Şirket</label>
                 <input type="text" id="searchCity" class="filter-input" placeholder="Örn: Ankara..." onkeyup="filterProfiles()">
             </div>
             <button class="btn-filter" onclick="fetchProfiles()">Filtreleri Sıfırla</button>
         </div>
 
-        <div class="network-grid" id="profileGrid">
-            <div style="grid-column: 1/-1; text-align: center; color: #999; margin-top: 50px;">
-                <i class="fa-solid fa-spinner fa-spin fa-2x"></i><br><br>Yükleniyor...
+        <div class="content-area">
+            
+            <div class="results-header">
+                <h2>Mezunlar Dizini</h2>
+                <span id="resultCount" class="result-count">Yükleniyor...</span>
+            </div>
+
+            <div class="network-grid" id="profileGrid">
+                <div style="grid-column: 1/-1; text-align: center; color: #999; margin-top: 50px;">
+                    <i class="fa-solid fa-spinner fa-spin fa-2x"></i><br><br>Yükleniyor...
+                </div>
             </div>
         </div>
 
@@ -131,7 +144,7 @@
         const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhmdHJtaWlhY3hndGthcnN2dXBuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ3ODUzNzIsImV4cCI6MjA4MDM2MTM3Mn0.BgCk5xuZx6AZuxzfBHcQqg8j8BtxU9FbupDgoFecG_k';
         let supabase; try { supabase = window.supabase.createClient(supabaseUrl, supabaseKey); } catch(e){}
         let currentUser = null;
-        let allProfiles = []; // Tüm veriyi burada tutup JS ile filtreleyeceğiz (Hız için)
+        let allProfiles = [];
 
         document.addEventListener("DOMContentLoaded", async () => {
             const { data: { session } } = await supabase.auth.getSession();
@@ -140,43 +153,45 @@
             fetchProfiles();
         });
 
-        // PROFİLLERİ ÇEK
         async function fetchProfiles() {
-            // Şehir verisi 'location' sütununda tutuluyorsa veya eklediysek onu da çekelim. 
-            // Şimdilik 'company' ve 'department' üzerinden gidelim.
+            // Şehir bilgisini 'company' veya ilerde eklenecek 'location' sütunundan arayacağız.
             const { data, error } = await supabase.from('profiles').select('*').order('created_at', {ascending:false});
             
             if(data) {
                 allProfiles = data;
                 renderProfiles(data);
+                
+                // Formu temizle
+                document.getElementById('searchName').value = '';
+                document.getElementById('searchDept').value = '';
+                document.getElementById('searchCity').value = '';
             }
         }
 
-        // EKRANA YAZDIR
+        // PROFİLLERİ LİSTELE VE SAYIYI GÜNCELLE
         function renderProfiles(profiles) {
             const grid = document.getElementById('profileGrid');
+            const countSpan = document.getElementById('resultCount'); // Sayaç
             grid.innerHTML = '';
 
-            if(profiles.length === 0) {
-                grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; color: #999;">Sonuç bulunamadı.</div>';
+            // Kendimi listeden çıkar (Filtreleme)
+            const visibleProfiles = profiles.filter(p => p.id !== currentUser.id);
+
+            // Sayacı Güncelle
+            countSpan.innerText = `${visibleProfiles.length} Üye Bulundu`;
+
+            if(visibleProfiles.length === 0) {
+                grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; color: #999;">Aramanızla eşleşen üye bulunamadı.</div>';
                 return;
             }
 
-            profiles.forEach(p => {
-                if(p.id === currentUser.id) return; // Kendini gösterme
-
-                // Rozet Mantığı
+            visibleProfiles.forEach(p => {
                 let badgesHtml = '';
                 if(p.roles && p.roles.includes('admin')) badgesHtml += `<span class="badge bg-admin">Admin</span>`;
                 if(p.roles && p.roles.includes('mentor')) badgesHtml += `<span class="badge bg-mentor">Mentor</span>`;
                 if(p.user_type === 'grad') badgesHtml += `<span class="badge bg-grad">Mezun</span>`;
 
-                // Şirket veya Sınıf bilgisi
                 const subInfo = p.user_type === 'student' ? `${p.class_level}. Sınıf Öğrencisi` : (p.company || 'Mezun Üye');
-
-                // Şehir bilgisi (Eğer kaydettiyse 'location' sütunu, yoksa boş)
-                // Not: Profil sayfasında haritadan seçtiğinde lat/lng kaydettik ama şehir ismi henüz yok. 
-                // İleride reverse-geocode eklenebilir.
 
                 grid.innerHTML += `
                 <div class="profile-card">
@@ -189,16 +204,15 @@
             });
         }
 
-        // FİLTRELEME MANTIĞI (Frontend Side)
         function filterProfiles() {
             const name = document.getElementById('searchName').value.toLowerCase();
             const dept = document.getElementById('searchDept').value.toLowerCase();
-            const city = document.getElementById('searchCity').value.toLowerCase(); // Bu şu an company içinde aranabilir
+            const city = document.getElementById('searchCity').value.toLowerCase();
 
             const filtered = allProfiles.filter(p => {
                 const pName = p.full_name ? p.full_name.toLowerCase() : '';
                 const pDept = p.department ? p.department.toLowerCase() : '';
-                const pComp = p.company ? p.company.toLowerCase() : ''; // Şehir yerine şimdilik şirket/lokasyon
+                const pComp = p.company ? p.company.toLowerCase() : ''; 
 
                 return pName.includes(name) && pDept.includes(dept) && pComp.includes(city);
             });
@@ -206,7 +220,6 @@
             renderProfiles(filtered);
         }
 
-        // MESAJ GÖNDERME
         function openMsgModal(id, name) {
             document.getElementById('msgTargetId').value = id;
             document.getElementById('msgTargetName').innerText = `Mesaj: ${name}`;
@@ -216,7 +229,7 @@
         async function sendMessage() {
             const targetId = document.getElementById('msgTargetId').value;
             const content = document.getElementById('msgContent').value;
-            const myName = currentUser.user_metadata?.full_name || 'Bir Üye'; // Gönderen ismi
+            const myName = currentUser.user_metadata?.full_name || 'Bir Üye';
 
             if(!content) { alert("Mesaj boş olamaz."); return; }
 
@@ -229,9 +242,8 @@
                 sender_name: myName
             });
 
-            if(error) {
-                alert("Hata: " + error.message);
-            } else {
+            if(error) { alert("Hata: " + error.message); } 
+            else {
                 showToast("Mesajınız İletildi! 📨");
                 document.getElementById('msgModal').style.display = 'none';
                 document.getElementById('msgContent').value = '';
@@ -239,7 +251,6 @@
             btn.innerText = "Gönder 🚀"; btn.disabled = false;
         }
 
-        // MODAL KAPATMA (DIŞARI TIKLAYINCA)
         window.onclick = function(event) {
             if (event.target.className === 'modal-overlay') {
                 event.target.style.display = "none";
