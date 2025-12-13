@@ -48,7 +48,7 @@
     .badge-yes { background: #dcfce7; color: #166534; }
     .badge-pending { background: #ffedd5; color: #c2410c; }
     
-    .btn { padding: 6px 12px; border-radius: 6px; border: none; cursor: pointer; font-weight: bold; font-size: 0.8rem; margin-right: 5px; transition: 0.2s; white-space: nowrap; }
+    .btn { padding: 6px 12px; border-radius: 6px; border: none; cursor: pointer; font-weight: bold; font-size: 0.8rem; margin-right: 5px; white-space: nowrap; transition: 0.2s; }
     .btn-approve { background: #10b981; color: white; }
     .btn-block { background: #f59e0b; color: white; }
     .btn-role { background: #3b82f6; color: white; }
@@ -56,12 +56,10 @@
     .btn-view { background: #64748b; color: white; }
     .btn:hover { opacity: 0.9; }
 
-    /* FORM */
+    /* FORM & MODAL */
     .form-control { padding: 10px; border: 1px solid #ddd; border-radius: 6px; outline: none; width: 100%; margin-bottom: 10px; }
     .form-row { display: flex; gap: 15px; }
     .form-row .form-control { flex: 1; }
-
-    /* MODAL */
     .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 2000; display: none; justify-content: center; align-items: center; }
     .modal-content { background: white; padding: 30px; border-radius: 12px; width: 90%; max-width: 600px; position: relative; max-height: 80vh; overflow-y: auto; }
     .close-modal { position: absolute; top: 15px; right: 20px; font-size: 1.5rem; cursor: pointer; }
@@ -118,7 +116,10 @@
                     <h3>📋 Kayıtlı Kullanıcılar</h3>
                     <input type="text" id="userSearch" placeholder="İsim ara..." class="form-control" style="width: 250px; margin-bottom:0;" onkeyup="filterTable('userTable', this.value)">
                 </div>
-                <table id="userTable"><thead><tr><th>Ad Soyad / Email</th><th>Tip</th><th>Bölüm</th><th>Durum</th><th>İşlemler</th></tr></thead><tbody id="userListBody"></tbody></table>
+                <table id="userTable">
+                    <thead><tr><th>Ad Soyad / Email</th><th>Tip</th><th>Bölüm</th><th>Durum</th><th>İşlemler</th></tr></thead>
+                    <tbody id="userListBody"><tr><td colspan="5">Yükleniyor...</td></tr></tbody>
+                </table>
             </div>
         </div>
 
@@ -142,12 +143,15 @@
         </div>
 
         <div id="requests" class="section"><div class="table-container"><h3>🧪 Gelişim Talepleri</h3><table id="reqTable"><thead><tr><th>Öğrenci</th><th>Tür</th><th>Detay</th><th>Tarih</th><th>İşlem</th></tr></thead><tbody id="reqListBody"></tbody></table></div></div>
+        
         <div id="jobs" class="section"><div class="table-container"><h3>💼 İlan Yönetimi</h3><table id="jobTable"><thead><tr><th>Başlık</th><th>Şirket</th><th>Ekleyen</th><th>Başvuru</th><th>İşlem</th></tr></thead><tbody id="jobListBody"></tbody></table></div></div>
+        
         <div id="content" class="section"><div class="table-container"><h3>📢 Duyuru Yayınla</h3><textarea id="broadcastMsg" class="form-control" rows="4" placeholder="Duyuru metni..."></textarea><button class="btn btn-approve" onclick="sendBroadcast()">Yayınla</button></div></div>
     </div>
 
     <div id="applicantsModal" class="modal-overlay" style="display:none;"><div class="modal-content"><span class="close-modal" onclick="document.getElementById('applicantsModal').style.display='none'">&times;</span><h3>📄 Başvuranlar</h3><div id="applicantsListContent" style="margin-top:20px;"></div></div></div>
-    <div id="liveToast" style="position: fixed; top: 20px; right: 20px; background: white; padding: 15px; border-radius: 8px; border-left: 5px solid #27ae60; display: none;">...</div>
+    
+    <div id="liveToast" style="position: fixed; top: 20px; right: 20px; background: white; padding: 15px; border-radius: 8px; border-left: 5px solid #27ae60; display: none;">İşlem Başarılı</div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
@@ -177,7 +181,7 @@
 
         async function refreshAllData() { loadUsersAndStats(); loadEvents(); loadLabRequests(); loadJobs(); }
 
-        // 1. KULLANICILAR VE TAM SİLME DÜZELTMESİ
+        // --- 1. KULLANICILAR & İSTATİSTİK (SİL BUTONU KALDIRILDI) ---
         async function loadUsersAndStats() {
             const { data } = await supabase.from('profiles').select('*').order('created_at', { ascending: false });
             const tbody = document.getElementById('userListBody');
@@ -187,15 +191,22 @@
             let pendingCount = 0;
             if(data) data.forEach((u, index) => {
                 const isApproved = u.is_approved === true;
-                let statusBadge = isApproved ? `<span class="badge badge-yes">✅ ONAYLI</span>` : `<span class="badge badge-no">❌ ONAY BEKLİYOR</span>`;
+                let statusBadge = isApproved 
+                    ? `<span class="badge badge-yes">✅ ONAYLI</span>` 
+                    : `<span class="badge badge-no">❌ ONAY BEKLİYOR</span>`;
+                
                 if (!isApproved) pendingCount++;
 
-                let approveBtn = isApproved ? `<button class="btn btn-block" onclick="toggleApproval('${u.id}', false)">🚫 Kapat</button>` : `<button class="btn btn-approve" onclick="toggleApproval('${u.id}', true)">✅ Onayla</button>`;
+                // SİL BUTONU YOK - SADECE ONAY VE ROL
+                let approveBtn = isApproved 
+                    ? `<button class="btn btn-block" onclick="toggleApproval('${u.id}', false)">🚫 Kapat</button>`
+                    : `<button class="btn btn-approve" onclick="toggleApproval('${u.id}', true)">✅ Onayla</button>`;
+                
                 let roleBtn = `<button class="btn btn-role" onclick="manageRole('${u.id}', '${u.roles}')">🛡️ Rol</button>`;
-                let deleteBtn = `<button class="btn btn-delete" onclick="deleteUser('${u.id}')">Sil</button>`;
 
-                if(tbody) tbody.innerHTML += `<tr><td><b>${u.full_name}</b><br><small>${u.email}</small></td><td>${u.user_type}</td><td>${u.department}</td><td>${statusBadge}</td><td>${approveBtn} ${roleBtn} ${deleteBtn}</td></tr>`;
-                if(recentBody && index < 5) recentBody.innerHTML += `<tr><td>${u.full_name}</td><td>${new Date(u.created_at).toLocaleDateString()}</td><td>${statusBadge}</td></tr>`;
+                if(tbody) tbody.innerHTML += `<tr><td><b>${u.full_name}</b><br><small>${u.email}</small></td><td>${u.user_type}</td><td>${u.department}</td><td>${statusBadge}</td><td>${approveBtn} ${roleBtn}</td></tr>`;
+                
+                if(index < 5) recentBody.innerHTML += `<tr><td>${u.full_name}</td><td>${new Date(u.created_at).toLocaleDateString()}</td><td>${statusBadge}</td></tr>`;
             });
 
             if(document.getElementById('statTotal')) document.getElementById('statTotal').innerText = data ? data.length : 0;
@@ -208,33 +219,8 @@
 
         async function toggleApproval(id, status) {
             if(confirm(status ? "Onaylansın mı?" : "Erişim kapatılsın mı?")) {
-                await supabase.from('profiles').update({ is_approved: status }).eq('id', id);
-                showToast("Güncellendi"); refreshAllData();
-            }
-        }
-
-        // GÜVENLİ VE TAM SİLME FONKSİYONU (RPC HATASI OLURSA MANUEL SİLER)
-        async function deleteUser(id) {
-            if(!confirm("⚠️ KULLANICI TAMAMEN SİLİNECEK! Geri alınamaz. Onaylıyor musunuz?")) return;
-            
-            // 1. Önce RPC (Tam Yetkili Silme) Dene
-            const { error: rpcError } = await supabase.rpc('delete_user_fully', { target_user_id: id });
-
-            if(rpcError) {
-                console.log("RPC Hatası:", rpcError.message);
-                // 2. RPC başarısızsa (Yetki vb.) Manuel Olarak Profil Tablosundan Sil
-                // Bu işlem Auth kaydını silmez ama listeden kaldırır ve erişimi keser.
-                const { error: tableError } = await supabase.from('profiles').delete().eq('id', id);
-                
-                if(tableError) {
-                    alert("KRİTİK HATA: Silinemedi. " + tableError.message);
-                } else {
-                    showToast("Profil Silindi (Auth kalmış olabilir)");
-                    refreshAllData();
-                }
-            } else {
-                showToast("Kullanıcı Tamamen Silindi");
-                refreshAllData();
+                const { error } = await supabase.from('profiles').update({ is_approved: status }).eq('id', id);
+                if(!error) { showToast("Güncellendi"); refreshAllData(); } else alert(error.message);
             }
         }
 
@@ -243,7 +229,7 @@
             if(r!==null) { await supabase.from('profiles').update({ roles: r.split(',').map(x=>x.trim()) }).eq('id', id); showToast("Roller Güncellendi"); }
         }
 
-        // 2. ETKİNLİK YÖNETİMİ (İSİM DÜZELTİLDİ)
+        // --- 2. ETKİNLİK YÖNETİMİ ---
         async function publishNewEvent() {
             const title = document.getElementById('evtTitle').value;
             const date = document.getElementById('evtDate').value;
@@ -261,16 +247,34 @@
             if(data) data.forEach(e => tb.innerHTML += `<tr><td>${new Date(e.event_date).toLocaleDateString()}</td><td>${e.title}</td><td>${e.location||'-'}</td><td><button class="btn btn-delete" onclick="deleteItem('events', ${e.id}, loadEvents)">Sil</button></td></tr>`);
         }
 
-        // DİĞER MODÜLLER
-        async function loadLabRequests() { /* ... önceki kod ... */ const tb=document.getElementById('reqListBody'); let all=[]; const t=['cv_requests','mock_interviews','job_shadowing','academic_matches','case_submissions']; const ty=['CV','Mülakat','Gölgeleme','Akademik','Vaka']; const p=t.map(x=>supabase.from(x).select('*, profiles!user_id(full_name)')); const res=await Promise.all(p); res.forEach((r,i)=>{ if(r.data) r.data.forEach(d=>{ all.push({id:d.id, table:t[i], type:ty[i], name:d.profiles?.full_name, date:d.created_at, detail: d.cv_url?`<a href="${d.cv_url}" target="_blank">Dosya</a>`:'-' }); }); }); if(document.getElementById('statReqs')) document.getElementById('statReqs').innerText=all.length; tb.innerHTML=''; if(all.length===0) tb.innerHTML='<tr><td colspan="5">Talep yok.</td></tr>'; else { all.sort((a,b)=>new Date(b.date)-new Date(a.date)); all.forEach(x=>tb.innerHTML+=`<tr><td>${x.name}</td><td><span class="badge badge-pending">${x.type}</span></td><td>${x.detail}</td><td>${new Date(x.date).toLocaleDateString()}</td><td><button class="btn btn-delete" onclick="deleteItem('${x.table}',${x.id},loadLabRequests)">Sil</button></td></tr>`); } }
-        async function loadJobs() { /* ... önceki kod ... */ const tb=document.getElementById('jobListBody'); const {data}=await supabase.from('jobs').select('*,profiles(full_name)').order('created_at',{ascending:false}); if(document.getElementById('statJobs')) document.getElementById('statJobs').innerText=data?data.length:0; tb.innerHTML=''; if(data) data.forEach(j=>tb.innerHTML+=`<tr><td>${j.title}</td><td>${j.company}</td><td>${j.profiles?.full_name}</td><td>-</td><td><button class="btn btn-delete" onclick="deleteItem('jobs',${j.id},loadJobs)">Sil</button></td></tr>`); }
-        
+        // --- DİĞER MODÜLLER ---
+        async function loadLabRequests() {
+            const tb=document.getElementById('reqListBody'); let all=[];
+            const t=['cv_requests','mock_interviews','job_shadowing','academic_matches','case_submissions'];
+            const ty=['CV','Mülakat','Gölgeleme','Akademik','Vaka'];
+            const p=t.map(x=>supabase.from(x).select('*, profiles!user_id(full_name)'));
+            const res=await Promise.all(p);
+            res.forEach((r,i)=>{ if(r.data) r.data.forEach(d=>{ all.push({id:d.id, table:t[i], type:ty[i], name:d.profiles?.full_name, date:d.created_at, detail: d.cv_url?`<a href="${d.cv_url}" target="_blank">Dosya</a>`:'-' }); }); });
+            if(document.getElementById('statReqs')) document.getElementById('statReqs').innerText=all.length;
+            tb.innerHTML=''; if(all.length===0) tb.innerHTML='<tr><td colspan="5">Talep yok.</td></tr>';
+            else { all.sort((a,b)=>new Date(b.date)-new Date(a.date)); all.forEach(x=>tb.innerHTML+=`<tr><td>${x.name}</td><td><span class="badge badge-pending">${x.type}</span></td><td>${x.detail}</td><td>${new Date(x.date).toLocaleDateString()}</td><td><button class="btn btn-delete" onclick="deleteItem('${x.table}',${x.id},loadLabRequests)">Sil</button></td></tr>`); }
+        }
+
+        async function loadJobs() {
+            const tb=document.getElementById('jobListBody');
+            const {data}=await supabase.from('jobs').select('*,profiles(full_name)').order('created_at',{ascending:false});
+            if(document.getElementById('statJobs')) document.getElementById('statJobs').innerText=data?data.length:0;
+            tb.innerHTML='';
+            if(data) data.forEach(j=>tb.innerHTML+=`<tr><td>${j.title}</td><td>${j.company}</td><td>${j.profiles?.full_name}</td><td>-</td><td><button class="btn btn-delete" onclick="deleteItem('jobs',${j.id},loadJobs)">Sil</button></td></tr>`);
+        }
+
         async function sendBroadcast() {
             const msg = document.getElementById('broadcastMsg').value; if(!msg) return;
             await supabase.from('broadcasts').insert({ message: msg });
-            await supabase.from('announcements').insert({ title: msg, color: '#E31E24' });
+            await supabase.from('announcements').insert({ title: msg });
             showToast("Yayınlandı"); document.getElementById('broadcastMsg').value = '';
         }
+
         async function deleteItem(table, id, cb) { if(confirm("Silinsin mi?")) { await supabase.from(table).delete().eq('id', id); cb(); showToast("Silindi"); } }
         function filterTable(id, q) { document.querySelectorAll(`#${id} tbody tr`).forEach(r => r.style.display = r.innerText.toLowerCase().includes(q.toLowerCase()) ? '' : 'none'); }
         function showToast(m) { const t=document.getElementById('liveToast'); t.innerText=m; t.style.display='block'; setTimeout(()=>t.style.display='none',3000); }
