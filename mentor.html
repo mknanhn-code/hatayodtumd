@@ -11,7 +11,7 @@
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
     body { background-color: var(--bg-light); color: #111827; min-height: 100vh; }
     
-    /* --- NAVBAR (MOBİL GÜNCELLEMELİ) --- */
+    /* --- NAVBAR (SABİT ÜST MENÜ) --- */
     .navbar { width: 100%; height: 70px; background-color: var(--odtu-dark); display: flex; align-items: center; justify-content: space-between; padding: 0 20px; position: fixed; top: 0; left: 0; z-index: 1000; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); }
     
     .nav-left { display: flex; align-items: center; gap: 15px; z-index: 1001; }
@@ -29,8 +29,15 @@
     /* Hamburger İkonu */
     .hamburger { display: none; font-size: 1.5rem; color: white; cursor: pointer; z-index: 1001; }
 
-    /* ANA İÇERİK */
-    .main-content { margin-top: 70px; padding: 40px; width: 100%; max-width: 1100px; margin-left: auto; margin-right: auto; }
+    /* --- ANA İÇERİK (DÜZELTME: margin-top artırıldı) --- */
+    .main-content { 
+        margin-top: 100px; /* Navbar'ın altında kalmaması için boşluk */
+        padding: 40px; 
+        width: 100%; 
+        max-width: 1100px; 
+        margin-left: auto; 
+        margin-right: auto; 
+    }
     
     /* BAŞLIK ALANI */
     .header-area { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 30px; border-bottom: 2px solid var(--border); padding-bottom: 20px; }
@@ -48,7 +55,7 @@
     .match-info span { font-size: 0.9rem; color: var(--text-gray); }
     
     /* Gelecek Toplantı Rozeti */
-    .next-meeting-badge { background: #ecfdf5; color: #059669; padding: 8px 15px; border-radius: 20px; font-size: 0.85rem; font-weight: 600; display: flex; align-items: center; gap: 8px; border: 1px solid #a7f3d0; display: none; } /* JS ile açılacak */
+    .next-meeting-badge { background: #ecfdf5; color: #059669; padding: 8px 15px; border-radius: 20px; font-size: 0.85rem; font-weight: 600; display: flex; align-items: center; gap: 8px; border: 1px solid #a7f3d0; display: none; }
 
     .action-buttons { display: flex; gap: 10px; }
     .btn-action { padding: 8px 16px; border-radius: 6px; border: 1px solid var(--border); background: white; cursor: pointer; color: #4b5563; display: flex; align-items: center; gap: 8px; font-weight: 500; transition: 0.2s; }
@@ -70,7 +77,7 @@
     .btn-add { background: var(--odtu-dark); color: white; border: none; padding: 0 25px; border-radius: 6px; cursor: pointer; font-weight: 600; transition: 0.2s; white-space: nowrap; }
     .btn-add:hover { background: #1f2937; }
 
-    /* LİSTELER VE İÇERİK */
+    /* LİSTELER */
     .list-item { padding: 15px; border: 1px solid var(--border); border-radius: 8px; margin-bottom: 10px; transition: 0.2s; position: relative; }
     .list-item:hover { border-color: #d1d5db; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
     
@@ -96,6 +103,7 @@
         .navbar { padding: 0 15px; }
         .hamburger { display: block; }
         
+        /* Menü Tam Ekran ve Opak */
         .nav-links {
             position: fixed; top: 70px; left: -100%; width: 100%; height: calc(100vh - 70px);
             background-color: var(--odtu-dark); flex-direction: column;
@@ -105,9 +113,10 @@
         .nav-links.active { left: 0; }
         
         .nav-links a { font-size: 1.2rem; margin: 15px 0; width: 80%; justify-content: center; }
-        .nav-right { display: none; } /* Mobilde Çıkış butonu gizle (Menüye eklenecek) */
+        .nav-right { display: none; } /* Masaüstü butonunu gizle */
 
-        .main-content { margin-top: 0; padding: 20px; }
+        /* İçerik Düzeni */
+        .main-content { margin-top: 90px; padding: 20px; } /* Mobilde de boşluk bırak */
         .header-area { flex-direction: column; align-items: flex-start; gap: 15px; }
         
         /* Kart Düzeni */
@@ -300,7 +309,7 @@
             const list = document.getElementById(`noteList-${matchId}`);
             const { data } = await supabase.from('mentorship_sessions').select('*').eq('mentorship_id', matchId).order('created_at', {ascending: false});
             if(!data || data.length === 0) { list.innerHTML = '<div class="empty-state"><i class="fa-solid fa-clipboard-list"></i><p>Not yok.</p></div>'; return; }
-            list.innerHTML = data.map(n => `<div class="list-item"><div class="item-header"><div style="font-weight:bold; color:var(--odtu-dark);"><i class="fa-regular fa-calendar-check"></i> ${new Date(n.created_at).toLocaleDateString()}</div>${n.next_meeting_date ? `<span style="font-size:0.8rem; color:#27ae60; font-weight:600;"><i class="fa-solid fa-arrow-right"></i> Sonraki: ${new Date(n.next_meeting_date).toLocaleDateString()}</span>` : ''}</div><div style="margin-top:10px;">${n.notes}</div></div>`).join('');
+            list.innerHTML = data.map(n => `<div class="list-item"><div class="item-header"><div style="font-weight:bold; color:var(--odtu-dark);"><i class="fa-regular fa-calendar-check"></i> ${new Date(n.created_at).toLocaleDateString()} Görüşmesi</div>${n.next_meeting_date ? `<span style="font-size:0.8rem; color:#27ae60; font-weight:600;"><i class="fa-solid fa-arrow-right"></i> Sonraki: ${new Date(n.next_meeting_date).toLocaleDateString()}</span>` : ''}</div><div style="margin-top:10px; line-height:1.5;">${n.notes}</div></div>`).join('');
         }
         async function addNote(matchId) {
             const txt = document.getElementById(`noteInput-${matchId}`).value;
@@ -329,7 +338,11 @@
         }
 
         async function deleteItem(table, id, matchId, type) {
-            if(confirm("Silinsin mi?")) { await supabase.from(table).delete().eq('id', id); if(type==='goals') loadGoals(matchId); if(type==='resources') loadResources(matchId); }
+            if(confirm("Bu öğeyi silmek istediğinize emin misiniz?")) {
+                await supabase.from(table).delete().eq('id', id);
+                if(type==='goals') loadGoals(matchId);
+                if(type==='resources') loadResources(matchId);
+            }
         }
 
         // --- MENTOR ARAMA ---
