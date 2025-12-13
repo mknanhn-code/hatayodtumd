@@ -52,11 +52,12 @@
 
     /* FORM ELEMENTS */
     .form-box { background: white; padding: 25px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); height: 100%; }
-    .form-control { width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px; outline: none; margin-bottom: 10px; }
+    .form-control { width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px; outline: none; margin-bottom: 15px; }
     .btn { padding: 10px 20px; border-radius: 6px; border: none; cursor: pointer; font-weight: bold; transition: 0.2s; }
     .btn-primary { background: var(--admin-dark); color: white; }
     .btn-danger { background: #ef4444; color: white; }
     .btn-sm { padding: 5px 10px; font-size: 0.8rem; }
+    label { font-weight: bold; display: block; margin-bottom: 5px; font-size: 0.9rem; color: #475569; }
 
     @media (max-width: 900px) {
         .sidebar { transform: translateX(-100%); }
@@ -103,7 +104,7 @@
                     <div class="stat-info"><h3 id="statMatches">-</h3><p>Eşleşme</p></div>
                 </div>
             </div>
-            <div class="form-box">
+            <div class="form-box" style="height: auto;">
                 <h3>🚀 Hızlı İşlemler</h3>
                 <p style="margin-bottom: 20px;">Sistem genelinde anlık aksiyonlar.</p>
                 <div style="display:flex; gap:10px;">
@@ -151,6 +152,7 @@
                 <div class="form-box">
                     <h3>📢 Toplu Duyuru (Broadcast)</h3>
                     <p style="color:#666; font-size:0.9rem; margin-bottom:15px;">Tüm kullanıcılara anlık bildirim gider.</p>
+                    <label>Mesajınız</label>
                     <textarea id="broadcastMsg" class="form-control" rows="3" placeholder="Duyuru metnini yazın..."></textarea>
                     <button class="btn btn-primary" onclick="sendBroadcast()">📢 Gönder</button>
                 </div>
@@ -158,6 +160,7 @@
                 <div class="form-box">
                     <h3>📅 Yeni Etkinlik Oluştur</h3>
                     <p style="color:#666; font-size:0.9rem; margin-bottom:15px;">Takvimde görünecek etkinlik ekleyin.</p>
+                    
                     <label>Etkinlik Başlığı</label>
                     <input type="text" id="evtTitle" class="form-control" placeholder="Örn: Mezunlar Kahvaltısı">
                     
@@ -193,8 +196,8 @@
             // ADMIN KONTROLÜ (Çoklu Rol Uyumlu)
             const { data: profile } = await supabase.from('profiles').select('roles').eq('id', session.user.id).single();
             
-            // Eğer roles listesi yoksa veya admin içermiyorsa at
-            if (!profile.roles || !profile.roles.includes('admin')) {
+            // Güvenlik: Eğer rolü yoksa veya admin değilse at
+            if (!profile || !profile.roles || !profile.roles.includes('admin')) {
                 alert("Bu sayfaya erişim yetkiniz yok!");
                 window.location.href = 'dashboard.html';
                 return;
@@ -207,6 +210,7 @@
             loadMentorships();
         });
 
+        // SEKME GEÇİŞİ
         function switchTab(id, el) {
             document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
             document.querySelectorAll('.menu-item').forEach(m => m.classList.remove('active'));
@@ -220,7 +224,6 @@
         async function loadStats() {
             const { count: u } = await supabase.from('profiles').select('*', { count: 'exact', head: true });
             const { count: j } = await supabase.from('jobs').select('*', { count: 'exact', head: true });
-            // Mentor sayısını bulmak için roles içinde 'mentor' arıyoruz
             const { count: m } = await supabase.from('profiles').select('*', { count: 'exact', head: true }).contains('roles', ['mentor']);
             const { count: mat } = await supabase.from('mentorships').select('*', { count: 'exact', head: true });
 
@@ -230,7 +233,7 @@
             document.getElementById('statMatches').innerText = mat || 0;
         }
 
-        // 2. KULLANICI YÖNETİMİ (ÇOKLU ROL GÖSTERİMİ)
+        // 2. KULLANICI YÖNETİMİ
         async function loadUsers() {
             const { data } = await supabase.from('profiles').select('*').order('created_at', { ascending: false });
             const tbody = document.getElementById('userListBody');
@@ -251,7 +254,6 @@
                     rolesHtml = '<span class="badge badge-user">user</span>';
                 }
 
-                // JS'de roles dizisini string olarak saklayalım ki düzenlerken kolay olsun
                 const rolesString = u.roles ? u.roles.join(', ') : 'user';
 
                 tbody.innerHTML += `
@@ -270,9 +272,7 @@
         async function toggleRole(id, currentRolesStr) {
             const newRolesInput = prompt("Kullanıcının rollerini virgülle ayırarak yazın (Örn: user, mentor, admin):", currentRolesStr);
             if(newRolesInput) {
-                // String'i diziye çevir ve boşlukları temizle
                 const newRolesArray = newRolesInput.split(',').map(r => r.trim());
-                
                 const { error } = await supabase.from('profiles').update({ roles: newRolesArray }).eq('id', id);
                 if (!error) {
                     loadUsers();
@@ -305,16 +305,16 @@
             });
         }
 
-        // 5. İÇERİK (Duyuru & Etkinlik)
+        // 5. İÇERİK: DUYURU GÖNDERME
         async function sendBroadcast() {
             const msg = document.getElementById('broadcastMsg').value;
             if(!msg) return;
-            await supabase.from('broadcasts').insert({ message: msg });
-            showToast("Duyuru gönderildi! 📢");
-            document.getElementById('broadcastMsg').value = '';
+            const { error } = await supabase.from('broadcasts').insert({ message: msg });
+            if(error) alert("Hata: " + error.message);
+            else { showToast("Duyuru gönderildi! 📢"); document.getElementById('broadcastMsg').value = ''; }
         }
 
-        // DÜZELTİLEN FONKSİYON: ETKİNLİK OLUŞTURMA
+        // 6. İÇERİK: ETKİNLİK OLUŞTURMA (HATA YAKALAMALI)
         async function createEvent() {
             const title = document.getElementById('evtTitle').value;
             const loc = document.getElementById('evtLoc').value;
@@ -326,10 +326,14 @@
             const originalText = btn.innerText;
             btn.innerText = "Ekleniyor..."; btn.disabled = true;
 
-            const { error } = await supabase.from('events').insert({ title: title, location: loc, event_date: date });
+            const { data, error } = await supabase
+                .from('events')
+                .insert([{ title: title, location: loc, event_date: date }])
+                .select();
 
             if (error) {
-                alert("Hata: " + error.message);
+                console.error("SUPABASE HATASI:", error);
+                alert("KAYIT BAŞARISIZ! \n\n" + error.message);
             } else {
                 showToast("Etkinlik Takvime Eklendi! 📅");
                 document.getElementById('evtTitle').value = '';
@@ -339,6 +343,7 @@
             btn.innerText = originalText; btn.disabled = false;
         }
 
+        // YARDIMCI FONKSİYONLAR
         async function deleteItem(table, id, reloadFunc) {
             if(confirm("Bu kaydı silmek istediğinize emin misiniz?")) {
                 await supabase.from(table).delete().eq('id', id);
