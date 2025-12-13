@@ -170,7 +170,7 @@
                     <label>Tarih</label>
                     <input type="date" id="evtDate" class="form-control">
                     
-                    <button class="btn btn-primary" onclick="createEvent()">📅 Takvime Ekle</button>
+                    <button class="btn btn-primary" onclick="createNewEvent()">📅 Takvime Ekle</button>
                 </div>
             </div>
         </div>
@@ -193,10 +193,8 @@
             const { data: { session } } = await supabase.auth.getSession();
             if (!session) { window.location.href = 'index.html'; return; }
             
-            // ADMIN KONTROLÜ (Çoklu Rol Uyumlu)
+            // ADMIN KONTROLÜ
             const { data: profile } = await supabase.from('profiles').select('roles').eq('id', session.user.id).single();
-            
-            // Güvenlik: Eğer rolü yoksa veya admin değilse at
             if (!profile || !profile.roles || !profile.roles.includes('admin')) {
                 alert("Bu sayfaya erişim yetkiniz yok!");
                 window.location.href = 'dashboard.html';
@@ -210,7 +208,6 @@
             loadMentorships();
         });
 
-        // SEKME GEÇİŞİ
         function switchTab(id, el) {
             document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
             document.querySelectorAll('.menu-item').forEach(m => m.classList.remove('active'));
@@ -220,7 +217,6 @@
             document.getElementById('pageTitle').innerText = titles[id];
         }
 
-        // 1. İSTATİSTİKLER
         async function loadStats() {
             const { count: u } = await supabase.from('profiles').select('*', { count: 'exact', head: true });
             const { count: j } = await supabase.from('jobs').select('*', { count: 'exact', head: true });
@@ -233,39 +229,24 @@
             document.getElementById('statMatches').innerText = mat || 0;
         }
 
-        // 2. KULLANICI YÖNETİMİ
         async function loadUsers() {
             const { data } = await supabase.from('profiles').select('*').order('created_at', { ascending: false });
             const tbody = document.getElementById('userListBody');
             tbody.innerHTML = '';
-            
             data.forEach(u => {
                 const badge = u.user_type === 'student' ? '<span class="badge badge-student">Öğrenci</span>' : '<span class="badge badge-grad">Mezun</span>';
                 const detail = u.user_type === 'student' ? `${u.class_level}. Sınıf` : (u.company || '-');
                 
-                // Rolleri rozetlere çevir
                 let rolesHtml = '';
                 if(u.roles && Array.isArray(u.roles)) {
                     u.roles.forEach(r => {
                         let colorClass = r==='admin'?'badge-admin':(r==='mentor'?'badge-mentor':'badge-user');
                         rolesHtml += `<span class="badge ${colorClass}">${r}</span>`;
                     });
-                } else {
-                    rolesHtml = '<span class="badge badge-user">user</span>';
-                }
-
+                } else { rolesHtml = '<span class="badge badge-user">user</span>'; }
                 const rolesString = u.roles ? u.roles.join(', ') : 'user';
 
-                tbody.innerHTML += `
-                <tr>
-                    <td><b>${u.full_name}</b><br><small>${u.email}</small></td>
-                    <td>${badge}</td>
-                    <td>${u.department} <br> <small>${detail}</small></td>
-                    <td>${rolesHtml}</td>
-                    <td>
-                        <button class="btn btn-sm btn-primary" onclick="toggleRole('${u.id}', '${rolesString}')">Rol Değiştir</button>
-                    </td>
-                </tr>`;
+                tbody.innerHTML += `<tr><td><b>${u.full_name}</b><br><small>${u.email}</small></td><td>${badge}</td><td>${u.department} <br> <small>${detail}</small></td><td>${rolesHtml}</td><td><button class="btn btn-sm btn-primary" onclick="toggleRole('${u.id}', '${rolesString}')">Rol Değiştir</button></td></tr>`;
             });
         }
 
@@ -274,16 +255,10 @@
             if(newRolesInput) {
                 const newRolesArray = newRolesInput.split(',').map(r => r.trim());
                 const { error } = await supabase.from('profiles').update({ roles: newRolesArray }).eq('id', id);
-                if (!error) {
-                    loadUsers();
-                    showToast("Roller güncellendi! ✅");
-                } else {
-                    alert("Hata: " + error.message);
-                }
+                if (!error) { loadUsers(); showToast("Roller güncellendi! ✅"); } else { alert("Hata: " + error.message); }
             }
         }
 
-        // 3. İLAN YÖNETİMİ
         async function loadJobs() {
             const { data } = await supabase.from('jobs').select('*, profiles(full_name)').order('created_at', { ascending: false });
             const tbody = document.getElementById('jobListBody');
@@ -294,7 +269,6 @@
             });
         }
 
-        // 4. EŞLEŞME YÖNETİMİ
         async function loadMentorships() {
             const { data } = await supabase.from('mentorships').select('*, mentor:mentor_id(full_name), mentee:mentee_id(full_name)').order('created_at', { ascending: false });
             const tbody = document.getElementById('matchListBody');
@@ -305,7 +279,6 @@
             });
         }
 
-        // 5. İÇERİK: DUYURU GÖNDERME
         async function sendBroadcast() {
             const msg = document.getElementById('broadcastMsg').value;
             if(!msg) return;
@@ -314,25 +287,21 @@
             else { showToast("Duyuru gönderildi! 📢"); document.getElementById('broadcastMsg').value = ''; }
         }
 
-        // 6. İÇERİK: ETKİNLİK OLUŞTURMA (HATA YAKALAMALI)
-        async function createEvent() {
+        // DÜZELTİLEN VE İSMİ DEĞİŞTİRİLEN FONKSİYON
+        async function createNewEvent() {
             const title = document.getElementById('evtTitle').value;
             const loc = document.getElementById('evtLoc').value;
             const date = document.getElementById('evtDate').value;
-
             if(!title || !date) { alert("Lütfen başlık ve tarih giriniz!"); return; }
 
             const btn = event.target; 
             const originalText = btn.innerText;
             btn.innerText = "Ekleniyor..."; btn.disabled = true;
 
-            const { data, error } = await supabase
-                .from('events')
-                .insert([{ title: title, location: loc, event_date: date }])
-                .select();
+            const { data, error } = await supabase.from('events').insert([{ title: title, location: loc, event_date: date }]).select();
 
             if (error) {
-                console.error("SUPABASE HATASI:", error);
+                console.error("HATA:", error);
                 alert("KAYIT BAŞARISIZ! \n\n" + error.message);
             } else {
                 showToast("Etkinlik Takvime Eklendi! 📅");
@@ -343,24 +312,19 @@
             btn.innerText = originalText; btn.disabled = false;
         }
 
-        // YARDIMCI FONKSİYONLAR
         async function deleteItem(table, id, reloadFunc) {
-            if(confirm("Bu kaydı silmek istediğinize emin misiniz?")) {
+            if(confirm("Emin misiniz?")) {
                 await supabase.from(table).delete().eq('id', id);
-                reloadFunc();
-                showToast("Kayıt silindi.");
+                reloadFunc(); showToast("Silindi.");
             }
         }
         function filterTable(tableId, query) {
-            document.getElementById(tableId).querySelectorAll('tbody tr').forEach(row => {
-                row.style.display = row.innerText.toLowerCase().includes(query.toLowerCase()) ? '' : 'none';
-            });
+            document.getElementById(tableId).querySelectorAll('tbody tr').forEach(row => { row.style.display = row.innerText.toLowerCase().includes(query.toLowerCase()) ? '' : 'none'; });
         }
         function showToast(msg) {
             const t = document.getElementById('liveToast');
             document.getElementById('toastMessage').innerText = msg;
-            t.style.display = 'block';
-            setTimeout(() => t.style.display = 'none', 3000);
+            t.style.display = 'block'; setTimeout(() => t.style.display = 'none', 3000);
         }
         async function logout() { await supabase.auth.signOut(); window.location.href = "index.html"; }
     </script>
