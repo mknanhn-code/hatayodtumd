@@ -3,15 +3,15 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Kariyer - Hatay ODTÜ MD</title>
+<title>Kariyer Fırsatları - Hatay ODTÜ MD</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
-    /* STİLLER */
-    :root { --odtu-red: #E31E24; --odtu-dark: #2c3e50; --bg-light: #f4f6f9; --white: #ffffff; --navbar-height: 70px; }
+    :root { --odtu-red: #E31E24; --odtu-dark: #2c3e50; --bg-light: #f4f6f9; --white: #ffffff; }
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
     body { background-color: var(--bg-light); display: block; min-height: 100vh; }
     
-    .navbar { width: 100%; height: var(--navbar-height); background-color: var(--odtu-dark); display: flex; align-items: center; justify-content: space-between; padding: 0 30px; position: fixed; top: 0; left: 0; z-index: 1000; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+    /* NAVBAR */
+    .navbar { width: 100%; height: 70px; background-color: var(--odtu-dark); display: flex; align-items: center; justify-content: space-between; padding: 0 30px; position: fixed; top: 0; left: 0; z-index: 1000; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
     .nav-left { display: flex; align-items: center; gap: 15px; }
     .nav-logo { height: 50px; background: white; padding: 2px; border-radius: 5px; }
     .nav-title { color: white; font-size: 1.1rem; font-weight: bold; }
@@ -22,29 +22,49 @@
     .logout-btn { color: #e74c3c; border: 1px solid #e74c3c; padding: 6px 15px; border-radius: 20px; text-decoration: none; transition: 0.3s; }
     .logout-btn:hover { background: #e74c3c; color: white; }
 
-    .main-content { margin-top: var(--navbar-height); padding: 40px; width: 100%; max-width: 1200px; margin-left: auto; margin-right: auto; }
+    /* İÇERİK */
+    .main-content { margin-top: 70px; padding: 40px; width: 100%; max-width: 1200px; margin-left: auto; margin-right: auto; }
+    
     .job-list { background: white; border-radius: 12px; box-shadow: 0 2px 15px rgba(0,0,0,0.05); overflow: hidden; min-height: 200px; }
-    .job-row { display: flex; justify-content: space-between; align-items: center; padding: 20px; border-bottom: 1px solid #eee; transition: 0.2s; }
+    .job-row { display: flex; justify-content: space-between; align-items: center; padding: 25px; border-bottom: 1px solid #eee; transition: 0.2s; }
     .job-row:hover { background-color: #f9f9f9; }
-    .company-logo { width: 60px; height: 60px; background: #eee; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: bold; color: #777; font-size: 1.2rem; }
-    .job-details h4 { color: var(--odtu-dark); margin-bottom: 5px; }
-    .job-meta { display: flex; gap: 15px; font-size: 0.9rem; color: #777; }
-    .job-type { background: #e3f2fd; color: #1976d2; padding: 5px 10px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; }
-    .btn-apply { padding: 8px 20px; border: 1px solid var(--odtu-red); color: var(--odtu-red); background: transparent; border-radius: 6px; cursor: pointer; transition: 0.3s; font-weight: bold; }
-    .btn-apply:hover { background: var(--odtu-red); color: white; }
+    
+    .job-main { display: flex; gap: 20px; align-items: center; }
+    .company-logo { width: 60px; height: 60px; background: #eee; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: bold; color: #777; font-size: 1.2rem; flex-shrink: 0; }
+    .job-details h4 { color: var(--odtu-dark); margin-bottom: 5px; font-size: 1.1rem; }
+    .job-meta { display: flex; gap: 15px; font-size: 0.9rem; color: #777; align-items: center; }
+    
+    .job-type { background: #e3f2fd; color: #1565c0; padding: 4px 10px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; }
+    .owner-badge { background: #fef3c7; color: #d97706; padding: 2px 8px; border-radius: 4px; font-size: 0.7rem; font-weight: bold; display: none; } /* JS ile açılacak */
 
+    /* BUTONLAR */
+    .btn-apply { padding: 10px 25px; border: 1px solid var(--odtu-red); color: var(--odtu-red); background: transparent; border-radius: 6px; cursor: pointer; transition: 0.3s; font-weight: bold; }
+    .btn-apply:hover { background: var(--odtu-red); color: white; }
+    
+    .btn-manage { padding: 10px 25px; border: 1px solid var(--odtu-dark); color: var(--odtu-dark); background: transparent; border-radius: 6px; cursor: pointer; transition: 0.3s; font-weight: bold; }
+    .btn-manage:hover { background: var(--odtu-dark); color: white; }
+
+    .btn-applied { background: #e0e0e0; color: #777; border: 1px solid #ccc; cursor: default; padding: 10px 25px; border-radius: 6px; font-weight: bold; }
+
+    /* MODAL */
     .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 2000; display: none; justify-content: center; align-items: center; }
-    .modal-content { background: white; padding: 30px; border-radius: 10px; width: 90%; max-width: 500px; box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
+    .modal-content { background: white; padding: 30px; border-radius: 10px; width: 90%; max-width: 500px; box-shadow: 0 5px 15px rgba(0,0,0,0.2); max-height: 80vh; overflow-y: auto; }
     .form-group { margin-bottom: 15px; }
     .form-group label { display: block; margin-bottom: 5px; font-weight: bold; }
     .form-group input, .form-group select { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px; outline: none; }
 
+    /* BAŞVURU LİSTESİ (MODAL İÇİ) */
+    .applicant-row { display: flex; justify-content: space-between; align-items: center; padding: 10px; border-bottom: 1px solid #eee; }
+    .applicant-info { font-weight: bold; color: #333; }
+    .applicant-sub { font-size: 0.85rem; color: #666; }
+    .btn-view-profile { font-size: 0.8rem; background: #3498db; color: white; padding: 5px 10px; border-radius: 4px; text-decoration: none; }
+
     @media (max-width: 900px) {
         .navbar { height: auto; flex-direction: column; padding: 15px; }
-        .nav-links { flex-wrap: wrap; justify-content: center; gap: 10px; width: 100%; }
+        .nav-links { flex-wrap: wrap; justify-content: center; width: 100%; gap: 10px; }
         .main-content { margin-top: 0; padding: 20px; }
         .job-row { flex-direction: column; align-items: flex-start; gap: 15px; }
-        .btn-apply { width: 100%; margin-top: 10px; }
+        .btn-apply, .btn-manage { width: 100%; margin-top: 10px; text-align: center; display: block; }
     }
 </style>
 </head>
@@ -52,24 +72,25 @@
     <nav class="navbar">
         <div class="nav-left"><img src="logo.png" class="nav-logo"><div class="nav-title">Hatay ODTÜ MD <span>Üye Portalı</span></div></div>
         <div class="nav-links">
-            <a href="dashboard.html"><i class="fa-solid fa-layer-group"></i> Panel</a>
-            <a href="meeting.html"><i class="fa-solid fa-video"></i> Etkinlik Üssü </a>
-            <a href="mentor.html"><i class="fa-solid fa-handshake-angle"></i> Mentorluk</a>
-            <a href="career.html" class="active"><i class="fa-solid fa-briefcase"></i> Kariyer</a>
-            <a href="network.html"><i class="fa-solid fa-users-viewfinder"></i> Mezun Ağı</a>
-            <a href="profile.html" style="position:relative;">
-                <i class="fa-solid fa-user"></i> Profil 
-                <span id="globalBadge" style="position:absolute; top:-8px; right:-10px; background:#E31E24; color:white; font-size:0.7rem; padding:2px 6px; border-radius:10px; display:none; border:1px solid white;">0</span>
-            </a>
+            <a href="dashboard.html">Panel</a>
+            <a href="meeting.html">Meeting Hub</a>
+            <a href="mentor.html">Mentorluk</a>
+            <a href="career.html" class="active">Kariyer</a>
+            <a href="network.html">Mezun Ağı</a>
+            <a href="profile.html">Profil</a>
         </div>
-        <div class="nav-right"><a href="#" class="logout-btn" onclick="logout()"><i class="fa-solid fa-right-from-bracket"></i> Çıkış</a></div>
+        <div class="nav-right"><a href="#" class="logout-btn" onclick="logout()">Çıkış</a></div>
     </nav>
 
     <div class="main-content">
         <div style="display:flex; justify-content:space-between; align-items: center; margin-bottom: 20px;">
-            <h2>💼 Kariyer</h2>
-            <button onclick="document.getElementById('jobModal').style.display='flex'" style="background: var(--odtu-red); color: white; border: none; padding: 12px 20px; border-radius: 6px; cursor: pointer; font-weight: bold;">+ İlan Ekle</button>
+            <div>
+                <h2>💼 Kariyer Fırsatları</h2>
+                <p style="color:#666;">Topluluğumuzdaki açık pozisyonlar ve staj imkanları.</p>
+            </div>
+            <button id="addJobBtn" onclick="document.getElementById('jobModal').style.display='flex'" style="display:none; background: var(--odtu-red); color: white; border: none; padding: 12px 20px; border-radius: 6px; cursor: pointer; font-weight: bold;">+ İlan Ekle</button>
         </div>
+        
         <div class="job-list" id="jobList">
             <div style="padding: 40px; text-align: center; color: #999;"><i class="fa-solid fa-spinner fa-spin" style="font-size: 2rem;"></i><br><br>Yükleniyor...</div>
         </div>
@@ -79,83 +100,183 @@
         <div class="modal-content">
             <div style="display:flex; justify-content:space-between; margin-bottom:20px;"><h3>Yeni İlan</h3><span onclick="document.getElementById('jobModal').style.display='none'" style="cursor:pointer; font-size:1.5rem;">&times;</span></div>
             <form id="jobForm">
-                <div class="form-group"><label>Başlık</label><input type="text" id="jTitle" required></div>
+                <div class="form-group"><label>Başlık</label><input type="text" id="jTitle" required placeholder="Örn: Yazılım Mühendisi"></div>
                 <div class="form-group"><label>Şirket</label><input type="text" id="jComp" required></div>
                 <div class="form-group"><label>Şehir</label><input type="text" id="jLoc" required></div>
-                <div class="form-group"><label>Tip</label><select id="jType"><option>Tam Zamanlı</option><option>Staj</option></select></div>
-                <button type="submit" style="background:var(--odtu-red); color:white; width:100%; padding:12px; border:none; border-radius:6px;">Yayınla</button>
+                <div class="form-group"><label>Tip</label><select id="jType"><option>Tam Zamanlı</option><option>Yarı Zamanlı</option><option>Staj</option><option>Uzaktan</option></select></div>
+                <button type="submit" style="background:var(--odtu-red); color:white; width:100%; padding:12px; border:none; border-radius:6px; font-weight:bold;">Yayınla</button>
             </form>
         </div>
     </div>
 
-    <div id="liveToast" style="position: fixed; top: 20px; right: 20px; background: white; padding: 15px 20px; border-radius: 8px; box-shadow: 0 5px 25px rgba(0,0,0,0.2); border-left: 6px solid #333; z-index: 9999; display: none; min-width: 320px; animation: slideIn 0.4s; font-family: 'Segoe UI', sans-serif;">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-            <strong id="toastTitle" style="font-size:1rem; display:flex; align-items:center; gap:8px;"></strong>
-            <span onclick="document.getElementById('liveToast').style.display='none'" style="cursor:pointer; color:#aaa; font-size:1.2rem;">&times;</span>
+    <div id="applicantsModal" class="modal-overlay">
+        <div class="modal-content">
+            <div style="display:flex; justify-content:space-between; margin-bottom:20px;"><h3>Başvuru Listesi</h3><span onclick="document.getElementById('applicantsModal').style.display='none'" style="cursor:pointer; font-size:1.5rem;">&times;</span></div>
+            <div id="applicantsList">Yükleniyor...</div>
         </div>
-        <p id="toastMessage" style="color:#555; font-size:0.9rem; margin:0; line-height:1.4;">...</p>
     </div>
-    <style>@keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }</style>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
         const supabaseUrl = 'https://hftrmiiacxgtkarsvupn.supabase.co';
         const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhmdHJtaWlhY3hndGthcnN2dXBuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ3ODUzNzIsImV4cCI6MjA4MDM2MTM3Mn0.BgCk5xuZx6AZuxzfBHcQqg8j8BtxU9FbupDgoFecG_k';
         let supabase; try { supabase = window.supabase.createClient(supabaseUrl, supabaseKey); } catch(e){}
+        let currentUser = null;
+        let myApplications = new Set(); // Başvurduğum ilanlar
 
         document.addEventListener("DOMContentLoaded", async () => {
-            if(!supabase) return;
             const { data: { session } } = await supabase.auth.getSession();
             if (!session) { window.location.href = 'index.html'; return; }
+            currentUser = session.user;
             
-            loadJobs();
-            checkGlobalNotifications(); setupRealtime(session.user.id);
+            await checkUserType(); // Mezun mu Öğrenci mi?
+            await loadMyApplications(); // Başvurularımı çek
+            loadJobs(); // İlanları çek
         });
 
+        // 1. KULLANICI TİPİ KONTROLÜ
+        async function checkUserType() {
+            const { data } = await supabase.from('profiles').select('user_type').eq('id', currentUser.id).single();
+            if (data && data.user_type !== 'student') {
+                document.getElementById('addJobBtn').style.display = 'block'; // Mezunsa ilan ekle butonunu aç
+            }
+        }
+
+        // 2. BENİM BAŞVURULARIM
+        async function loadMyApplications() {
+            const { data } = await supabase.from('job_applications').select('job_id').eq('applicant_id', currentUser.id);
+            if(data) data.forEach(app => myApplications.add(app.job_id));
+        }
+
+        // 3. İLANLARI LİSTELE (AKILLI BUTONLAR)
         async function loadJobs() {
             const list = document.getElementById('jobList');
             const { data, error } = await supabase.from('jobs').select('*').order('created_at', { ascending: false });
-            if (error || !data || data.length === 0) { list.innerHTML = '<div style="padding:20px; text-align:center;">İlan bulunamadı.</div>'; return; }
+            
+            if (error || !data || data.length === 0) { 
+                list.innerHTML = '<div style="padding:40px; text-align:center; color:#777;">Henüz açık ilan yok.</div>'; 
+                return; 
+            }
+            
             list.innerHTML = '';
             data.forEach(job => {
-                list.insertAdjacentHTML('beforeend', `<div class="job-row"><div class="job-main"><div class="company-logo">${job.company.substring(0,3).toUpperCase()}</div><div class="job-details"><h4>${job.title}</h4><div class="job-meta"><span>${job.company}</span><span>${job.location}</span></div></div></div><div style="text-align: right;"><span class="job-type">${job.type}</span><br><br><button class="btn-apply" onclick="alert('Başvuruldu!')">Başvur</button></div></div>`);
+                const isOwner = job.posted_by === currentUser.id;
+                let actionBtn = '';
+
+                // A. İLAN SAHİBİ İSE -> YÖNET
+                if (isOwner) {
+                    actionBtn = `<button class="btn-manage" onclick="viewApplicants(${job.id})"><i class="fa-solid fa-users-viewfinder"></i> Başvuruları Gör</button>`;
+                } 
+                // B. BAŞVURDUYSAM -> PASİF BUTON
+                else if (myApplications.has(job.id)) {
+                    actionBtn = `<button class="btn-applied"><i class="fa-solid fa-check"></i> Başvuruldu</button>`;
+                } 
+                // C. YENİ İLAN -> BAŞVUR
+                else {
+                    actionBtn = `<button class="btn-apply" onclick="applyJob(${job.id}, this)">Başvur</button>`;
+                }
+
+                // Sahiplik etiketi
+                const badge = isOwner ? '<span class="owner-badge" style="display:inline-block; margin-left:10px;">Sizin İlanınız</span>' : '';
+
+                list.insertAdjacentHTML('beforeend', `
+                <div class="job-row">
+                    <div class="job-main">
+                        <div class="company-logo">${job.company.substring(0,3).toUpperCase()}</div>
+                        <div class="job-details">
+                            <h4>${job.title} ${badge}</h4>
+                            <div class="job-meta">
+                                <span><i class="fa-solid fa-building"></i> ${job.company}</span>
+                                <span><i class="fa-solid fa-location-dot"></i> ${job.location}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="text-align: right; display:flex; flex-direction:column; align-items:flex-end; gap:10px;">
+                        <span class="job-type">${job.type}</span>
+                        ${actionBtn}
+                    </div>
+                </div>`);
             });
         }
 
+        // 4. İLAN EKLEME (SAHİPLİK BİLGİSİYLE)
         document.getElementById('jobForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-            const { error } = await supabase.from('jobs').insert({ title: document.getElementById('jTitle').value, company: document.getElementById('jComp').value, location: document.getElementById('jLoc').value, type: document.getElementById('jType').value });
-            if (!error) { document.getElementById('jobModal').style.display='none'; document.getElementById('jobForm').reset(); loadJobs(); }
+            const { error } = await supabase.from('jobs').insert({
+                title: document.getElementById('jTitle').value,
+                company: document.getElementById('jComp').value,
+                location: document.getElementById('jLoc').value,
+                type: document.getElementById('jType').value,
+                posted_by: currentUser.id // ÖNEMLİ: İlanı kimin attığını kaydediyoruz
+            });
+            if (!error) { 
+                document.getElementById('jobModal').style.display='none'; 
+                document.getElementById('jobForm').reset(); 
+                loadJobs(); 
+                alert("İlanınız yayında! Başvuruları buradan takip edebilirsiniz.");
+            }
         });
 
-        async function checkGlobalNotifications() {
-            const { data: { session } } = await supabase.auth.getSession();
-            if(!session) return;
-            const { count } = await supabase.from('direct_messages').select('*', { count: 'exact', head: true }).eq('receiver_id', session.user.id).eq('is_read', false);
-            const badge = document.getElementById('globalBadge');
-            if(badge) { if(count > 0) { badge.style.display = 'inline-block'; badge.innerText = count; } else { badge.style.display = 'none'; } }
-        }
+        // 5. BAŞVURU YAPMA
+        async function applyJob(jobId, btn) {
+            if(!confirm("Bu ilana profilinizle başvurulacak. Onaylıyor musunuz?")) return;
+            
+            btn.innerText = "İletiliyor..."; btn.disabled = true;
 
-        function setupRealtime(userId) {
-            const channel = supabase.channel('global-alerts');
-            channel.on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'broadcasts' }, payload => { showNotification("YÖNETİM DUYURUSU", payload.new.message, "admin"); });
-            channel.on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'direct_messages', filter: `receiver_id=eq.${userId}` }, payload => {
-                showNotification(`💬 ${payload.new.sender_name || 'Bir Üye'}`, payload.new.content, "user");
-                checkGlobalNotifications();
+            const { error } = await supabase.from('job_applications').insert({
+                job_id: jobId,
+                applicant_id: currentUser.id
             });
-            channel.subscribe();
+
+            if(error) {
+                alert("Hata: " + error.message);
+                btn.innerText = "Hata";
+            } else {
+                alert("Başvurunuz başarıyla iletildi! 🎉");
+                btn.className = "btn-applied";
+                btn.innerHTML = '<i class="fa-solid fa-check"></i> Başvuruldu';
+                myApplications.add(jobId);
+            }
         }
 
-        function showNotification(title, msg, type) {
-            const toast = document.getElementById('liveToast');
-            const titleEl = document.getElementById('toastTitle');
-            const msgEl = document.getElementById('toastMessage');
-            msgEl.innerText = msg;
-            if (type === 'admin') { toast.style.borderLeftColor = "#8e44ad"; titleEl.style.color = "#8e44ad"; titleEl.innerHTML = `<i class="fa-solid fa-tower-broadcast"></i> ${title}`; } 
-            else { toast.style.borderLeftColor = "#3498db"; titleEl.style.color = "#3498db"; titleEl.innerHTML = `${title}`; }
-            toast.style.display = 'block';
-            new Audio('https://actions.google.com/sounds/v1/alarms/beep_short.ogg').play().catch(()=>{});
-            setTimeout(() => { toast.style.display = 'none'; }, 6000);
+        // 6. BAŞVURULARI GÖRME (İLAN SAHİBİ İÇİN)
+        async function viewApplicants(jobId) {
+            document.getElementById('applicantsModal').style.display = 'flex';
+            const list = document.getElementById('applicantsList');
+            list.innerHTML = '<div style="text-align:center;">Yükleniyor...</div>';
+
+            // İlişkili tablodan (profiles) veriyi çekiyoruz
+            const { data, error } = await supabase
+                .from('job_applications')
+                .select(`
+                    applied_at,
+                    profiles!applicant_id (id, full_name, department, class_level, grad_year, user_type)
+                `)
+                .eq('job_id', jobId)
+                .order('applied_at', { ascending: false });
+
+            if(!data || data.length === 0) {
+                list.innerHTML = '<div style="text-align:center; padding:20px; color:#777;">Henüz başvuru yok.</div>';
+                return;
+            }
+
+            list.innerHTML = '';
+            data.forEach(app => {
+                const p = app.profiles;
+                const subInfo = p.user_type === 'student' 
+                    ? `${p.department} - ${p.class_level}. Sınıf`
+                    : `${p.department} (Mezun: ${p.grad_year})`;
+
+                list.innerHTML += `
+                <div class="applicant-row">
+                    <div>
+                        <div class="applicant-info">${p.full_name}</div>
+                        <div class="applicant-sub">${subInfo}</div>
+                        <div style="font-size:0.75rem; color:#999;">${new Date(app.applied_at).toLocaleDateString()}</div>
+                    </div>
+                    <button class="btn-view-profile" onclick="alert('Profili görüntüleme özelliği eklenecek: ID ${p.id}')">Profili Gör</button>
+                </div>`;
+            });
         }
 
         async function logout() { await supabase.auth.signOut(); window.location.href = "index.html"; }
