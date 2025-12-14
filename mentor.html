@@ -8,7 +8,7 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
-    /* --- KURUMSAL STİLLER (ESKİ TASARIM) --- */
+    /* --- KURUMSAL STİLLER (SENİN TASARIMIN) --- */
     :root { --odtu-red: #E31E24; --odtu-dark: #2c3e50; --bg-light: #f3f4f6; --white: #ffffff; --border: #e5e7eb; --text-gray: #6b7280; --success-green: #10b981; }
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
     body { background-color: var(--bg-light); color: #111827; min-height: 100vh; display: flex; flex-direction: column;}
@@ -96,6 +96,7 @@
             <a href="career.html">Kariyer Lab</a>
             <a href="network.html">Mezun Ağı</a>
             <a href="profile.html">Profil</a>
+            <a href="#" onclick="logout()" style="color: #ff6b6b; border: 1px solid #ff6b6b; margin-top: 20px;">Çıkış Yap</a>
         </div>
         <div class="nav-right"><a href="#" class="logout-btn" onclick="logout()">Çıkış</a></div>
     </nav>
@@ -132,9 +133,9 @@
         const supabaseUrl = 'https://hftrmiiacxgtkarsvupn.supabase.co';
         const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhmdHJtaWlhY3hndGthcnN2dXBuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ3ODUzNzIsImV4cCI6MjA4MDM2MTM3Mn0.BgCk5xuZx6AZuxzfBHcQqg8j8BtxU9FbupDgoFecG_k';
         
-        // HATA ÇÖZÜMÜ: Değişken adını 'supabaseClient' olarak değiştirdik ve tanımlama sırasını düzelttik.
         let supabaseClient;
         
+        // Güvenli başlatma
         try {
             if (window.supabase) {
                 supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey);
@@ -146,6 +147,7 @@
         }
 
         let currentUser = null;
+        let userProfile = null; // Giriş yapan kullanıcının tipi (Student/Grad)
 
         // Sayfa Yüklendiğinde Çalışacak Kodlar
         document.addEventListener("DOMContentLoaded", async () => {
@@ -160,6 +162,15 @@
                 return; 
             }
             currentUser = session.user;
+
+            // 1. Önce giriş yapan kullanıcının profilini çek (Öğrenci mi Mezun mu?)
+            const { data: profile } = await supabaseClient
+                .from('profiles')
+                .select('*')
+                .eq('id', currentUser.id)
+                .single();
+            
+            userProfile = profile;
 
             checkUserRole();       
             fetchMentors();        
@@ -176,7 +187,6 @@
             let query = supabaseClient.from('profiles').select('*').eq('is_mentor', true);
             
             if(q) {
-                // İsim araması (Büyük/Küçük harf duyarsız)
                 query = query.ilike('full_name', `%${q}%`); 
             }
 
@@ -196,6 +206,18 @@
             list.innerHTML = data.map(m => {
                 if(m.id === currentUser.id) return ''; // Kendini listede gösterme
 
+                // --- ÖNEMLİ: BUTON KONTROLÜ ---
+                // Eğer giriş yapan kullanıcı 'student' ise butonu göster.
+                // Eğer 'grad' (mezun) ise butonu gösterme.
+                let showButton = false;
+                if(userProfile && userProfile.user_type === 'student') {
+                    showButton = true;
+                }
+
+                const buttonHtml = showButton 
+                    ? `<button class="btn-request" onclick="sendReq('${m.id}', this)"><i class="fa-solid fa-paper-plane"></i> İstek Gönder</button>`
+                    : `<span style="font-size:0.8rem; color:#999; margin-left:auto;">(Meslektaş)</span>`;
+
                 return `
                 <div class="mentor-card-sm">
                     <div class="match-avatar" style="width:45px; height:45px; font-size:1.1rem; background:#eee; color:#555; display:flex; align-items:center; justify-content:center; border-radius:50%; font-weight:bold;">
@@ -206,9 +228,7 @@
                         <small style="color:#6b7280;">${m.job_title || 'Ünvan Yok'}</small><br>
                         <span style="font-size:0.8rem; background:#e0e7ff; color:#4338ca; padding:2px 6px; border-radius:4px;">${m.department || 'Bölüm Yok'}</span>
                     </div>
-                    <button class="btn-request" onclick="sendReq('${m.id}', this)">
-                        <i class="fa-solid fa-paper-plane"></i> İstek Gönder
-                    </button>
+                    ${buttonHtml}
                 </div>`;
             }).join('');
         }
@@ -247,13 +267,14 @@
             }
         }
 
-        // --- ROL KONTROLÜ ---
+        // --- ROL KONTROLÜ (Eğer kullanıcı mentorsa, buton göster) ---
         async function checkUserRole() {
-            const { data } = await supabaseClient.from('profiles').select('is_mentor').eq('id', currentUser.id).single();
+            // Kullanıcı zaten çekildi (userProfile değişkeninde)
             const btn = document.getElementById('becomeMentorBtn');
-            if (data) {
+            if (userProfile) {
                 btn.style.display = 'block';
-                btn.innerText = data.is_mentor ? "Mentor Profilim (Aktif)" : "Mentor Olmak İstiyorum";
+                // is_mentor true ise 'Aktif', değilse 'Olmak İstiyorum'
+                btn.innerText = userProfile.is_mentor ? "Mentor Profilim (Aktif)" : "Mentor Olmak İstiyorum";
             }
         }
         
