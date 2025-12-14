@@ -4,387 +4,196 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Mezun Ağı - Hatay ODTÜ MD</title>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="stylesheet" href="[https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css](https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css)">
 <style>
     :root { --odtu-red: #E31E24; --odtu-dark: #2c3e50; --bg-light: #f8f9fa; --white: #ffffff; }
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
-    body { background-color: var(--bg-light); min-height: 100vh; color: #333; overflow-x: hidden; }
+    body { background-color: var(--bg-light); min-height: 100vh; color: #333; }
 
-    /* --- NAVBAR (SABİT ÜST MENÜ) --- */
-    .navbar { 
-        width: 100%; height: 70px; background-color: var(--odtu-dark); 
-        display: flex; align-items: center; justify-content: space-between; 
-        padding: 0 20px; position: fixed; top: 0; left: 0; z-index: 5000; 
-        box-shadow: 0 4px 10px rgba(0,0,0,0.1); 
-    }
-    
-    .nav-left { display: flex; align-items: center; gap: 15px; z-index: 5002; }
+    /* NAVBAR */
+    .navbar { width: 100%; height: 70px; background-color: var(--odtu-dark); display: flex; align-items: center; justify-content: space-between; padding: 0 20px; position: fixed; top: 0; z-index: 5000; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+    .nav-left { display: flex; align-items: center; gap: 15px; }
     .nav-logo { height: 40px; background: white; padding: 2px; border-radius: 5px; }
-    .nav-title { color: white; font-size: 1.1rem; font-weight: bold; }
-    
-    .nav-links { display: flex; gap: 20px; align-items: center; }
-    .nav-links a { color: #bdc3c7; text-decoration: none; font-size: 0.95rem; display: flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 6px; transition: 0.3s; }
-    .nav-links a:hover, .nav-links a.active { background-color: rgba(255,255,255,0.1); color: white; }
-    
-    .nav-right { display: flex; align-items: center; }
-    .logout-btn { color: #e74c3c; border: 1px solid #e74c3c; padding: 6px 15px; border-radius: 20px; text-decoration: none; transition: 0.3s; font-size: 0.9rem; }
+    .nav-title { color: white; font-weight: bold; font-size: 1.1rem; }
+    .nav-links { display: flex; gap: 20px; }
+    .nav-links a { color: #bdc3c7; text-decoration: none; font-size: 0.95rem; transition: 0.3s; }
+    .nav-links a:hover, .nav-links a.active { color: white; }
+    .logout-btn { color: #e74c3c; border: 1px solid #e74c3c; padding: 6px 15px; border-radius: 20px; text-decoration: none; font-size: 0.9rem; cursor: pointer; }
     .logout-btn:hover { background: #e74c3c; color: white; }
+    .hamburger { display: none; color: white; font-size: 1.5rem; cursor: pointer; }
 
-    /* Hamburger İkonu */
-    .hamburger { display: none; font-size: 1.5rem; color: white; cursor: pointer; z-index: 5002; }
-
-    /* --- LAYOUT (ÇAKIŞMA DÜZELTİLDİ) --- */
-    .container { 
-        margin-top: 100px; /* Navbar'dan kurtarmak için boşluk artırıldı */
-        padding: 30px; 
-        max-width: 1300px; 
-        margin-left: auto; 
-        margin-right: auto; 
-        display: flex; 
-        gap: 30px; 
-        position: relative; 
-        z-index: 1; 
-    }
-    
-    /* SOL PANEL (Sticky) */
+    /* LAYOUT */
+    .container { margin-top: 100px; padding: 30px; max-width: 1300px; margin-left: auto; margin-right: auto; display: flex; gap: 30px; }
     .sidebar { width: 300px; height: fit-content; position: sticky; top: 100px; display: flex; flex-direction: column; gap: 20px; }
-    
     .sidebar-box { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
-    .filter-group { margin-bottom: 15px; }
-    .filter-group label { font-weight: bold; display: block; margin-bottom: 5px; font-size: 0.9rem; color: var(--odtu-dark); }
-    .filter-input { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; outline: none; }
+    .filter-input { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; margin-bottom: 10px; }
     .btn-filter { width: 100%; background: var(--odtu-dark); color: white; border: none; padding: 10px; border-radius: 6px; cursor: pointer; font-weight: bold; }
-
-    /* NOTLAR (SIDEBAR) */
-    .note-list-mini { list-style: none; padding: 0; margin: 15px 0 0 0; max-height: 200px; overflow-y: auto; }
-    .note-item-mini { background: #fff3e0; padding: 10px; border-radius: 6px; margin-bottom: 8px; font-size: 0.85rem; border: 1px solid #ffe0b2; position: relative; }
-    .note-del { position: absolute; right: 5px; top: 5px; color: #e74c3c; cursor: pointer; font-size: 0.8rem; }
-    .btn-add-note { background: #f39c12; color: white; border: none; padding: 8px; border-radius: 6px; cursor: pointer; font-weight: bold; width: 100%; margin-top: 5px; }
-
-    /* SAĞ LİSTE */
-    .content-area { flex: 1; min-width: 0; }
-    .results-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid #e9ecef; }
-    .results-header h2 { margin: 0; color: var(--odtu-dark); font-size: 1.5rem; }
-    .result-count { background: #e3f2fd; color: #1565c0; padding: 5px 15px; border-radius: 20px; font-weight: bold; font-size: 0.9rem; }
-
+    
+    .content-area { flex: 1; }
     .network-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 25px; }
-    
-    /* PROFİL KARTI */
     .profile-card { background: white; border-radius: 12px; padding: 25px; text-align: center; border: 1px solid #eee; transition: 0.3s; position: relative; }
-    .profile-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.08); border-color: var(--odtu-red); }
-    .profile-select { position: absolute; top: 15px; left: 15px; transform: scale(1.5); accent-color: var(--odtu-dark); cursor: pointer; z-index: 2; }
-    
-    .p-avatar { width: 80px; height: 80px; background: #eee; border-radius: 50%; margin: 0 auto 15px; display: flex; justify-content: center; align-items: center; font-size: 1.5rem; font-weight: bold; color: #555; border: 3px solid white; box-shadow: 0 3px 10px rgba(0,0,0,0.1); }
-    .p-name { font-size: 1.1rem; font-weight: bold; color: var(--odtu-dark); margin-bottom: 5px; }
-    .p-role { font-size: 0.85rem; color: #666; margin-bottom: 15px; height: 40px; overflow: hidden; }
-    
-    .badges { display: flex; justify-content: center; gap: 5px; margin-bottom: 15px; flex-wrap: wrap; }
-    .badge { font-size: 0.7rem; padding: 3px 8px; border-radius: 12px; font-weight: bold; }
-    .bg-mentor { background: #fff3e0; color: #e67e22; border: 1px solid #ffe0b2; }
-    .bg-admin { background: #f3e5f5; color: #8e44ad; border: 1px solid #e1bee7; }
-    .bg-grad { background: #e8f5e9; color: #27ae60; border: 1px solid #c8e6c9; }
-
-    .btn-msg { background: white; border: 1px solid var(--odtu-dark); color: var(--odtu-dark); padding: 8px 20px; border-radius: 20px; cursor: pointer; font-size: 0.9rem; font-weight: 600; transition: 0.2s; width: 100%; }
+    .profile-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.08); }
+    .profile-select { position: absolute; top: 15px; left: 15px; transform: scale(1.5); }
+    .p-avatar { width: 80px; height: 80px; background: #eee; border-radius: 50%; margin: 0 auto 15px; display: flex; justify-content: center; align-items: center; font-size: 1.5rem; font-weight: bold; color: #555; }
+    .btn-msg { background: white; border: 1px solid var(--odtu-dark); color: var(--odtu-dark); padding: 8px 20px; border-radius: 20px; cursor: pointer; font-size: 0.9rem; font-weight: 600; width: 100%; }
     .btn-msg:hover { background: var(--odtu-dark); color: white; }
 
-    /* TOPLU İŞLEM BUTONU */
-    .bulk-action-bar { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: var(--odtu-dark); color: white; padding: 15px 30px; border-radius: 50px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); display: none; align-items: center; gap: 20px; z-index: 4000; animation: slideUp 0.3s; }
-    .btn-bulk-send { background: white; color: var(--odtu-dark); border: none; padding: 8px 20px; border-radius: 20px; font-weight: bold; cursor: pointer; }
-
-    /* --- MESAJ PENCERESİ --- */
-    .msg-window-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 6000; display: none; justify-content: center; align-items: center; backdrop-filter: blur(4px); }
-    .msg-window { background: white; width: 600px; max-width: 90%; border-radius: 12px; box-shadow: 0 20px 50px rgba(0,0,0,0.3); display: flex; flex-direction: column; overflow: hidden; animation: zoomIn 0.3s; }
-    @keyframes zoomIn { from {transform: scale(0.9); opacity: 0;} to {transform: scale(1); opacity: 1;} }
-
-    .msg-header { background: var(--odtu-dark); color: white; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; }
-    .msg-title { font-weight: bold; font-size: 1.1rem; display: flex; align-items: center; gap: 10px; }
-    .msg-close { cursor: pointer; font-size: 1.2rem; opacity: 0.8; transition: 0.2s; }
-    
-    .msg-body { padding: 20px; background: #f9f9f9; }
-    .msg-info-row { display: flex; gap: 10px; margin-bottom: 15px; align-items: center; }
-    .msg-label { font-weight: bold; font-size: 0.9rem; color: #666; width: 50px; }
-    .msg-value { background: white; border: 1px solid #ddd; padding: 8px 12px; border-radius: 6px; flex: 1; font-size: 0.95rem; color: #333; }
-    
-    .msg-textarea { width: 100%; height: 200px; padding: 15px; border: 1px solid #ddd; border-radius: 8px; resize: none; outline: none; font-family: inherit; font-size: 1rem; }
-    .btn-send-main { background: var(--odtu-red); color: white; border: none; padding: 10px 30px; border-radius: 6px; cursor: pointer; font-weight: bold; }
-
-    /* TOAST */
-    #liveToast { position: fixed; top: 20px; right: 20px; background: white; padding: 15px 20px; border-radius: 8px; box-shadow: 0 5px 25px rgba(0,0,0,0.2); border-left: 6px solid #27ae60; z-index: 9999; display: none; min-width: 300px; animation: slideIn 0.4s; }
-    @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
-    @keyframes slideUp { from { transform: translate(-50%, 50px); opacity: 0; } to { transform: translate(-50%, 0); opacity: 1; } }
-
-    /* --- MOBİL UYUMLULUK (MEDIA QUERY) --- */
+    /* MOBİL */
     @media (max-width: 900px) {
-        .navbar { padding: 0 15px; }
+        .nav-links { display: none; position: absolute; top: 70px; left: 0; width: 100%; background: var(--odtu-dark); flex-direction: column; padding: 20px; }
+        .nav-links.active { display: flex; }
         .hamburger { display: block; }
-        
-        /* Menüyü Gizle ve Yana Kaydır */
-        .nav-links { 
-            position: fixed; top: 70px; left: -100%; width: 100%; height: calc(100vh - 70px); 
-            background-color: var(--odtu-dark); flex-direction: column; 
-            align-items: center; justify-content: flex-start; padding-top: 40px; 
-            transition: 0.4s ease-in-out; 
-            z-index: 4999; 
-        }
-        .nav-links.active { left: 0; }
-        
-        .nav-links a { font-size: 1.2rem; margin: 15px 0; width: 80%; justify-content: center; color: white; }
-        .nav-right { display: none; } /* Masaüstü butonu gizle */
-
-        .container { 
-            margin-top: 80px; /* Mobilde header çakışmasını önler */
-            flex-direction: column; 
-            padding: 20px; 
-        }
-        
+        .nav-right { display: none; }
+        .container { flex-direction: column; margin-top: 90px; }
         .sidebar { width: 100%; position: static; }
-        .results-header { flex-direction: column; gap: 10px; align-items: flex-start; }
     }
+    
+    /* EXTRA: Toplu Mesaj Bar */
+    .bulk-action-bar { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: var(--odtu-dark); color: white; padding: 15px 30px; border-radius: 50px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); display: none; align-items: center; gap: 20px; z-index: 4000; }
+    .msg-window-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 6000; display: none; justify-content: center; align-items: center; }
+    .msg-window { background: white; width: 600px; max-width: 90%; border-radius: 12px; padding: 20px; }
+    textarea { width: 100%; height: 150px; padding: 10px; border: 1px solid #ddd; border-radius: 6px; margin: 10px 0; }
 </style>
 </head>
 <body>
 
     <nav class="navbar">
-        <div class="nav-left">
-            <img src="logo.png" class="nav-logo">
-            <div class="nav-title">Hatay ODTÜ MD</div>
-        </div>
-        
-        <div class="hamburger" onclick="toggleMenu()">
-            <i class="fa-solid fa-bars"></i>
-        </div>
-
+        <div class="nav-left"><img src="logo.png" class="nav-logo"><span class="nav-title">Hatay ODTÜ MD</span></div>
+        <div class="hamburger" onclick="toggleMenu()"><i class="fa-solid fa-bars"></i></div>
         <div class="nav-links" id="navLinks">
             <a href="dashboard.html">Panel</a>
-            <a href="meeting.html">Etkinlik Üssü</a>
+            <a href="meeting.html">Meeting Hub</a>
             <a href="mentor.html">Mentorluk</a>
             <a href="career.html">Kariyer Lab</a>
             <a href="network.html" class="active">Mezun Ağı</a>
-            <a href="profile.html">Profil</a>
-            
+            <a href="profile.html">Profilim</a>
             <a href="#" onclick="logout()" style="color: #ff6b6b; border: 1px solid #ff6b6b; margin-top: 20px;">Çıkış Yap</a>
         </div>
-
+        <div class="nav-right"><a href="#" class="logout-btn" onclick="logout()">Çıkış</a></div>
     </nav>
 
     <div class="container">
-        
         <div class="sidebar">
             <div class="sidebar-box">
-                <h3 style="margin-top:0;"><i class="fa-solid fa-filter"></i> Filtrele</h3>
-                <div class="filter-group"><label>İsim Ara</label><input type="text" id="searchName" class="filter-input" placeholder="Ad Soyad..." onkeyup="filterProfiles()"></div>
-                <div class="filter-group"><label>Bölüm</label><input type="text" id="searchDept" class="filter-input" placeholder="Örn: İnşaat..." onkeyup="filterProfiles()"></div>
-                <div class="filter-group"><label>Şehir</label><input type="text" id="searchCity" class="filter-input" placeholder="Örn: Ankara..." onkeyup="filterProfiles()"></div>
+                <h3><i class="fa-solid fa-filter"></i> Filtrele</h3>
+                <input type="text" id="searchName" class="filter-input" placeholder="Ad Soyad..." onkeyup="filterProfiles()">
+                <input type="text" id="searchDept" class="filter-input" placeholder="Bölüm..." onkeyup="filterProfiles()">
                 <button class="btn-filter" onclick="fetchProfiles()">Sıfırla</button>
             </div>
-
             <div class="sidebar-box">
-                <h3 style="margin-top:0;"><i class="fa-solid fa-sticky-note" style="color:#f39c12;"></i> Hızlı Notlar</h3>
-                <input type="text" id="sideNoteInput" class="filter-input" placeholder="Not al..." style="font-size:0.9rem;">
-                <button class="btn-add-note" onclick="addSideNote()">Ekle</button>
-                <ul id="sideNoteList" class="note-list-mini">
-                    <li style="text-align:center; color:#999;">Not yok.</li>
-                </ul>
+                <h3>Hızlı Notlar</h3>
+                <input type="text" id="sideNoteInput" class="filter-input" placeholder="Not al...">
+                <button class="btn-filter" style="background:#f39c12;" onclick="addSideNote()">Ekle</button>
+                <ul id="sideNoteList" style="list-style:none; padding:0; margin-top:10px;"></ul>
             </div>
         </div>
 
         <div class="content-area">
-            <div class="results-header">
-                <h2>Mezunlar Dizini</h2>
-                <span id="resultCount" class="result-count">Yükleniyor...</span>
-            </div>
-            <div class="network-grid" id="profileGrid">
-                <div style="grid-column: 1/-1; text-align: center; color: #999; margin-top: 50px;">
-                    <i class="fa-solid fa-spinner fa-spin fa-2x"></i><br><br>Yükleniyor...
-                </div>
-            </div>
+            <div style="margin-bottom:20px;"><h2>Mezunlar Dizini</h2><span id="resultCount">Yükleniyor...</span></div>
+            <div class="network-grid" id="profileGrid"></div>
         </div>
-
     </div>
 
     <div id="bulkActionBar" class="bulk-action-bar">
-        <span id="bulkCount">0 Kişi Seçildi</span>
-        <button class="btn-bulk-send" onclick="openBulkMsgModal()"><i class="fa-regular fa-paper-plane"></i> Toplu Mesaj</button>
-        <i class="fa-solid fa-times" style="cursor:pointer; font-size:1.2rem;" onclick="clearBulkSelection()"></i>
+        <span id="bulkCount">0 Seçildi</span>
+        <button onclick="openBulkMsgModal()" style="background:white; color:#333; border:none; padding:5px 15px; border-radius:15px; cursor:pointer;">Toplu Mesaj</button>
+        <i class="fa-solid fa-times" style="cursor:pointer;" onclick="clearBulkSelection()"></i>
     </div>
 
-    <div id="msgModal" class="msg-window-overlay">
+    <div id="msgModal" class="msg-window-overlay" style="display:none;">
         <div class="msg-window">
-            <div class="msg-header">
-                <div class="msg-title"><i class="fa-solid fa-pen-nib"></i> Yeni İleti</div>
-                <div class="msg-close" onclick="closeModal()"><i class="fa-solid fa-times"></i></div>
-            </div>
-            
-            <div class="msg-body">
-                <div class="msg-info-row">
-                    <span class="msg-label">Kime:</span>
-                    <div class="msg-value" id="msgTargetName">...</div>
-                </div>
-                
-                <input type="hidden" id="msgTargetId">
-                <input type="hidden" id="isBulk" value="false">
-
-                <textarea id="msgContent" class="msg-textarea" placeholder="Mesajınızı buraya yazın... Profesyonel bir dil kullanmaya özen gösterin."></textarea>
-            </div>
-
-            <div class="msg-footer">
-                <button class="btn-send-main" onclick="sendMessage()">Gönder <i class="fa-regular fa-paper-plane"></i></button>
-            </div>
+            <h3>Yeni Mesaj <span onclick="closeModal()" style="float:right; cursor:pointer;">&times;</span></h3>
+            <div id="msgTargetName">...</div>
+            <input type="hidden" id="msgTargetId"><input type="hidden" id="isBulk">
+            <textarea id="msgContent" placeholder="Mesajınız..."></textarea>
+            <button onclick="sendMessage()" style="width:100%; padding:10px; background:var(--odtu-red); color:white; border:none; border-radius:6px; cursor:pointer;">Gönder</button>
         </div>
     </div>
 
-    <div id="liveToast"><strong id="toastTitle">Başarılı!</strong><p id="toastMessage">...</p></div>
+    <div id="liveToast" style="position: fixed; top: 20px; right: 20px; background: white; padding: 15px; border-radius: 8px; border-left: 5px solid #27ae60; display: none;">İşlem Başarılı</div>
 
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="[https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2](https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2)"></script>
     <script>
-        const supabaseUrl = 'https://hftrmiiacxgtkarsvupn.supabase.co';
+        const supabaseUrl = '[https://hftrmiiacxgtkarsvupn.supabase.co](https://hftrmiiacxgtkarsvupn.supabase.co)';
         const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhmdHJtaWlhY3hndGthcnN2dXBuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ3ODUzNzIsImV4cCI6MjA4MDM2MTM3Mn0.BgCk5xuZx6AZuxzfBHcQqg8j8BtxU9FbupDgoFecG_k';
         let supabase; try { supabase = window.supabase.createClient(supabaseUrl, supabaseKey); } catch(e){}
-        let currentUser = null;
-        let allProfiles = [];
-        let selectedUserIds = new Set(); 
+        let currentUser = null, allProfiles = [], selectedUserIds = new Set();
 
         document.addEventListener("DOMContentLoaded", async () => {
+            if(!supabase) return;
             const { data: { session } } = await supabase.auth.getSession();
             if (!session) { window.location.href = 'index.html'; return; }
             currentUser = session.user;
-            
-            fetchProfiles();
-            loadSideNotes();
+            fetchProfiles(); loadSideNotes();
         });
 
-        // MOBİL MENÜ
         function toggleMenu() { document.getElementById('navLinks').classList.toggle('active'); }
 
-        // PROFİLLERİ ÇEK
         async function fetchProfiles() {
             const { data } = await supabase.from('profiles').select('*').order('created_at', {ascending:false});
-            if(data) {
-                allProfiles = data;
-                renderProfiles(data);
-            }
+            if(data) { allProfiles = data; renderProfiles(data); }
         }
 
-        // LİSTELEME
         function renderProfiles(profiles) {
-            const grid = document.getElementById('profileGrid');
-            grid.innerHTML = '';
+            const grid = document.getElementById('profileGrid'); grid.innerHTML = '';
             const visible = profiles.filter(p => p.id !== currentUser.id);
             document.getElementById('resultCount').innerText = `${visible.length} Üye Bulundu`;
-
-            if(visible.length === 0) { grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; color: #999;">Sonuç yok.</div>'; return; }
-
             visible.forEach(p => {
-                let badges = '';
-                if(p.roles?.includes('admin')) badges += `<span class="badge bg-admin">Admin</span>`;
-                if(p.roles?.includes('mentor')) badges += `<span class="badge bg-mentor">Mentor</span>`;
-                if(p.user_type === 'grad') badges += `<span class="badge bg-grad">Mezun</span>`;
-
-                const detail = p.user_type === 'student' ? `${p.class_level}. Sınıf` : (p.company || 'Mezun');
                 const isChecked = selectedUserIds.has(p.id) ? 'checked' : '';
-
-                grid.innerHTML += `
-                <div class="profile-card">
-                    <input type="checkbox" class="profile-select" value="${p.id}" ${isChecked} onchange="toggleSelection('${p.id}', this.checked)">
-                    <div class="p-avatar">${p.full_name.substring(0,2).toUpperCase()}</div>
-                    <div class="p-name">${p.full_name}</div>
-                    <div class="p-role">${p.department}<br><small style="color:#888;">${detail}</small></div>
-                    <div class="badges">${badges}</div>
-                    <button class="btn-msg" onclick="openMsgModal('${p.id}', '${p.full_name}')">Mesaj Gönder</button>
-                </div>`;
+                grid.innerHTML += `<div class="profile-card"><input type="checkbox" class="profile-select" value="${p.id}" ${isChecked} onchange="toggleSelection('${p.id}', this.checked)"><div class="p-avatar">${p.full_name.substring(0,2).toUpperCase()}</div><div style="font-weight:bold;">${p.full_name}</div><div style="color:#666; font-size:0.9rem; margin-bottom:10px;">${p.department}</div><button class="btn-msg" onclick="openMsgModal('${p.id}', '${p.full_name}')">Mesaj</button></div>`;
             });
         }
 
-        // FİLTRELEME
         function filterProfiles() {
             const n = document.getElementById('searchName').value.toLowerCase();
             const d = document.getElementById('searchDept').value.toLowerCase();
-            const c = document.getElementById('searchCity').value.toLowerCase();
-            const filtered = allProfiles.filter(p => 
-                (p.full_name||'').toLowerCase().includes(n) && 
-                (p.department||'').toLowerCase().includes(d) && 
-                (p.company||'').toLowerCase().includes(c)
-            );
+            const filtered = allProfiles.filter(p => (p.full_name||'').toLowerCase().includes(n) && (p.department||'').toLowerCase().includes(d));
             renderProfiles(filtered);
         }
 
-        // --- ÇOKLU SEÇİM ---
         function toggleSelection(id, checked) {
             if(checked) selectedUserIds.add(id); else selectedUserIds.delete(id);
-            updateBulkBar();
-        }
-        function updateBulkBar() {
             const bar = document.getElementById('bulkActionBar');
-            if(selectedUserIds.size > 0) {
-                bar.style.display = 'flex';
-                document.getElementById('bulkCount').innerText = `${selectedUserIds.size} Kişi Seçildi`;
-            } else { bar.style.display = 'none'; }
+            if(selectedUserIds.size > 0) { bar.style.display = 'flex'; document.getElementById('bulkCount').innerText = `${selectedUserIds.size} Seçildi`; } else { bar.style.display = 'none'; }
         }
-        function clearBulkSelection() {
-            selectedUserIds.clear(); updateBulkBar(); renderProfiles(allProfiles);
-        }
+        function clearBulkSelection() { selectedUserIds.clear(); document.getElementById('bulkActionBar').style.display='none'; renderProfiles(allProfiles); }
 
-        // --- MESAJ GÖNDERME ---
-        function openMsgModal(id, name) {
-            document.getElementById('isBulk').value = 'false';
-            document.getElementById('msgTargetId').value = id;
-            document.getElementById('msgTargetName').innerText = name;
-            document.getElementById('msgModal').style.display = 'flex';
-        }
-        function openBulkMsgModal() {
-            document.getElementById('isBulk').value = 'true';
-            document.getElementById('msgTargetName').innerText = `${selectedUserIds.size} Kişi (Toplu Gönderim)`;
-            document.getElementById('msgModal').style.display = 'flex';
-        }
+        function openMsgModal(id, name) { document.getElementById('isBulk').value='false'; document.getElementById('msgTargetId').value=id; document.getElementById('msgTargetName').innerText=name; document.getElementById('msgModal').style.display='flex'; }
+        function openBulkMsgModal() { document.getElementById('isBulk').value='true'; document.getElementById('msgTargetName').innerText=`${selectedUserIds.size} Kişi`; document.getElementById('msgModal').style.display='flex'; }
+        function closeModal() { document.getElementById('msgModal').style.display='none'; }
 
         async function sendMessage() {
-            const content = document.getElementById('msgContent').value;
+            const txt = document.getElementById('msgContent').value;
             const isBulk = document.getElementById('isBulk').value === 'true';
-            const myName = currentUser.user_metadata?.full_name || 'Bir Üye';
-
-            if(!content) return alert("Mesaj boş olamaz.");
-
-            const btn = event.target; btn.innerText = "Gönderiliyor..."; btn.disabled = true;
-
-            if (isBulk) {
-                const promises = Array.from(selectedUserIds).map(receiverId => 
-                    supabase.from('direct_messages').insert({ sender_id: currentUser.id, receiver_id: receiverId, content: content, sender_name: myName })
-                );
-                await Promise.all(promises);
-                showToast(`${selectedUserIds.size} Kişiye Gönderildi!`);
-                clearBulkSelection();
+            const myName = currentUser.user_metadata?.full_name;
+            if(!txt) return alert("Mesaj boş olamaz");
+            
+            const btn = event.target; btn.innerText="..."; btn.disabled=true;
+            
+            if(isBulk) {
+                const promises = Array.from(selectedUserIds).map(r => supabase.from('direct_messages').insert({ sender_id: currentUser.id, receiver_id: r, content: txt, sender_name: myName }));
+                await Promise.all(promises); showToast("Toplu Gönderildi!"); clearBulkSelection();
             } else {
-                const targetId = document.getElementById('msgTargetId').value;
-                const { error } = await supabase.from('direct_messages').insert({ sender_id: currentUser.id, receiver_id: targetId, content: content, sender_name: myName });
-                if(error) alert(error.message); else showToast("Mesaj İletildi!");
+                const tId = document.getElementById('msgTargetId').value;
+                await supabase.from('direct_messages').insert({ sender_id: currentUser.id, receiver_id: tId, content: txt, sender_name: myName });
+                showToast("Gönderildi!");
             }
-
-            closeModal();
-            document.getElementById('msgContent').value = '';
-            btn.innerText = "Gönder 🚀"; btn.disabled = false;
+            closeModal(); document.getElementById('msgContent').value=''; btn.innerText="Gönder"; btn.disabled=false;
         }
 
-        function closeModal() { document.getElementById('msgModal').style.display = 'none'; }
-
-        // --- NOTLAR ---
         async function loadSideNotes() {
             const { data } = await supabase.from('personal_notes').select('*').eq('user_id', currentUser.id).order('created_at', {ascending:false});
-            const list = document.getElementById('sideNoteList');
-            if(!data || data.length===0) { list.innerHTML='<li style="text-align:center; color:#999;">Not yok.</li>'; return; }
-            list.innerHTML = data.map(n => `<li class="note-item-mini">${n.content} <i class="fa-solid fa-times note-del" onclick="delSideNote(${n.id})"></i></li>`).join('');
+            const l = document.getElementById('sideNoteList'); l.innerHTML='';
+            if(data) data.forEach(n => l.innerHTML+=`<li style="background:#fff3e0; padding:5px; margin-bottom:5px; border-radius:4px;">${n.content} <i class="fa-solid fa-times" style="float:right; cursor:pointer; color:red;" onclick="delSideNote(${n.id})"></i></li>`);
         }
         async function addSideNote() {
-            const txt = document.getElementById('sideNoteInput').value; if(!txt)return;
-            await supabase.from('personal_notes').insert({user_id: currentUser.id, content: txt});
+            const t = document.getElementById('sideNoteInput').value; if(!t)return;
+            await supabase.from('personal_notes').insert({user_id:currentUser.id, content:t});
             document.getElementById('sideNoteInput').value=''; loadSideNotes();
         }
         async function delSideNote(id) { await supabase.from('personal_notes').delete().eq('id', id); loadSideNotes(); }
 
-        function showToast(msg) {
-            const t = document.getElementById('liveToast');
-            document.getElementById('toastMessage').innerText = msg;
-            t.style.display = 'block'; setTimeout(() => t.style.display = 'none', 3000);
-        }
+        function showToast(msg) { const t=document.getElementById('liveToast'); t.innerText=msg; t.style.display='block'; setTimeout(()=>t.style.display='none',3000); }
         async function logout() { await supabase.auth.signOut(); window.location.href = "index.html"; }
     </script>
 </body>
