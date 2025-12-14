@@ -78,11 +78,16 @@
     .note-item { background: #fff3e0; padding: 15px; border-radius: 8px; margin-bottom: 10px; position: relative; border: 1px solid #ffe0b2; }
     .delete-note { position: absolute; top: 10px; right: 10px; cursor: pointer; color: #e74c3c; }
 
-    /* --- YENİ EKLENEN: MENTOR İSTEK KARTLARI --- */
+    /* --- MENTOR İSTEK KARTLARI (GÜNCELLENDİ) --- */
     .request-item { display: flex; justify-content: space-between; align-items: center; padding: 15px; background: #fff; border: 1px solid #eee; border-radius: 8px; margin-bottom: 10px; transition: 0.2s; }
     .request-item:hover { box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
+    .request-item.pending { border-left: 4px solid #f39c12; }
+    .request-item.accepted { border-left: 4px solid #27ae60; background: #f9fff9; }
+    .request-item.rejected { border-left: 4px solid #c0392b; opacity: 0.7; }
+    
     .req-info h4 { margin: 0 0 5px 0; color: var(--odtu-dark); }
     .req-info p { margin: 0; color: #777; font-size: 0.9rem; }
+    
     .btn-group { display: flex; gap: 10px; }
     .btn-accept { background: #27ae60; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; }
     .btn-reject { background: #c0392b; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; }
@@ -163,6 +168,7 @@
                 
                 <button id="mentorTabBtn" class="menu-btn" style="display:none;" onclick="switchTab('mentorRequests', this)">
                     <i class="fa-solid fa-users"></i> Mentor İstekleri
+                    <span id="mentorReqCount" style="background:var(--odtu-red); color:white; border-radius:50%; padding:2px 8px; font-size:0.8rem; margin-left:auto; display:none;">0</span>
                 </button>
 
                 <button class="menu-btn" onclick="switchTab('notes', this)"><i class="fa-solid fa-sticky-note"></i> Not Defterim</button>
@@ -206,7 +212,7 @@
             </div>
 
             <div id="mentorRequests" class="tab-content">
-                <div class="page-title">Gelen Mentorluk Talepleri</div>
+                <div class="page-title">Mentorluk Talepleri</div>
                 <div id="reqListContainer">
                     <p style="text-align:center; color:#999; padding:20px;">İstekler kontrol ediliyor...</p>
                 </div>
@@ -263,17 +269,21 @@
 
     <div id="liveToast" style="position:fixed; top:20px; right:20px; background:white; padding:15px; border-radius:8px; border-left:5px solid #27ae60; box-shadow:0 5px 15px rgba(0,0,0,0.2); display:none;">✅ İşlem Başarılı!</div>
 
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
         const supabaseUrl = 'https://hftrmiiacxgtkarsvupn.supabase.co';
         const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhmdHJtaWlhY3hndGthcnN2dXBuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ3ODUzNzIsImV4cCI6MjA4MDM2MTM3Mn0.BgCk5xuZx6AZuxzfBHcQqg8j8BtxU9FbupDgoFecG_k';
-        let supabase; try { supabase = window.supabase.createClient(supabaseUrl, supabaseKey); } catch(e){}
+        let supabase; 
+        try { 
+            if(window.supabase) supabase = window.supabase.createClient(supabaseUrl, supabaseKey); 
+        } catch(e) { console.error(e); }
         
         let map, marker, currentUser;
         let loadedMessages = [];
         let selectedRecipients = [];
 
         document.addEventListener("DOMContentLoaded", async () => {
+            if(!supabase) { alert("Sistem hatası: Supabase yüklenemedi."); return; }
+            
             const { data: { session } } = await supabase.auth.getSession();
             if (!session) { window.location.href = 'index.html'; return; }
             currentUser = session.user;
@@ -317,9 +327,11 @@
                 document.getElementById('fullName').value = data.full_name;
                 document.getElementById('dept').value = data.department;
                 
-                // MENTOR KONTROLÜ (YENİ)
+                // MENTOR İSE BUTONU AÇ VE BİLDİRİM KONTROLÜ YAP
                 if (data.is_mentor) {
                     document.getElementById('mentorTabBtn').style.display = 'flex';
+                    // Sayfa açılışında bildirim sayısını kontrol et
+                    loadMentorRequests(); 
                 }
 
                 if(data.user_type === 'grad' || (data.roles && data.roles.includes('admin'))) {
@@ -346,42 +358,69 @@
             if(!error) showToast("Profil Güncellendi!");
         });
 
-        // --- GELEN MENTOR İSTEKLERİ (YENİ) ---
+        // --- GÜNCELLENEN MENTOR İSTEK YÖNETİMİ ---
         async function loadMentorRequests() {
             const listDiv = document.getElementById('reqListContainer');
+            const badge = document.getElementById('mentorReqCount');
             
-            // 1. Bekleyen istekleri çek
+            // 1. Tüm istekleri çek (Bekleyen, kabul, red hepsi)
             const { data: requests, error } = await supabase
                 .from('mentor_requests')
                 .select('*')
                 .eq('mentor_id', currentUser.id)
-                .eq('status', 'pending');
+                .order('created_at', { ascending: false });
 
             if (error) { listDiv.innerHTML = '<p style="color:red">Hata oluştu.</p>'; return; }
-            if (!requests || requests.length === 0) { listDiv.innerHTML = '<p style="text-align:center; color:#999; padding:20px;">Bekleyen yeni isteğiniz yok.</p>'; return; }
 
-            // 2. İstek yapan öğrencilerin isimlerini almak için student_id'leri topla
+            // 2. Bekleyen istek sayısını hesapla ve rozeti güncelle
+            const pendingCount = requests ? requests.filter(r => r.status === 'pending').length : 0;
+            if (pendingCount > 0) {
+                badge.innerText = pendingCount;
+                badge.style.display = 'inline-block';
+            } else {
+                badge.style.display = 'none';
+            }
+
+            if (!requests || requests.length === 0) { 
+                listDiv.innerHTML = '<p style="text-align:center; color:#999; padding:20px;">Henüz bir mentorluk talebi almadınız.</p>'; 
+                return; 
+            }
+
+            // 3. Öğrenci bilgilerini çek
             const studentIds = requests.map(r => r.student_id);
             const { data: students } = await supabase.from('profiles').select('id, full_name, department').in('id', studentIds);
             
-            // Map oluştur
             const studentMap = {};
             if(students) students.forEach(s => studentMap[s.id] = s);
 
             listDiv.innerHTML = '';
             requests.forEach(req => {
                 const s = studentMap[req.student_id] || { full_name: 'Bilinmeyen', department: '-' };
-                listDiv.innerHTML += `
-                    <div class="request-item">
-                        <div class="req-info">
-                            <h4>${s.full_name}</h4>
-                            <p>${s.department}</p>
-                            <p style="font-size:0.8rem; margin-top:5px;">${new Date(req.created_at).toLocaleDateString()}</p>
-                        </div>
+                
+                // Duruma göre stil ve içerik ayarla
+                let statusClass = req.status; // pending, accepted, rejected
+                let actionHtml = '';
+
+                if (req.status === 'pending') {
+                    actionHtml = `
                         <div class="btn-group">
                             <button class="btn-accept" onclick="respondRequest('${req.id}', 'accepted')"><i class="fa-solid fa-check"></i> Kabul</button>
                             <button class="btn-reject" onclick="respondRequest('${req.id}', 'rejected')"><i class="fa-solid fa-times"></i> Red</button>
+                        </div>`;
+                } else if (req.status === 'accepted') {
+                    actionHtml = `<span style="color:#27ae60; font-weight:bold;"><i class="fa-solid fa-check-circle"></i> Kabul Edildi</span>`;
+                } else if (req.status === 'rejected') {
+                    actionHtml = `<span style="color:#c0392b; font-weight:bold;"><i class="fa-solid fa-ban"></i> Reddedildi</span>`;
+                }
+
+                listDiv.innerHTML += `
+                    <div class="request-item ${statusClass}">
+                        <div class="req-info">
+                            <h4>${s.full_name}</h4>
+                            <p>${s.department}</p>
+                            <p style="font-size:0.8rem; margin-top:5px; color:#999;">${new Date(req.created_at).toLocaleDateString()}</p>
                         </div>
+                        ${actionHtml}
                     </div>
                 `;
             });
@@ -391,7 +430,10 @@
             if(!confirm(status === 'accepted' ? 'İsteği kabul ediyor musunuz?' : 'İsteği reddediyor musunuz?')) return;
             const { error } = await supabase.from('mentor_requests').update({ status: status }).eq('id', reqId);
             if(error) alert("Hata: " + error.message);
-            else { showToast(status === 'accepted' ? "İstek Kabul Edildi" : "İstek Reddedildi"); loadMentorRequests(); }
+            else { 
+                showToast(status === 'accepted' ? "İstek Kabul Edildi" : "İstek Reddedildi"); 
+                loadMentorRequests(); // Listeyi ve sayacı yenile
+            }
         }
 
         // --- GELEN KUTUSU ---
