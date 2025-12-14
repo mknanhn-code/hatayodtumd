@@ -8,7 +8,7 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
-    /* --- KURUMSAL STİLLER (SENİN TASARIMIN) --- */
+    /* --- KURUMSAL STİLLER (ESKİ TASARIM) --- */
     :root { --odtu-red: #E31E24; --odtu-dark: #2c3e50; --bg-light: #f3f4f6; --white: #ffffff; --border: #e5e7eb; --text-gray: #6b7280; --success-green: #10b981; }
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
     body { background-color: var(--bg-light); color: #111827; min-height: 100vh; display: flex; flex-direction: column;}
@@ -35,44 +35,18 @@
     .mentor-toggle-btn { background: var(--odtu-dark); color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 0.9rem; transition: 0.2s; }
     .mentor-toggle-btn:hover { background: #374151; }
 
-    /* AKTİF MENTORLUK KARTI */
-    .match-card { background: white; border-radius: 12px; border: 1px solid var(--border); margin-bottom: 40px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); overflow: hidden; }
-    .match-header { padding: 25px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; background: #fff; }
-    .match-user { display: flex; align-items: center; gap: 15px; }
-    .match-avatar { width: 55px; height: 55px; background: var(--odtu-dark); color: white; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-weight: bold; font-size: 1.2rem; }
-    .match-info h3 { margin: 0; font-size: 1.2rem; color: #1f2937; }
-    .match-info span { font-size: 0.9rem; color: var(--text-gray); }
-    .next-meeting-badge { background: #ecfdf5; color: #059669; padding: 8px 15px; border-radius: 20px; font-size: 0.85rem; font-weight: 600; display: flex; align-items: center; gap: 8px; border: 1px solid #a7f3d0; }
-    .action-buttons { display: flex; gap: 10px; }
-    .btn-action { padding: 8px 16px; border-radius: 6px; border: 1px solid var(--border); background: white; cursor: pointer; color: #4b5563; display: flex; align-items: center; gap: 8px; font-weight: 500; transition: 0.2s; }
-    .btn-action:hover { background: #f9fafb; border-color: #d1d5db; color: var(--odtu-dark); }
-
-    /* TAB MENÜSÜ */
-    .tabs { display: flex; background: #f9fafb; padding: 0 25px; border-bottom: 1px solid var(--border); overflow-x: auto; }
-    .tab-btn { padding: 15px 20px; border: none; background: transparent; cursor: pointer; font-weight: 600; color: #6b7280; border-bottom: 3px solid transparent; transition: 0.3s; font-size: 0.95rem; white-space: nowrap; }
-    .tab-btn:hover { color: var(--odtu-dark); }
-    .tab-btn.active { color: var(--odtu-dark); border-bottom-color: var(--odtu-red); }
-    .tab-content { padding: 30px; display: none; background: #fff; min-height: 300px; }
-    .tab-content.active { display: block; }
-
-    /* FORM & LİSTELER */
+    /* ARAMA VE LİSTE ALANI */
+    .search-area { margin-top: 20px; }
     .input-group { display: flex; gap: 10px; margin-bottom: 25px; background: #f9fafb; padding: 15px; border-radius: 8px; border: 1px solid var(--border); }
     .form-control { flex: 1; padding: 10px 15px; border: 1px solid #d1d5db; border-radius: 6px; outline: none; font-size: 0.95rem; }
     .form-control:focus { border-color: var(--odtu-dark); ring: 2px; }
     .btn-add { background: var(--odtu-dark); color: white; border: none; padding: 0 25px; border-radius: 6px; cursor: pointer; font-weight: 600; transition: 0.2s; white-space: nowrap; }
-    .list-item { padding: 15px; border: 1px solid var(--border); border-radius: 8px; margin-bottom: 10px; transition: 0.2s; position: relative; }
-    .author-badge { font-size: 0.7rem; padding: 2px 8px; border-radius: 10px; font-weight: bold; margin-bottom: 5px; display: inline-block; }
-    .auth-me { background: #e0e7ff; color: #4338ca; }
-    .auth-other { background: #fef3c7; color: #d97706; }
-    .item-header { display: flex; justify-content: space-between; margin-bottom: 5px; }
-    .item-date { font-size: 0.75rem; color: #9ca3af; }
-    .empty-state { text-align: center; padding: 40px; color: #9ca3af; }
-    .empty-state i { font-size: 3rem; margin-bottom: 15px; opacity: 0.5; }
-
-    /* ARAMA ALANI */
-    .search-area { margin-top: 60px; }
+    
     .mentor-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 25px; margin-top: 25px; }
-    .mentor-card-sm { background: white; padding: 20px; border-radius: 10px; border: 1px solid var(--border); display: flex; align-items: center; gap: 15px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+    
+    /* MENTOR KARTI */
+    .mentor-card-sm { background: white; padding: 20px; border-radius: 10px; border: 1px solid var(--border); display: flex; align-items: center; gap: 15px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); transition: transform 0.2s; }
+    .mentor-card-sm:hover { transform: translateY(-2px); box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
     
     .btn-request { 
         background: white; 
@@ -92,11 +66,11 @@
     .btn-request:hover { background: var(--odtu-dark); color: white; }
     .btn-request:disabled { opacity: 0.7; cursor: not-allowed; }
 
-    /* TOAST */
+    /* TOAST BİLDİRİM */
     #liveToast { position: fixed; top: 20px; right: 20px; background: white; padding: 15px 20px; border-radius: 8px; box-shadow: 0 5px 25px rgba(0,0,0,0.2); border-left: 6px solid #27ae60; z-index: 9999; display: none; min-width: 320px; animation: slideIn 0.4s; }
     @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
 
-    /* MOBİL */
+    /* MOBİL UYUM */
     @media (max-width: 900px) {
         .navbar { padding: 0 15px; }
         .hamburger { display: block; }
@@ -105,9 +79,8 @@
         .nav-links a { font-size: 1.2rem; margin: 15px 0; width: 80%; justify-content: center; }
         .nav-right { display: none; }
         .main-content { margin-top: 90px; padding: 20px; }
-        .header-area, .match-header, .input-group { flex-direction: column; align-items: flex-start; gap: 15px; }
-        .match-user, .action-buttons, .next-meeting-badge, .btn-add { width: 100%; justify-content: center; }
-        .action-buttons { justify-content: space-between; }
+        .header-area, .input-group { flex-direction: column; align-items: flex-start; gap: 15px; }
+        .btn-add { width: 100%; padding: 10px; }
     }
 </style>
 </head>
@@ -137,12 +110,11 @@
             <button id="becomeMentorBtn" class="mentor-toggle-btn" style="display:none;" onclick="toggleMentorStatus()">Mentor Profilini Yönet</button>
         </div>
 
-        <div id="activeMentorshipsArea"></div>
-
         <div class="search-area">
             <h3 style="margin-bottom:15px; color:#1f2937; border-left: 4px solid var(--odtu-red); padding-left: 10px;">Mentor Rehberi</h3>
+            
             <div class="input-group" style="background: white;">
-                <input type="text" id="searchInput" class="form-control" placeholder="İsim, Şirket veya Sektör ara..." onkeypress="if(event.key==='Enter') fetchMentors()">
+                <input type="text" id="searchInput" class="form-control" placeholder="İsim veya Bölüm ara..." onkeypress="if(event.key==='Enter') fetchMentors()">
                 <button class="btn-add" onclick="fetchMentors()"><i class="fa-solid fa-search"></i> Ara</button>
             </div>
             
@@ -157,22 +129,41 @@
     <div id="liveToast"><strong id="toastTitle">Bildirim</strong><p id="toastMessage">...</p></div>
 
     <script>
-        // --- SENİN ANAHTARLARIN ---
+        // --- SUPABASE BAĞLANTISI ---
         const supabaseUrl = 'https://hftrmiiacxgtkarsvupn.supabase.co';
         const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhmdHJtaWlhY3hndGthcnN2dXBuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ3ODUzNzIsImV4cCI6MjA4MDM2MTM3Mn0.BgCk5xuZx6AZuxzfBHcQqg8j8BtxU9FbupDgoFecG_k';
-        const supabase = supabase.createClient(supabaseUrl, supabaseKey);
+        
+        // HATA ÇÖZÜMÜ: Değişken adını 'supabaseClient' olarak değiştirdik ve tanımlama sırasını düzelttik.
+        let supabaseClient;
+        
+        try {
+            if (window.supabase) {
+                supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey);
+            } else {
+                console.error("Supabase kütüphanesi yüklenemedi.");
+            }
+        } catch (err) {
+            console.error("Başlatma Hatası:", err);
+        }
+
         let currentUser = null;
 
+        // Sayfa Yüklendiğinde Çalışacak Kodlar
         document.addEventListener("DOMContentLoaded", async () => {
-            const { data: { session } } = await supabase.auth.getSession();
-            if (!session) { window.location.href = 'index.html'; return; }
+            if (!supabaseClient) {
+                document.getElementById('mentorList').innerHTML = '<p style="color:red; text-align:center;">Bağlantı Hatası: Supabase yüklenemedi.</p>';
+                return;
+            }
+
+            const { data: { session } } = await supabaseClient.auth.getSession();
+            if (!session) { 
+                window.location.href = 'index.html'; 
+                return; 
+            }
             currentUser = session.user;
 
-            checkUserRole();       // Kullanıcı mentor mu değil mi?
-            fetchMentors();        // Mentor listesini getir
-            
-            // Eğer veritabanında "mentorships" tablosu (aktif eşleşmeler) varsa onu da çekebilirsin.
-            // Şimdilik sadece mentor listeleme ve istek atma çalışıyor.
+            checkUserRole();       
+            fetchMentors();        
         });
 
         function toggleMenu() { document.getElementById('navLinks').classList.toggle('active'); }
@@ -182,20 +173,24 @@
             const q = document.getElementById('searchInput').value;
             const list = document.getElementById('mentorList');
             
-            // Veritabanında "is_mentor"u true olanları çek
-            let query = supabase.from('profiles').select('*').eq('is_mentor', true);
+            // Veritabanında "is_mentor" değeri TRUE olanları çek
+            let query = supabaseClient.from('profiles').select('*').eq('is_mentor', true);
             
-            if(q) query = query.ilike('full_name', `%${q}%`); // İsim araması
+            if(q) {
+                // İsim araması (Büyük/Küçük harf duyarsız)
+                query = query.ilike('full_name', `%${q}%`); 
+            }
 
             const { data, error } = await query;
             
             if (error) { 
-                list.innerHTML = `<p style="color:red">Hata: ${error.message}</p>`; 
+                console.error(error);
+                list.innerHTML = `<p style="color:red; grid-column:1/-1;">Hata: ${error.message}</p>`; 
                 return; 
             }
 
             if(!data || data.length === 0) { 
-                list.innerHTML = '<p style="text-align:center; width:100%; color:#999; grid-column: 1/-1;">Sonuç bulunamadı.</p>'; 
+                list.innerHTML = '<p style="text-align:center; width:100%; color:#999; grid-column: 1/-1;">Aranan kriterde mentor bulunamadı.</p>'; 
                 return; 
             }
 
@@ -204,7 +199,7 @@
 
                 return `
                 <div class="mentor-card-sm">
-                    <div class="match-avatar" style="width:45px; height:45px; font-size:1.1rem; background:#eee; color:#555;">
+                    <div class="match-avatar" style="width:45px; height:45px; font-size:1.1rem; background:#eee; color:#555; display:flex; align-items:center; justify-content:center; border-radius:50%; font-weight:bold;">
                         ${m.full_name ? m.full_name.substring(0,1).toUpperCase() : 'U'}
                     </div>
                     <div style="flex:1;">
@@ -219,36 +214,32 @@
             }).join('');
         }
         
-        // --- İSTEK GÖNDERME FONKSİYONU ---
+        // --- İSTEK GÖNDERME ---
         async function sendReq(mentorId, btnElement) {
             if(!confirm("Bu mentora resmi bir mentorluk isteği göndermek istediğinize emin misiniz?")) return;
             
-            // 1. UI Güncelle: Butonu "Gönderiliyor" yap
             const originalText = btnElement.innerHTML;
-            btnElement.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Gönderiliyor...';
+            btnElement.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>...';
             btnElement.disabled = true;
 
-            // 2. Veritabanına Ekle
-            const { error } = await supabase
+            const { error } = await supabaseClient
                 .from('mentor_requests')
                 .insert([{ 
                     mentor_id: mentorId, 
                     student_id: currentUser.id,
-                    status: 'pending' // Beklemede
+                    status: 'pending'
                 }]);
             
             if(error) {
-                // Hata Yönetimi
-                if (error.code === '23505') { // Duplicate Key (Zaten istek var)
+                if (error.code === '23505') { 
                     showToast("Zaten bu mentora istek gönderdiniz!", "error");
-                    btnElement.innerHTML = '<i class="fa-solid fa-check-double"></i> Zaten Gönderildi';
+                    btnElement.innerHTML = '<i class="fa-solid fa-check-double"></i> İletildi';
                 } else {
                     showToast("Hata: " + error.message, "error");
                     btnElement.innerHTML = originalText;
                     btnElement.disabled = false;
                 }
             } else {
-                // Başarılı
                 showToast("Harika! Mentorluk isteğin başarıyla iletildi. 🚀");
                 btnElement.innerHTML = '<i class="fa-solid fa-check"></i> İletildi';
                 btnElement.style.backgroundColor = "var(--success-green)";
@@ -257,9 +248,9 @@
             }
         }
 
-        // --- ROL KONTROLÜ (Ekstra) ---
+        // --- ROL KONTROLÜ ---
         async function checkUserRole() {
-            const { data } = await supabase.from('profiles').select('is_mentor').eq('id', currentUser.id).single();
+            const { data } = await supabaseClient.from('profiles').select('is_mentor').eq('id', currentUser.id).single();
             const btn = document.getElementById('becomeMentorBtn');
             if (data) {
                 btn.style.display = 'block';
@@ -268,10 +259,10 @@
         }
         
         async function toggleMentorStatus() {
-            window.location.href = 'profile.html'; // Profil sayfasına yönlendir
+            window.location.href = 'profile.html';
         }
 
-        // --- TOAST MESAJI ---
+        // --- TOAST BİLDİRİM ---
         function showToast(msg, type='success') {
             const t = document.getElementById('liveToast');
             document.getElementById('toastMessage').innerText = msg;
@@ -280,7 +271,7 @@
             setTimeout(() => t.style.display = 'none', 3000);
         }
 
-        async function logout() { await supabase.auth.signOut(); window.location.href = "index.html"; }
+        async function logout() { await supabaseClient.auth.signOut(); window.location.href = "index.html"; }
     </script>
 </body>
 </html>
