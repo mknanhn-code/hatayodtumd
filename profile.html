@@ -11,7 +11,7 @@
 <style>
     :root { --odtu-red: #E31E24; --odtu-dark: #2c3e50; --bg-light: #f8f9fa; --white: #ffffff; }
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
-    body { background-color: var(--bg-light); color: #333; min-height: 100vh; }
+    body { background-color: var(--bg-light); min-height: 100vh; color: #333; }
 
     /* NAVBAR */
     .navbar { width: 100%; height: 70px; background-color: var(--odtu-dark); display: flex; align-items: center; justify-content: space-between; padding: 0 20px; position: fixed; top: 0; z-index: 5000; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
@@ -83,7 +83,7 @@
             <a href="mentor.html">Mentorluk</a>
             <a href="career.html">Kariyer Lab</a>
             <a href="network.html">Mezun Ağı</a>
-            <a href="profile.html" class="active">Profilim</a>
+            <a href="profile.html" class="active">Profil</a>
             <a href="#" onclick="logout()" style="color: #ff6b6b; border: 1px solid #ff6b6b; margin-top: 20px;">Çıkış Yap</a>
         </div>
         <div class="nav-right"><a href="#" class="logout-btn" onclick="logout()">Çıkış</a></div>
@@ -219,6 +219,7 @@
             }
         }
 
+        // --- GÜNCELLENMİŞ KAYDET BUTONU ---
         document.getElementById('profileForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const btn = document.querySelector('.btn-save');
