@@ -15,35 +15,30 @@
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
     body { background-color: var(--bg-light); min-height: 100vh; color: #333; }
 
-    /* --- NAVBAR (SABİT) --- */
+    /* NAVBAR */
     .navbar { 
         width: 100%; height: 70px; background-color: var(--odtu-dark); 
         display: flex; align-items: center; justify-content: space-between; 
         padding: 0 20px; position: fixed; top: 0; left: 0; z-index: 5000; 
         box-shadow: 0 4px 10px rgba(0,0,0,0.1); 
     }
-    
     .nav-left { display: flex; align-items: center; gap: 15px; z-index: 5002; }
     .nav-logo { height: 40px; background: white; padding: 2px; border-radius: 5px; }
     .nav-title { color: white; font-size: 1.1rem; font-weight: bold; }
-    
     .nav-links { display: flex; gap: 20px; align-items: center; }
     .nav-links a { color: #bdc3c7; text-decoration: none; font-size: 0.95rem; display: flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 6px; transition: 0.3s; }
     .nav-links a:hover, .nav-links a.active { background-color: rgba(255,255,255,0.1); color: white; }
-    
     .nav-right { display: flex; align-items: center; }
     .logout-btn { color: #e74c3c; border: 1px solid #e74c3c; padding: 6px 15px; border-radius: 20px; text-decoration: none; transition: 0.3s; font-size: 0.9rem; }
     .logout-btn:hover { background: #e74c3c; color: white; }
-
     .hamburger { display: none; font-size: 1.5rem; color: white; cursor: pointer; z-index: 5002; }
 
-    /* --- LAYOUT --- */
+    /* LAYOUT */
     .container { 
         margin-top: 100px; padding: 40px; 
         max-width: 1200px; margin-left: auto; margin-right: auto; 
         display: flex; gap: 30px; position: relative; z-index: 1;
     }
-    
     .sidebar { width: 280px; flex-shrink: 0; }
     .menu-card { background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
     .menu-btn { display: flex; align-items: center; gap: 10px; width: 100%; padding: 15px 20px; border: none; background: white; cursor: pointer; text-align: left; font-size: 1rem; border-bottom: 1px solid #f1f1f1; transition: 0.2s; color: #555; }
@@ -57,81 +52,61 @@
 
     .page-title { font-size: 1.5rem; color: var(--odtu-dark); margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid #eee; display: flex; justify-content: space-between; align-items: center; }
 
-    /* FORM */
+    /* FORM ELEMANLARI */
     .form-group { margin-bottom: 20px; }
     .form-group label { display: block; font-weight: bold; margin-bottom: 8px; color: #555; }
-    .form-control { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; outline: none; }
-    .btn-save { background: var(--odtu-dark); color: white; border: none; padding: 12px 30px; border-radius: 8px; font-weight: bold; cursor: pointer; }
+    .form-control { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; outline: none; transition: 0.2s; }
+    .form-control:focus { border-color: var(--odtu-dark); }
+    textarea.form-control { resize: vertical; min-height: 80px; }
+    
+    .btn-save { background: var(--odtu-dark); color: white; border: none; padding: 12px 30px; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.2s; }
+    .btn-save:hover { background: #1e293b; }
+    
     #locationMap { width: 100%; height: 300px; border-radius: 8px; border: 1px solid #ddd; margin-top: 10px; z-index: 1; }
 
-    /* MESAJ LİSTESİ */
-    .msg-list { list-style: none; padding: 0; }
-    .msg-item { background: #f8f9fa; padding: 20px; border-radius: 8px; margin-bottom: 10px; border-left: 4px solid var(--odtu-dark); cursor: pointer; transition: 0.2s; position: relative; }
-    .msg-item:hover { background: #eef2f5; transform: translateX(5px); }
-    .msg-header { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 0.85rem; color: #777; }
-    .msg-sender { font-weight: bold; color: var(--odtu-dark); font-size: 1.1rem; display: flex; align-items: center; gap: 8px; }
-    .msg-preview { color: #555; font-size: 0.95rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 90%; }
-    .btn-new-msg { background: var(--odtu-red); color: white; border: none; padding: 8px 15px; border-radius: 6px; cursor: pointer; font-size: 0.9rem; font-weight: bold; display: flex; align-items: center; gap: 5px; }
+    /* YENİ EKLENEN: DETAYLI PROFİL ALANLARI */
+    .section-divider { margin: 30px 0; border-top: 1px dashed #ddd; }
+    .form-hint { font-size: 0.85rem; color: #888; margin-top: 5px; }
 
-    /* NOTLAR */
-    .note-input { width: 100%; padding: 15px; border: 1px solid #ddd; border-radius: 8px; margin-bottom: 10px; }
-    .note-item { background: #fff3e0; padding: 15px; border-radius: 8px; margin-bottom: 10px; position: relative; border: 1px solid #ffe0b2; }
-    .delete-note { position: absolute; top: 10px; right: 10px; cursor: pointer; color: #e74c3c; }
-
-    /* --- MENTOR İSTEK KARTLARI --- */
+    /* İSTEK KARTLARI */
     .request-item { display: flex; justify-content: space-between; align-items: center; padding: 15px; background: #fff; border: 1px solid #eee; border-radius: 8px; margin-bottom: 10px; transition: 0.2s; }
     .request-item:hover { box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
     .request-item.pending { border-left: 4px solid #f39c12; }
     .request-item.accepted { border-left: 4px solid #27ae60; background: #f9fff9; }
     .request-item.rejected { border-left: 4px solid #c0392b; opacity: 0.7; }
-    
-    .req-info h4 { margin: 0 0 5px 0; color: var(--odtu-dark); }
-    .req-info p { margin: 0; color: #777; font-size: 0.9rem; }
-    
     .btn-group { display: flex; gap: 10px; }
     .btn-accept { background: #27ae60; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; }
     .btn-reject { background: #c0392b; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; }
 
+    /* MESAJLAR */
+    .msg-list { list-style: none; padding: 0; }
+    .msg-item { background: #f8f9fa; padding: 20px; border-radius: 8px; margin-bottom: 10px; border-left: 4px solid var(--odtu-dark); cursor: pointer; transition: 0.2s; }
+    .msg-item:hover { transform: translateX(5px); }
+    .btn-new-msg { background: var(--odtu-red); color: white; border: none; padding: 8px 15px; border-radius: 6px; cursor: pointer; float: right; font-size: 0.9rem; }
+
     /* MODAL */
-    .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 6000; display: none; justify-content: center; align-items: center; backdrop-filter: blur(3px); }
-    .modal-content { background: white; padding: 30px; border-radius: 12px; width: 90%; max-width: 600px; position: relative; animation: slideUp 0.3s; display: flex; flex-direction: column; max-height: 90vh; overflow-y: auto; }
-    @keyframes slideUp { from {transform: translateY(20px); opacity:0;} to {transform: translateY(0); opacity:1;} }
+    .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 6000; display: none; justify-content: center; align-items: center; }
+    .modal-content { background: white; padding: 30px; border-radius: 12px; width: 90%; max-width: 600px; position: relative; max-height: 90vh; overflow-y: auto; }
     .close-modal { position: absolute; top: 15px; right: 20px; font-size: 1.5rem; cursor: pointer; color: #777; }
 
-    /* MESAJ OKUMA */
-    .read-header { border-bottom: 1px solid #eee; padding-bottom: 15px; margin-bottom: 15px; }
-    .read-sender { font-size: 1.3rem; font-weight: bold; color: var(--odtu-dark); }
-    .read-date { font-size: 0.85rem; color: #888; }
-    .read-body { font-size: 1rem; line-height: 1.6; color: #333; margin-bottom: 30px; background: #f9f9f9; padding: 20px; border-radius: 8px; }
-    .reply-area { border-top: 1px solid #eee; padding-top: 20px; }
-    .btn-reply { width: 100%; background: var(--odtu-red); color: white; border: none; padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer; }
-
     /* COMPOSE */
-    .recipients-container { border: 1px solid #ddd; border-radius: 8px; padding: 5px; display: flex; flex-wrap: wrap; gap: 5px; min-height: 45px; align-items: center; margin-bottom: 10px; position: relative; cursor: text; }
+    .recipients-container { border: 1px solid #ddd; border-radius: 8px; padding: 5px; display: flex; flex-wrap: wrap; gap: 5px; min-height: 45px; align-items: center; margin-bottom: 10px; position: relative; }
     .recipient-chip { background: #e3f2fd; color: #1565c0; padding: 5px 10px; border-radius: 15px; font-size: 0.9rem; display: flex; align-items: center; gap: 5px; }
-    .recipient-chip i { cursor: pointer; font-size: 0.8rem; opacity: 0.7; }
-    .recipient-chip i:hover { opacity: 1; color: #c0392b; }
+    .recipient-chip i { cursor: pointer; }
     .search-input-ghost { border: none; outline: none; flex: 1; padding: 5px; font-size: 0.95rem; min-width: 100px; }
-    .search-dropdown { position: absolute; top: 100%; left: 0; width: 100%; background: white; border: 1px solid #ddd; border-radius: 0 0 8px 8px; max-height: 150px; overflow-y: auto; display: none; z-index: 10; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
-    .search-item { padding: 10px; cursor: pointer; border-bottom: 1px solid #eee; font-size: 0.9rem; }
+    .search-dropdown { position: absolute; top: 100%; left: 0; width: 100%; background: white; border: 1px solid #ddd; border-radius: 0 0 8px 8px; display: none; z-index: 10; }
+    .search-item { padding: 10px; cursor: pointer; border-bottom: 1px solid #eee; }
     .search-item:hover { background: #f0f8ff; }
 
     /* TOAST */
-    #liveToast { position: fixed; top: 20px; right: 20px; background: white; padding: 15px 20px; border-radius: 8px; box-shadow: 0 5px 25px rgba(0,0,0,0.2); border-left: 6px solid #27ae60; z-index: 9999; display: none; min-width: 300px; animation: slideIn 0.4s; }
-    @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+    #liveToast { position: fixed; top: 20px; right: 20px; background: white; padding: 15px 20px; border-radius: 8px; border-left: 5px solid #27ae60; box-shadow: 0 5px 15px rgba(0,0,0,0.2); display:none; }
 
     /* MOBİL */
     @media (max-width: 900px) {
         .navbar { padding: 0 15px; }
         .hamburger { display: block; }
-        .nav-links { 
-            position: fixed; top: 70px; left: -100%; width: 100%; height: calc(100vh - 70px); 
-            background-color: var(--odtu-dark); flex-direction: column; 
-            align-items: center; justify-content: flex-start; padding-top: 40px; 
-            transition: 0.4s ease-in-out; z-index: 4999; 
-        }
+        .nav-links { position: fixed; top: 70px; left: -100%; width: 100%; height: calc(100vh - 70px); background-color: var(--odtu-dark); flex-direction: column; align-items: center; justify-content: flex-start; padding-top: 40px; transition: 0.4s ease-in-out; z-index: 4999; }
         .nav-links.active { left: 0; }
-        .nav-links a { font-size: 1.2rem; margin: 15px 0; width: 80%; justify-content: center; color: white; }
         .nav-right { display: none; }
         .container { flex-direction: column; margin-top: 90px; padding: 20px; }
         .sidebar { width: 100%; }
@@ -154,13 +129,12 @@
             <a href="career.html">Kariyer Lab</a>
             <a href="network.html">Mezun Ağı</a>
             <a href="profile.html" class="active">Profil</a>
-            
+            <a href="#" onclick="logout()" style="color: #ff6b6b; border: 1px solid #ff6b6b; margin-top: 20px;">Çıkış Yap</a>
         </div>
         <div class="nav-right"><a href="#" class="logout-btn" onclick="logout()">Çıkış</a></div>
     </nav>
 
     <div class="container">
-        
         <div class="sidebar">
             <div class="menu-card">
                 <button class="menu-btn active" onclick="switchTab('settings', this)"><i class="fa-solid fa-sliders"></i> Profil Ayarları</button>
@@ -183,6 +157,25 @@
                     <div class="form-group"><label>Ad Soyad</label><input type="text" id="fullName" class="form-control" readonly style="background:#f9f9f9;"></div>
                     <div class="form-group"><label>Bölüm</label><input type="text" id="dept" class="form-control"></div>
                     
+                    <div class="section-divider"></div>
+                    <h4 style="color:var(--odtu-dark); margin-bottom:15px;">Kariyer & Mentorluk Bilgileri</h4>
+                    
+                    <div class="form-group">
+                        <label><i class="fa-brands fa-linkedin" style="color:#0077b5;"></i> LinkedIn Profil Linki</label>
+                        <input type="url" id="linkedin" class="form-control" placeholder="https://linkedin.com/in/...">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Yetkinlikler (Virgül ile ayırın)</label>
+                        <input type="text" id="skills" class="form-control" placeholder="Örn: Python, Proje Yönetimi, Pazarlama">
+                        <p class="form-hint">Bu alanlar mentor aramasında kullanılacaktır.</p>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Kısa Biyografi</label>
+                        <textarea id="bio" class="form-control" placeholder="Kendinizi ve tecrübelerinizi kısaca tanıtın..."></textarea>
+                    </div>
+                    <div class="section-divider"></div>
                     <div id="gradFields" style="display:none;">
                         <div class="form-group"><label>Şirket</label><input type="text" id="company" class="form-control"></div>
                         <div class="form-group"><label>Sektör</label><input type="text" id="sector" class="form-control"></div>
@@ -202,91 +195,43 @@
             </div>
 
             <div id="messages" class="tab-content">
-                <div class="page-title">
-                    Gelen Kutusu
-                    <button class="btn-new-msg" onclick="openComposeModal()"><i class="fa-solid fa-pen-to-square"></i> Yeni Mesaj</button>
-                </div>
-                <ul id="msgList" class="msg-list">
-                    <div style="text-align:center; color:#999; padding:20px;">Yükleniyor...</div>
-                </ul>
+                <div class="page-title">Gelen Kutusu <button class="btn-new-msg" onclick="openComposeModal()"><i class="fa-solid fa-pen-to-square"></i> Yeni</button></div>
+                <ul id="msgList" class="msg-list"><div style="text-align:center; padding:20px;">Yükleniyor...</div></ul>
             </div>
 
             <div id="mentorRequests" class="tab-content">
                 <div class="page-title">Mentorluk Talepleri</div>
-                <div id="reqListContainer">
-                    <p style="text-align:center; color:#999; padding:20px;">İstekler kontrol ediliyor...</p>
-                </div>
+                <div id="reqListContainer"><p style="text-align:center; padding:20px;">Kontrol ediliyor...</p></div>
             </div>
 
             <div id="notes" class="tab-content">
                 <div class="page-title">Kişisel Notlar</div>
                 <div style="display:flex; gap:10px; margin-bottom:20px;">
-                    <input type="text" id="newNote" class="form-control" placeholder="Yeni not ekle...">
+                    <input type="text" id="newNote" class="form-control" placeholder="Yeni not...">
                     <button class="btn-save" style="width:auto;" onclick="addNote()">Ekle</button>
                 </div>
-                <div id="noteList"><div style="text-align:center; color:#999;">Notunuz yok.</div></div>
-            </div>
-
-        </div>
-    </div>
-
-    <div id="readModal" class="modal-overlay">
-        <div class="modal-content">
-            <span class="close-modal" onclick="closeModal('readModal')">&times;</span>
-            <div class="read-header">
-                <div class="read-sender" id="readSender">...</div>
-                <div class="read-date" id="readDate">...</div>
-            </div>
-            <div class="read-body" id="readContent">...</div>
-            <div class="reply-area">
-                <label style="font-weight:bold; display:block; margin-bottom:10px;">Cevap Yaz:</label>
-                <input type="hidden" id="replyTargetId">
-                <textarea id="replyText" class="form-control" rows="3" placeholder="Yanıtınız..."></textarea>
-                <br>
-                <button class="btn-reply" onclick="sendReply()">Yanıtla 🚀</button>
+                <div id="noteList"></div>
             </div>
         </div>
     </div>
 
-    <div id="composeModal" class="modal-overlay">
-        <div class="modal-content">
-            <span class="close-modal" onclick="closeModal('composeModal')">&times;</span>
-            <h3 style="margin-top:0; color:var(--odtu-dark);"><i class="fa-solid fa-pen-nib"></i> Yeni Mesaj</h3>
-            
-            <label style="font-weight:bold; margin-bottom:5px; display:block;">Kime:</label>
-            <div class="recipients-container" onclick="document.getElementById('userSearchInput').focus()">
-                <div id="recipientChips" style="display:flex; gap:5px; flex-wrap:wrap;"></div>
-                <input type="text" id="userSearchInput" class="search-input-ghost" placeholder="Kişi ara..." onkeyup="searchUsers(this.value)">
-                <div id="searchDropdown" class="search-dropdown"></div>
-            </div>
-
-            <label style="font-weight:bold; margin-bottom:5px; display:block; margin-top:15px;">Mesajınız:</label>
-            <textarea id="composeContent" class="form-control" rows="6" placeholder="Merhaba..."></textarea>
-            
-            <button class="btn-reply" style="margin-top:15px;" onclick="sendNewMessage()">Gönder <i class="fa-regular fa-paper-plane"></i></button>
-        </div>
-    </div>
-
-    <div id="liveToast" style="position:fixed; top:20px; right:20px; background:white; padding:15px; border-radius:8px; border-left:5px solid #27ae60; box-shadow:0 5px 15px rgba(0,0,0,0.2); display:none;">✅ İşlem Başarılı!</div>
+    <div id="readModal" class="modal-overlay"><div class="modal-content"><span class="close-modal" onclick="closeModal('readModal')">&times;</span><div class="read-header"><div class="read-sender" id="readSender">...</div><div class="read-date" id="readDate">...</div></div><div class="read-body" id="readContent">...</div><div class="reply-area"><input type="hidden" id="replyTargetId"><textarea id="replyText" class="form-control" rows="3" placeholder="Yanıtınız..."></textarea><br><button class="btn-reply" style="width:100%; background:var(--odtu-red); color:white; border:none; padding:10px; border-radius:5px;" onclick="sendReply()">Yanıtla</button></div></div></div>
+    <div id="composeModal" class="modal-overlay"><div class="modal-content"><span class="close-modal" onclick="closeModal('composeModal')">&times;</span><h3>Yeni Mesaj</h3><div class="recipients-container" onclick="document.getElementById('userSearchInput').focus()"><div id="recipientChips" style="display:flex; gap:5px; flex-wrap:wrap;"></div><input type="text" id="userSearchInput" class="search-input-ghost" placeholder="Kişi ara..." onkeyup="searchUsers(this.value)"><div id="searchDropdown" class="search-dropdown"></div></div><textarea id="composeContent" class="form-control" rows="6" placeholder="Mesaj..."></textarea><button class="btn-save" style="margin-top:15px; width:100%;" onclick="sendNewMessage()">Gönder</button></div></div>
+    <div id="liveToast">İşlem Başarılı</div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
         const supabaseUrl = 'https://hftrmiiacxgtkarsvupn.supabase.co';
         const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhmdHJtaWlhY3hndGthcnN2dXBuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ3ODUzNzIsImV4cCI6MjA4MDM2MTM3Mn0.BgCk5xuZx6AZuxzfBHcQqg8j8BtxU9FbupDgoFecG_k';
         
-        // HATA ÇÖZÜMÜ: Değişken adı 'supabaseClient' olarak değiştirildi.
         let supabaseClient;
-        try { 
-            if(window.supabase) supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey); 
-        } catch(e) { console.error(e); }
+        try { if(window.supabase) supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey); } catch(e){console.error(e);}
         
         let map, marker, currentUser;
-        let loadedMessages = [];
-        let selectedRecipients = [];
+        let loadedMessages = [], selectedRecipients = [];
 
         document.addEventListener("DOMContentLoaded", async () => {
-            if(!supabaseClient) { alert("Sistem hatası: Supabase yüklenemedi."); return; }
-            
+            if(!supabaseClient) { alert("Sistem hatası"); return; }
             const { data: { session } } = await supabaseClient.auth.getSession();
             if (!session) { window.location.href = 'index.html'; return; }
             currentUser = session.user;
@@ -297,22 +242,16 @@
             loadNotes();
         });
 
-        // MOBİL MENÜ
         function toggleMenu() { document.getElementById('navLinks').classList.toggle('active'); }
-
-        // SEKME GEÇİŞİ
         function switchTab(id, btn) {
             document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
             document.querySelectorAll('.menu-btn').forEach(b => b.classList.remove('active'));
             document.getElementById(id).classList.add('active');
             btn.classList.add('active');
             if(id==='settings' && map) setTimeout(()=>map.invalidateSize(), 200);
-            
-            // Eğer mentor istekleri sekmesi açıldıysa verileri yükle
-            if(id === 'mentorRequests') loadMentorRequests();
+            if(id==='mentorRequests') loadMentorRequests();
         }
 
-        // PROFİL & HARİTA
         function initMap() {
             map = L.map('locationMap').setView([39.9334, 32.8597], 5);
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
@@ -330,7 +269,14 @@
                 document.getElementById('fullName').value = data.full_name;
                 document.getElementById('dept').value = data.department;
                 
-                // MENTOR İSE BUTONU AÇ VE BİLDİRİM KONTROLÜ YAP
+                // YENİ ALANLARI DOLDURMA
+                document.getElementById('linkedin').value = data.linkedin_url || '';
+                document.getElementById('bio').value = data.bio || '';
+                // Skills array'ini stringe çevir (virgül ile)
+                if(data.skills && Array.isArray(data.skills)) {
+                    document.getElementById('skills').value = data.skills.join(', ');
+                }
+
                 if (data.is_mentor) {
                     document.getElementById('mentorTabBtn').style.display = 'flex';
                     loadMentorRequests(); 
@@ -355,194 +301,158 @@
         
         document.getElementById('profileForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-            const updates = { department: document.getElementById('dept').value, latitude: document.getElementById('lat').value || null, longitude: document.getElementById('lng').value || null, company: document.getElementById('company').value, sector: document.getElementById('sector').value, grad_year: document.getElementById('gradYear').value, class_level: document.getElementById('classLevel').value };
+            
+            // Skills stringini array'e çevirme
+            let skillsArray = [];
+            const skillsStr = document.getElementById('skills').value;
+            if(skillsStr) {
+                skillsArray = skillsStr.split(',').map(s => s.trim()).filter(s => s.length > 0);
+            }
+
+            const updates = { 
+                department: document.getElementById('dept').value, 
+                latitude: document.getElementById('lat').value || null, 
+                longitude: document.getElementById('lng').value || null, 
+                company: document.getElementById('company').value, 
+                sector: document.getElementById('sector').value, 
+                grad_year: document.getElementById('gradYear').value, 
+                class_level: document.getElementById('classLevel').value,
+                
+                // YENİ ALANLARIN KAYDEDİLMESİ
+                linkedin_url: document.getElementById('linkedin').value,
+                bio: document.getElementById('bio').value,
+                skills: skillsArray
+            };
+
             const { error } = await supabaseClient.from('profiles').update(updates).eq('id', currentUser.id);
             if(!error) showToast("Profil Güncellendi!");
+            else alert("Hata: " + error.message);
         });
 
-        // --- GÜNCELLENEN MENTOR İSTEK YÖNETİMİ ---
+        // --- MENTORLUK TALEPLERİ ---
         async function loadMentorRequests() {
             const listDiv = document.getElementById('reqListContainer');
             const badge = document.getElementById('mentorReqCount');
             
-            // 1. Tüm istekleri çek (Bekleyen, kabul, red hepsi)
             const { data: requests, error } = await supabaseClient
                 .from('mentor_requests')
-                .select('*')
+                .select('*, profiles:student_id(full_name, department)') // İlişkisel veri çekmeye çalışıyoruz
                 .eq('mentor_id', currentUser.id)
                 .order('created_at', { ascending: false });
 
-            if (error) { listDiv.innerHTML = '<p style="color:red">Hata oluştu.</p>'; return; }
+            if (error) { listDiv.innerHTML = '<p>Hata oluştu.</p>'; return; }
 
-            // 2. Bekleyen istek sayısını hesapla ve rozeti güncelle
             const pendingCount = requests ? requests.filter(r => r.status === 'pending').length : 0;
-            if (pendingCount > 0) {
-                badge.innerText = pendingCount;
-                badge.style.display = 'inline-block';
-            } else {
-                badge.style.display = 'none';
-            }
+            if (pendingCount > 0) { badge.innerText = pendingCount; badge.style.display = 'inline-block'; } 
+            else { badge.style.display = 'none'; }
 
-            if (!requests || requests.length === 0) { 
-                listDiv.innerHTML = '<p style="text-align:center; color:#999; padding:20px;">Henüz bir mentorluk talebi almadınız.</p>'; 
-                return; 
-            }
+            if (!requests || requests.length === 0) { listDiv.innerHTML = '<p style="text-align:center;">Talep yok.</p>'; return; }
 
-            // 3. Öğrenci bilgilerini çek
-            const studentIds = requests.map(r => r.student_id);
-            const { data: students } = await supabaseClient.from('profiles').select('id, full_name, department').in('id', studentIds);
-            
-            const studentMap = {};
-            if(students) students.forEach(s => studentMap[s.id] = s);
+            // Öğrenci bilgilerini 'profiles' verisi yoksa manuel çekmek için yedek plan
+            // (Eğer relation kurulu değilse diye)
+            let studentIds = requests.map(r => r.student_id);
+            let studentMap = {};
+            if(!requests[0].profiles) {
+                const {data:st} = await supabaseClient.from('profiles').select('id,full_name,department').in('id',studentIds);
+                st.forEach(s => studentMap[s.id] = s);
+            }
 
             listDiv.innerHTML = '';
             requests.forEach(req => {
-                const s = studentMap[req.student_id] || { full_name: 'Bilinmeyen', department: '-' };
+                // Eğer ilişki varsa req.profiles kullan, yoksa manuel haritadan al
+                let s = req.profiles || studentMap[req.student_id] || { full_name: 'Bilinmeyen', department: '-' };
                 
-                // Duruma göre stil ve içerik ayarla
                 let statusClass = req.status; 
                 let actionHtml = '';
+                // Mesaj varsa göster
+                let msgHtml = req.request_message ? `<div style="background:#f9f9f9; padding:10px; margin-top:5px; border-radius:5px; font-size:0.9rem; font-style:italic;">"${req.request_message}"</div>` : '';
 
                 if (req.status === 'pending') {
-                    actionHtml = `
-                        <div class="btn-group">
-                            <button class="btn-accept" onclick="respondRequest('${req.id}', 'accepted')"><i class="fa-solid fa-check"></i> Kabul</button>
-                            <button class="btn-reject" onclick="respondRequest('${req.id}', 'rejected')"><i class="fa-solid fa-times"></i> Red</button>
-                        </div>`;
-                } else if (req.status === 'accepted') {
-                    actionHtml = `<span style="color:#27ae60; font-weight:bold;"><i class="fa-solid fa-check-circle"></i> Kabul Edildi</span>`;
-                } else if (req.status === 'rejected') {
-                    actionHtml = `<span style="color:#c0392b; font-weight:bold;"><i class="fa-solid fa-ban"></i> Reddedildi</span>`;
-                }
+                    actionHtml = `<div class="btn-group"><button class="btn-accept" onclick="respondRequest('${req.id}', 'accepted')">Kabul</button><button class="btn-reject" onclick="respondRequest('${req.id}', 'rejected')">Red</button></div>`;
+                } else if (req.status === 'accepted') actionHtml = `<span style="color:green; font-weight:bold;">Kabul Edildi</span>`;
+                else if (req.status === 'rejected') actionHtml = `<span style="color:red; font-weight:bold;">Reddedildi</span>`;
 
-                listDiv.innerHTML += `
-                    <div class="request-item ${statusClass}">
-                        <div class="req-info">
-                            <h4>${s.full_name}</h4>
-                            <p>${s.department}</p>
-                            <p style="font-size:0.8rem; margin-top:5px; color:#999;">${new Date(req.created_at).toLocaleDateString()}</p>
-                        </div>
-                        ${actionHtml}
+                listDiv.innerHTML += `<div class="request-item ${statusClass}">
+                    <div class="req-info">
+                        <h4>${s.full_name}</h4>
+                        <p>${s.department}</p>
+                        ${msgHtml}
+                        <p style="font-size:0.8rem; color:#999; margin-top:5px;">${new Date(req.created_at).toLocaleDateString()}</p>
                     </div>
-                `;
+                    ${actionHtml}
+                </div>`;
             });
         }
 
         async function respondRequest(reqId, status) {
-            if(!confirm(status === 'accepted' ? 'İsteği kabul ediyor musunuz?' : 'İsteği reddediyor musunuz?')) return;
-            const { error } = await supabaseClient.from('mentor_requests').update({ status: status }).eq('id', reqId);
-            if(error) alert("Hata: " + error.message);
-            else { 
-                showToast(status === 'accepted' ? "İstek Kabul Edildi" : "İstek Reddedildi"); 
-                loadMentorRequests(); // Listeyi ve sayacı yenile
-            }
+            if(!confirm("İşlemi onaylıyor musunuz?")) return;
+            await supabaseClient.from('mentor_requests').update({ status: status }).eq('id', reqId);
+            showToast("Güncellendi"); loadMentorRequests();
         }
 
-        // --- GELEN KUTUSU ---
+        // --- MESAJLAR ---
         async function loadMessages() {
             const { data } = await supabaseClient.from('direct_messages').select('*').eq('receiver_id', currentUser.id).order('created_at', {ascending:false});
             const list = document.getElementById('msgList');
-            if(!data || data.length===0) { list.innerHTML = '<div style="text-align:center; color:#999; padding:20px;">Gelen kutusu boş.</div>'; return; }
-            loadedMessages = data;
-            list.innerHTML = '';
-            document.getElementById('msgCount').innerText = data.length;
-            document.getElementById('msgCount').style.display = 'inline-block';
+            if(!data || data.length===0) { list.innerHTML = '<div style="text-align:center; padding:20px;">Gelen kutusu boş.</div>'; return; }
+            loadedMessages = data; list.innerHTML = '';
+            document.getElementById('msgCount').innerText = data.length; document.getElementById('msgCount').style.display = 'inline-block';
             data.forEach((m, index) => {
-                list.innerHTML += `<li class="msg-item" onclick="openMessage(${index})"><div class="msg-header"><span class="msg-sender"><i class="fa-regular fa-user"></i> ${m.sender_name || 'İsimsiz'}</span><span>${new Date(m.created_at).toLocaleDateString()}</span></div><div class="msg-preview">${m.content}</div></li>`;
+                list.innerHTML += `<li class="msg-item" onclick="openMessage(${index})"><div class="msg-header"><span class="msg-sender">${m.sender_name || 'İsimsiz'}</span><span>${new Date(m.created_at).toLocaleDateString()}</span></div><div class="msg-preview">${m.content}</div></li>`;
             });
         }
         function openMessage(index) {
             const msg = loadedMessages[index];
-            document.getElementById('readSender').innerText = msg.sender_name || 'Bilinmeyen Gönderici';
+            document.getElementById('readSender').innerText = msg.sender_name;
             document.getElementById('readDate').innerText = new Date(msg.created_at).toLocaleString();
             document.getElementById('readContent').innerText = msg.content;
             document.getElementById('replyTargetId').value = msg.sender_id;
             document.getElementById('readModal').style.display = 'flex';
         }
         async function sendReply() {
-            const targetId = document.getElementById('replyTargetId').value;
-            const content = document.getElementById('replyText').value;
-            if(!content) return alert("Boş cevap gönderilemez.");
-            const { error } = await supabaseClient.from('direct_messages').insert({ sender_id: currentUser.id, receiver_id: targetId, content: content, sender_name: currentUser.user_metadata?.full_name||'Üye' });
-            if(!error) { showToast("Yanıt Gönderildi!"); closeModal('readModal'); document.getElementById('replyText').value = ''; }
+            const tId = document.getElementById('replyTargetId').value;
+            const txt = document.getElementById('replyText').value;
+            if(!txt) return alert("Boş mesaj gönderilemez");
+            await supabaseClient.from('direct_messages').insert({sender_id: currentUser.id, receiver_id: tId, content: txt, sender_name: currentUser.user_metadata?.full_name});
+            showToast("Gönderildi"); closeModal('readModal');
         }
 
-        // --- YENİ MESAJ OLUŞTURMA ---
-        function openComposeModal() {
-            selectedRecipients = [];
-            updateRecipientsUI();
-            document.getElementById('composeContent').value = '';
-            document.getElementById('composeModal').style.display = 'flex';
+        // --- COMPOSE ---
+        function openComposeModal() { selectedRecipients=[]; updateRecipientsUI(); document.getElementById('composeContent').value=''; document.getElementById('composeModal').style.display='flex'; }
+        async function searchUsers(q) {
+            const dd = document.getElementById('searchDropdown');
+            if(q.length<3) { dd.style.display='none'; return; }
+            const {data} = await supabaseClient.from('profiles').select('id,full_name').ilike('full_name', `%${q}%`).limit(5);
+            dd.innerHTML='';
+            if(data && data.length>0) { dd.style.display='block'; data.forEach(u=>{ dd.innerHTML+=`<div class="search-item" onclick="addRecipient('${u.id}','${u.full_name}')">${u.full_name}</div>`; }); } 
+            else dd.style.display='none';
         }
-        async function searchUsers(query) {
-            const dropdown = document.getElementById('searchDropdown');
-            if(query.length < 3) { dropdown.style.display='none'; return; }
-            const { data } = await supabaseClient.from('profiles').select('id, full_name, user_type').ilike('full_name', `%${query}%`).limit(5);
-            dropdown.innerHTML = '';
-            if(data && data.length > 0) {
-                dropdown.style.display = 'block';
-                data.forEach(u => {
-                    if(u.id !== currentUser.id && !selectedRecipients.find(r=>r.id===u.id)) {
-                        dropdown.innerHTML += `<div class="search-item" onclick="addRecipient('${u.id}', '${u.full_name}')">${u.full_name} <small>(${u.user_type})</small></div>`;
-                    }
-                });
-            } else { dropdown.style.display='none'; }
-        }
-        function addRecipient(id, name) {
-            selectedRecipients.push({id, name});
-            updateRecipientsUI();
-            document.getElementById('userSearchInput').value = '';
-            document.getElementById('searchDropdown').style.display = 'none';
-        }
-        function removeRecipient(id) {
-            selectedRecipients = selectedRecipients.filter(r => r.id !== id);
-            updateRecipientsUI();
-        }
-        function updateRecipientsUI() {
-            const container = document.getElementById('recipientChips');
-            container.innerHTML = selectedRecipients.map(r => 
-                `<div class="recipient-chip">${r.name} <i class="fa-solid fa-times" onclick="removeRecipient('${r.id}')"></i></div>`
-            ).join('');
-        }
+        function addRecipient(id, name) { selectedRecipients.push({id,name}); updateRecipientsUI(); document.getElementById('userSearchInput').value=''; document.getElementById('searchDropdown').style.display='none'; }
+        function removeRecipient(id) { selectedRecipients = selectedRecipients.filter(r=>r.id!==id); updateRecipientsUI(); }
+        function updateRecipientsUI() { document.getElementById('recipientChips').innerHTML = selectedRecipients.map(r=>`<div class="recipient-chip">${r.name} <i onclick="removeRecipient('${r.id}')" class="fa-solid fa-times"></i></div>`).join(''); }
         async function sendNewMessage() {
-            if(selectedRecipients.length === 0) return alert("Lütfen en az bir alıcı seçin.");
-            const content = document.getElementById('composeContent').value;
-            if(!content) return alert("Mesaj içeriği boş olamaz.");
-            const btn = event.target; btn.innerText = "Gönderiliyor..."; btn.disabled = true;
-            const myName = currentUser.user_metadata?.full_name || 'Üye';
-            const promises = selectedRecipients.map(r => 
-                supabaseClient.from('direct_messages').insert({
-                    sender_id: currentUser.id,
-                    receiver_id: r.id,
-                    content: content,
-                    sender_name: myName
-                })
-            );
-            await Promise.all(promises);
-            showToast(`${selectedRecipients.length} Kişiye Gönderildi!`);
-            closeModal('composeModal');
-            btn.innerText = "Gönder 🚀"; btn.disabled = false;
+            if(selectedRecipients.length===0) return alert("Alıcı seçin");
+            const txt = document.getElementById('composeContent').value;
+            const promises = selectedRecipients.map(r=>supabaseClient.from('direct_messages').insert({sender_id:currentUser.id, receiver_id:r.id, content:txt, sender_name:currentUser.user_metadata?.full_name}));
+            await Promise.all(promises); showToast("Gönderildi"); closeModal('composeModal');
         }
 
         // --- NOTLAR ---
         async function loadNotes() {
             const { data } = await supabaseClient.from('personal_notes').select('*').eq('user_id', currentUser.id).order('created_at', {ascending:false});
-            const list = document.getElementById('noteList');
-            if(!data || data.length===0) { list.innerHTML='<div style="text-align:center; color:#999;">Notunuz yok.</div>'; return; }
-            list.innerHTML='';
-            data.forEach(n => list.innerHTML += `<div class="note-item">${n.content} <i class="fa-solid fa-trash delete-note" onclick="deleteNote(${n.id})"></i></div>`);
+            const l = document.getElementById('noteList'); l.innerHTML='';
+            if(data) data.forEach(n => l.innerHTML+=`<div class="note-item">${n.content} <i class="fa-solid fa-trash delete-note" onclick="deleteNote(${n.id})"></i></div>`);
         }
         async function addNote() {
-            const txt = document.getElementById('newNote').value; if(!txt)return;
-            await supabaseClient.from('personal_notes').insert({user_id: currentUser.id, content: txt});
+            const c = document.getElementById('newNote').value; if(!c)return;
+            await supabaseClient.from('personal_notes').insert({user_id:currentUser.id, content:c});
             document.getElementById('newNote').value=''; loadNotes();
         }
-        async function deleteNote(id) { if(confirm("Silinsin mi?")) { await supabaseClient.from('personal_notes').delete().eq('id', id); loadNotes(); } }
+        async function deleteNote(id) { if(confirm("Sil?")) { await supabaseClient.from('personal_notes').delete().eq('id',id); loadNotes(); } }
 
-        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
-        window.onclick = function(e) { if(e.target.className==='modal-overlay') e.target.style.display='none'; }
-        function showToast(msg) { const t = document.getElementById('liveToast'); t.innerText=msg; t.style.display='block'; setTimeout(()=>t.style.display='none', 3000); }
-        async function logout() { await supabaseClient.auth.signOut(); window.location.href = "index.html"; }
+        function closeModal(id) { document.getElementById(id).style.display='none'; }
+        function showToast(msg) { const t=document.getElementById('liveToast'); t.innerText=msg; t.style.display='block'; setTimeout(()=>t.style.display='none',3000); }
+        async function logout() { await supabaseClient.auth.signOut(); window.location.href="index.html"; }
     </script>
 </body>
 </html>
