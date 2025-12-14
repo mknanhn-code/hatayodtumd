@@ -6,7 +6,6 @@
 <title>Yönetim Paneli - Hatay ODTÜ MD</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
-    /* GENEL STİL */
     :root { --admin-dark: #1e293b; --admin-light: #f1f5f9; --accent: #E31E24; --text: #334155; }
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
     body { display: flex; background-color: var(--admin-light); min-height: 100vh; color: var(--text); }
@@ -23,13 +22,11 @@
     .main { margin-left: 250px; padding: 40px; flex: 1; width: calc(100% - 250px); transition: 0.3s; }
     .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
     
-    /* MOBİL MENÜ BUTONU (Masaüstünde Gizli) */
-    .mobile-toggle { display: none; font-size: 1.5rem; color: var(--admin-dark); cursor: pointer; margin-right: 15px; }
-
-    /* SİYAH PERDE (Mobilde menü açılınca arka plan) */
+    /* MOBİL MENÜ */
+    .mobile-toggle { display: none; font-size: 1.5rem; color: var(--admin-dark); cursor: pointer; position: fixed; top: 20px; left: 20px; z-index: 1100; background: white; padding: 8px; border-radius: 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
     .sidebar-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 900; }
 
-    /* İSTATİSTİK */
+    /* DASHBOARD WIDGETS */
     .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 30px; }
     .stat-card { background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); display: flex; align-items: center; gap: 20px; }
     .stat-icon { width: 50px; height: 50px; border-radius: 10px; display: flex; justify-content: center; align-items: center; font-size: 1.5rem; color: white; flex-shrink: 0; }
@@ -37,81 +34,57 @@
     .stat-info p { margin: 0; color: #64748b; font-size: 0.9rem; }
     .bg-blue { background: #3b82f6; } .bg-green { background: #10b981; } .bg-orange { background: #f59e0b; } .bg-red { background: #ef4444; } .bg-purple { background: #8e44ad; }
 
-    /* TABLOLAR */
+    /* TABLES & SECTIONS */
     .section { display: none; animation: fadeIn 0.3s; }
     .section.active { display: block; }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
     .table-container { background: white; border-radius: 10px; padding: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); overflow-x: auto; margin-bottom: 30px; }
     table { width: 100%; border-collapse: collapse; min-width: 800px; }
     th, td { padding: 15px; text-align: left; border-bottom: 1px solid #f1f5f9; }
     th { color: #64748b; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; }
     tr:hover { background-color: #f8fafc; }
-
-    /* ROZETLER & BUTONLAR */
     .badge { padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: bold; display: inline-block; }
-    .badge-no { background: #fee2e2; color: #991b1b; } 
-    .badge-yes { background: #dcfce7; color: #166534; }
-    .badge-pending { background: #ffedd5; color: #c2410c; }
-    
+    .badge-no { background: #fee2e2; color: #991b1b; } .badge-yes { background: #dcfce7; color: #166534; } .badge-pending { background: #ffedd5; color: #c2410c; }
     .btn { padding: 6px 12px; border-radius: 6px; border: none; cursor: pointer; font-weight: bold; font-size: 0.8rem; margin-right: 5px; white-space: nowrap; transition: 0.2s; }
-    .btn-approve { background: #10b981; color: white; }
-    .btn-block { background: #f59e0b; color: white; }
-    .btn-role { background: #3b82f6; color: white; }
-    .btn-delete { background: #ef4444; color: white; }
-    .btn:hover { opacity: 0.9; }
-
+    .btn-approve { background: #10b981; color: white; } .btn-block { background: #f59e0b; color: white; } .btn-role { background: #3b82f6; color: white; } .btn-delete { background: #ef4444; color: white; } .btn:hover { opacity: 0.9; }
+    
     /* FORM & MODAL */
     .form-control { padding: 10px; border: 1px solid #ddd; border-radius: 6px; outline: none; width: 100%; margin-bottom: 10px; }
-    .form-row { display: flex; gap: 15px; flex-wrap: wrap; }
-    .form-row .form-control { flex: 1; min-width: 200px; }
+    .form-row { display: flex; gap: 15px; flex-wrap: wrap; } .form-row .form-control { flex: 1; min-width: 200px; }
     .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 2000; display: none; justify-content: center; align-items: center; }
     .modal-content { background: white; padding: 30px; border-radius: 12px; width: 90%; max-width: 600px; position: relative; max-height: 80vh; overflow-y: auto; }
     .close-modal { position: absolute; top: 15px; right: 20px; font-size: 1.5rem; cursor: pointer; }
-
-    /* TOAST */
     #liveToast { position: fixed; top: 20px; right: 20px; background: white; padding: 15px; border-radius: 8px; border-left: 5px solid #27ae60; display: none; z-index: 3000; box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
 
-    /* --- MOBİL UYUMLULUK AYARLARI --- */
+    /* MOBİL */
     @media (max-width: 900px) {
-        body { display: block; } /* Flex yapısını mobilde iptal et */
-        .sidebar { transform: translateX(-100%); } /* Menüyü gizle */
-        .sidebar.active { transform: translateX(0); } /* Menü açılınca göster */
-        .main { margin-left: 0; width: 100%; padding: 20px; padding-top: 80px; } /* İçerik tam ekran */
-        .mobile-toggle { display: block; position: fixed; top: 20px; left: 20px; z-index: 1100; background: white; padding: 10px; border-radius: 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-        .sidebar-overlay.active { display: block; } /* Karartma */
-        .header { flex-direction: column; align-items: flex-start; gap: 10px; margin-top: 20px;}
-        .stat-card { flex-direction: column; text-align: center; }
+        body { display: block; }
+        .sidebar { transform: translateX(-100%); } .sidebar.active { transform: translateX(0); }
+        .main { margin-left: 0; width: 100%; padding: 20px; padding-top: 80px; }
+        .mobile-toggle { display: block; } .sidebar-overlay.active { display: block; }
+        .header { flex-direction: column; align-items: flex-start; gap: 10px; margin-top: 10px;}
     }
 </style>
 </head>
 <body>
-
     <div class="sidebar-overlay" onclick="toggleSidebar()"></div>
-
-    <div class="mobile-toggle" onclick="toggleSidebar()">
-        <i class="fa-solid fa-bars"></i>
-    </div>
+    <div class="mobile-toggle" onclick="toggleSidebar()"><i class="fa-solid fa-bars"></i></div>
 
     <div class="sidebar" id="sidebar">
         <a href="dashboard.html" class="logo"><i class="fa-solid fa-shield-halved"></i> Yönetim Paneli</a>
-        
         <div class="menu-item active" onclick="switchTab('overview', this)"><i class="fa-solid fa-chart-line"></i> Genel Bakış</div>
         <div class="menu-item" onclick="switchTab('users', this)"><i class="fa-solid fa-users"></i> Üyeler & Onay <span id="pendingCountBadge" style="background:red; color:white; font-size:0.7rem; padding:2px 6px; border-radius:10px; display:none;">0</span></div>
         <div class="menu-item" onclick="switchTab('events', this)"><i class="fa-solid fa-calendar-plus"></i> Etkinlik Yönetimi</div>
         <div class="menu-item" onclick="switchTab('requests', this)"><i class="fa-solid fa-flask"></i> Talepler (Lab)</div>
         <div class="menu-item" onclick="switchTab('jobs', this)"><i class="fa-solid fa-briefcase"></i> İlan & Başvuru</div>
         <div class="menu-item" onclick="switchTab('content', this)"><i class="fa-solid fa-bullhorn"></i> Duyuru Yap</div>
-        
         <div class="nav-divider"></div>
         <a href="dashboard.html" class="menu-item"><i class="fa-solid fa-house"></i> Siteye Dön</a>
         <a href="#" class="menu-item logout-btn" onclick="logout()"><i class="fa-solid fa-right-from-bracket"></i> Çıkış</a>
     </div>
 
     <div class="main">
-        <div class="header">
-            <h2 id="pageTitle" style="margin-left: 40px;">Genel Bakış</h2> <div style="font-size:0.9rem; color:#64748b;">Admin: <span id="adminName">...</span></div>
-        </div>
+        <div class="header"><h2 id="pageTitle" style="margin-left:40px;">Genel Bakış</h2><div style="font-size:0.9rem; color:#64748b;">Admin: <span id="adminName">...</span></div></div>
 
         <div id="overview" class="section active">
             <div class="stats-grid">
@@ -121,22 +94,13 @@
                 <div class="stat-card"><div class="stat-icon bg-red"><i class="fa-solid fa-flask"></i></div><div class="stat-info"><h3 id="statReqs">0</h3><p>Bekleyen Talep</p></div></div>
                 <div class="stat-card"><div class="stat-icon bg-purple"><i class="fa-solid fa-calendar-day"></i></div><div class="stat-info"><h3 id="statEvents">0</h3><p>Etkinlik</p></div></div>
             </div>
-            <div class="table-container">
-                <h3>🔔 Son Aktiviteler</h3>
-                <table id="recentUsersTable"><thead><tr><th>Ad Soyad</th><th>Tarih</th><th>Durum</th></tr></thead><tbody id="recentUsersBody"></tbody></table>
-            </div>
+            <div class="table-container"><h3>🔔 Son Aktiviteler</h3><table id="recentUsersTable"><thead><tr><th>Ad Soyad</th><th>Tarih</th><th>Durum</th></tr></thead><tbody id="recentUsersBody"></tbody></table></div>
         </div>
 
         <div id="users" class="section">
             <div class="table-container">
-                <div style="display:flex; justify-content:space-between; flex-wrap: wrap; gap:10px; margin-bottom:15px;">
-                    <h3>📋 Kayıtlı Kullanıcılar</h3>
-                    <input type="text" id="userSearch" placeholder="İsim ara..." class="form-control" style="width: 250px; margin-bottom:0;" onkeyup="filterTable('userTable', this.value)">
-                </div>
-                <table id="userTable">
-                    <thead><tr><th>Ad Soyad / Email</th><th>Tip</th><th>Bölüm</th><th>Durum</th><th>İşlemler</th></tr></thead>
-                    <tbody id="userListBody"><tr><td colspan="5">Yükleniyor...</td></tr></tbody>
-                </table>
+                <div style="display:flex; justify-content:space-between; flex-wrap: wrap; gap:10px; margin-bottom:15px;"><h3>📋 Kayıtlı Kullanıcılar</h3><input type="text" id="userSearch" placeholder="İsim ara..." class="form-control" style="width:250px; margin-bottom:0;" onkeyup="filterTable('userTable', this.value)"></div>
+                <table id="userTable"><thead><tr><th>Ad Soyad / Email</th><th>Tip</th><th>Bölüm</th><th>Durum</th><th>İşlemler</th></tr></thead><tbody id="userListBody"><tr><td colspan="5">Yükleniyor...</td></tr></tbody></table>
             </div>
         </div>
 
@@ -144,31 +108,22 @@
             <div class="table-container">
                 <h3>🗓️ Yeni Etkinlik Oluştur</h3>
                 <div style="background:#f8fafc; padding:20px; border-radius:8px; margin-bottom:20px; border:1px solid #e2e8f0;">
-                    <div class="form-row">
-                        <input type="text" id="evtTitle" class="form-control" placeholder="Etkinlik Başlığı">
-                        <input type="date" id="evtDate" class="form-control">
-                    </div>
-                    <div class="form-row">
-                        <input type="text" id="evtLoc" class="form-control" placeholder="Konum">
-                    </div>
+                    <div class="form-row"><input type="text" id="evtTitle" class="form-control" placeholder="Etkinlik Başlığı"><input type="date" id="evtDate" class="form-control"></div>
+                    <div class="form-row"><input type="text" id="evtLoc" class="form-control" placeholder="Konum"></div>
                     <textarea id="evtDesc" class="form-control" rows="2" placeholder="Kısa açıklama..."></textarea>
                     <button class="btn btn-approve" style="width:100%;" onclick="publishNewEvent()">Etkinliği Yayınla</button>
                 </div>
-                <h3>Mevcut Etkinlikler</h3>
-                <table id="eventsTable"><thead><tr><th>Tarih</th><th>Başlık</th><th>Konum</th><th>İşlem</th></tr></thead><tbody id="eventsListBody"></tbody></table>
+                <h3>Mevcut Etkinlikler</h3><table id="eventsTable"><thead><tr><th>Tarih</th><th>Başlık</th><th>Konum</th><th>İşlem</th></tr></thead><tbody id="eventsListBody"></tbody></table>
             </div>
         </div>
 
         <div id="requests" class="section"><div class="table-container"><h3>🧪 Gelişim Talepleri</h3><table id="reqTable"><thead><tr><th>Öğrenci</th><th>Tür</th><th>Detay</th><th>Tarih</th><th>İşlem</th></tr></thead><tbody id="reqListBody"></tbody></table></div></div>
-        
         <div id="jobs" class="section"><div class="table-container"><h3>💼 İlan Yönetimi</h3><table id="jobTable"><thead><tr><th>Başlık</th><th>Şirket</th><th>Ekleyen</th><th>Başvuru</th><th>İşlem</th></tr></thead><tbody id="jobListBody"></tbody></table></div></div>
-        
         <div id="content" class="section"><div class="table-container"><h3>📢 Duyuru Yayınla</h3><textarea id="broadcastMsg" class="form-control" rows="4" placeholder="Duyuru metni..."></textarea><button class="btn btn-approve" onclick="sendBroadcast()">Yayınla</button></div></div>
     </div>
 
     <div id="applicantsModal" class="modal-overlay" style="display:none;"><div class="modal-content"><span class="close-modal" onclick="document.getElementById('applicantsModal').style.display='none'">&times;</span><h3>📄 Başvuranlar</h3><div id="applicantsListContent" style="margin-top:20px;"></div></div></div>
-    
-    <div id="liveToast" style="position: fixed; top: 20px; right: 20px; background: white; padding: 15px; border-radius: 8px; border-left: 5px solid #27ae60; display: none;">İşlem Başarılı</div>
+    <div id="liveToast">İşlem Başarılı</div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
@@ -179,70 +134,40 @@
         document.addEventListener("DOMContentLoaded", async () => {
             const { data: { session } } = await supabase.auth.getSession();
             if (!session) { window.location.href = 'index.html'; return; }
-            
             const { data: profile } = await supabase.from('profiles').select('*').eq('id', session.user.id).single();
-            if (!profile || !profile.roles || !profile.roles.includes('admin')) {
-                alert("Yetkisiz Giriş!"); window.location.href = 'dashboard.html'; return;
-            }
+            if (!profile || !profile.roles || !profile.roles.includes('admin')) { alert("Yetkisiz Giriş!"); window.location.href = 'dashboard.html'; return; }
             document.getElementById('adminName').innerText = profile.full_name;
             refreshAllData();
         });
 
-        // MOBİL MENÜYÜ AÇ/KAPA
-        function toggleSidebar() {
-            document.getElementById('sidebar').classList.toggle('active');
-            document.querySelector('.sidebar-overlay').classList.toggle('active');
-        }
-
-        // TAB DEĞİŞTİRME (Mobilde menüyü kapatır)
+        function toggleSidebar() { document.getElementById('sidebar').classList.toggle('active'); document.querySelector('.sidebar-overlay').classList.toggle('active'); }
         function switchTab(id, el) {
             document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
             document.querySelectorAll('.menu-item').forEach(m => m.classList.remove('active'));
-            document.getElementById(id).classList.add('active');
-            el.classList.add('active');
+            document.getElementById(id).classList.add('active'); el.classList.add('active');
             document.getElementById('pageTitle').innerText = el.innerText.trim();
-            
-            // Mobildeysek ve menü açıksa, sekmeye tıklayınca menüyü kapat
-            if(window.innerWidth <= 900) {
-                toggleSidebar();
-            }
+            if(window.innerWidth <= 900) toggleSidebar();
         }
-
         async function refreshAllData() { loadUsersAndStats(); loadEvents(); loadLabRequests(); loadJobs(); }
 
-        // --- 1. KULLANICILAR & İSTATİSTİK ---
         async function loadUsersAndStats() {
             const { data } = await supabase.from('profiles').select('*').order('created_at', { ascending: false });
-            const tbody = document.getElementById('userListBody');
-            const recentBody = document.getElementById('recentUsersBody');
+            const tbody = document.getElementById('userListBody'); const recentBody = document.getElementById('recentUsersBody');
             if(tbody) tbody.innerHTML = ''; if(recentBody) recentBody.innerHTML = '';
-
             let pendingCount = 0;
             if(data) data.forEach((u, index) => {
                 const isApproved = u.is_approved === true;
-                let statusBadge = isApproved 
-                    ? `<span class="badge badge-yes">✅ ONAYLI</span>` 
-                    : `<span class="badge badge-no">❌ ONAY BEKLİYOR</span>`;
-                
                 if (!isApproved) pendingCount++;
-
-                let approveBtn = isApproved 
-                    ? `<button class="btn btn-block" onclick="toggleApproval('${u.id}', false)">🚫 Kapat</button>`
-                    : `<button class="btn btn-approve" onclick="toggleApproval('${u.id}', true)">✅ Onayla</button>`;
-                
-                let roleBtn = `<button class="btn btn-role" onclick="manageRole('${u.id}', '${u.roles}')">🛡️ Rol</button>`;
-
-                if(tbody) tbody.innerHTML += `<tr><td><b>${u.full_name}</b><br><small>${u.email}</small></td><td>${u.user_type}</td><td>${u.department}</td><td>${statusBadge}</td><td>${approveBtn} ${roleBtn}</td></tr>`;
-                
+                const statusBadge = isApproved ? `<span class="badge badge-yes">✅ ONAYLI</span>` : `<span class="badge badge-no">❌ ONAY BEKLİYOR</span>`;
+                const approveBtn = isApproved ? `<button class="btn btn-block" onclick="toggleApproval('${u.id}', false)">🚫 Kapat</button>` : `<button class="btn btn-approve" onclick="toggleApproval('${u.id}', true)">✅ Onayla</button>`;
+                const roleBtn = `<button class="btn btn-role" onclick="manageRole('${u.id}', '${u.roles}')">🛡️ Rol</button>`;
+                tbody.innerHTML += `<tr><td><b>${u.full_name}</b><br><small>${u.email}</small></td><td>${u.user_type}</td><td>${u.department}</td><td>${statusBadge}</td><td>${approveBtn} ${roleBtn}</td></tr>`;
                 if(index < 5) recentBody.innerHTML += `<tr><td>${u.full_name}</td><td>${new Date(u.created_at).toLocaleDateString()}</td><td>${statusBadge}</td></tr>`;
             });
-
             if(document.getElementById('statTotal')) document.getElementById('statTotal').innerText = data ? data.length : 0;
             if(document.getElementById('statPending')) document.getElementById('statPending').innerText = pendingCount;
-            if(document.getElementById('pendingCountBadge')) {
-                const b = document.getElementById('pendingCountBadge');
-                if(pendingCount > 0) { b.innerText = pendingCount; b.style.display='inline-block'; } else b.style.display='none';
-            }
+            const b = document.getElementById('pendingCountBadge');
+            if(pendingCount > 0) { b.innerText = pendingCount; b.style.display='inline-block'; } else b.style.display='none';
         }
 
         async function toggleApproval(id, status) {
@@ -251,31 +176,22 @@
                 if(!error) { showToast("Güncellendi"); refreshAllData(); } else alert(error.message);
             }
         }
-
         async function manageRole(id, currentRoles) {
             const r = prompt("Roller (örn: admin, mentor):", currentRoles);
             if(r!==null) { await supabase.from('profiles').update({ roles: r.split(',').map(x=>x.trim()) }).eq('id', id); showToast("Roller Güncellendi"); }
         }
-
-        // --- 2. ETKİNLİK YÖNETİMİ ---
         async function publishNewEvent() {
-            const title = document.getElementById('evtTitle').value;
-            const date = document.getElementById('evtDate').value;
-            const loc = document.getElementById('evtLoc').value;
-            const desc = document.getElementById('evtDesc').value;
+            const title = document.getElementById('evtTitle').value; const date = document.getElementById('evtDate').value; const loc = document.getElementById('evtLoc').value; const desc = document.getElementById('evtDesc').value;
             if(!title || !date) return alert("Başlık ve Tarih zorunludur.");
             const { error } = await supabase.from('events').insert({ title, event_date: date, location: loc, description: desc });
             if(error) alert("Hata: " + error.message); else { showToast("Etkinlik Eklendi!"); loadEvents(); }
         }
         async function loadEvents() {
-            const tb = document.getElementById('eventsListBody');
-            const { data } = await supabase.from('events').select('*').order('event_date', {ascending: true});
+            const tb = document.getElementById('eventsListBody'); const { data } = await supabase.from('events').select('*').order('event_date', {ascending: true});
             if(document.getElementById('statEvents')) document.getElementById('statEvents').innerText = data ? data.length : 0;
             tb.innerHTML = '';
             if(data) data.forEach(e => tb.innerHTML += `<tr><td>${new Date(e.event_date).toLocaleDateString()}</td><td>${e.title}</td><td>${e.location||'-'}</td><td><button class="btn btn-delete" onclick="deleteItem('events', ${e.id}, loadEvents)">Sil</button></td></tr>`);
         }
-
-        // --- DİĞER MODÜLLER ---
         async function loadLabRequests() {
             const tb=document.getElementById('reqListBody'); let all=[];
             const t=['cv_requests','mock_interviews','job_shadowing','academic_matches','case_submissions'];
@@ -287,22 +203,17 @@
             tb.innerHTML=''; if(all.length===0) tb.innerHTML='<tr><td colspan="5">Talep yok.</td></tr>';
             else { all.sort((a,b)=>new Date(b.date)-new Date(a.date)); all.forEach(x=>tb.innerHTML+=`<tr><td>${x.name}</td><td><span class="badge badge-pending">${x.type}</span></td><td>${x.detail}</td><td>${new Date(x.date).toLocaleDateString()}</td><td><button class="btn btn-delete" onclick="deleteItem('${x.table}',${x.id},loadLabRequests)">Sil</button></td></tr>`); }
         }
-
         async function loadJobs() {
-            const tb=document.getElementById('jobListBody');
-            const {data}=await supabase.from('jobs').select('*,profiles(full_name)').order('created_at',{ascending:false});
+            const tb=document.getElementById('jobListBody'); const {data}=await supabase.from('jobs').select('*,profiles(full_name)').order('created_at',{ascending:false});
             if(document.getElementById('statJobs')) document.getElementById('statJobs').innerText=data?data.length:0;
             tb.innerHTML='';
             if(data) data.forEach(j=>tb.innerHTML+=`<tr><td>${j.title}</td><td>${j.company}</td><td>${j.profiles?.full_name}</td><td>-</td><td><button class="btn btn-delete" onclick="deleteItem('jobs',${j.id},loadJobs)">Sil</button></td></tr>`);
         }
-
         async function sendBroadcast() {
             const msg = document.getElementById('broadcastMsg').value; if(!msg) return;
-            await supabase.from('broadcasts').insert({ message: msg });
-            await supabase.from('announcements').insert({ title: msg });
+            await supabase.from('broadcasts').insert({ message: msg }); await supabase.from('announcements').insert({ title: msg });
             showToast("Yayınlandı"); document.getElementById('broadcastMsg').value = '';
         }
-
         async function deleteItem(table, id, cb) { if(confirm("Silinsin mi?")) { await supabase.from(table).delete().eq('id', id); cb(); showToast("Silindi"); } }
         function filterTable(id, q) { document.querySelectorAll(`#${id} tbody tr`).forEach(r => r.style.display = r.innerText.toLowerCase().includes(q.toLowerCase()) ? '' : 'none'); }
         function showToast(m) { const t=document.getElementById('liveToast'); t.innerText=m; t.style.display='block'; setTimeout(()=>t.style.display='none',3000); }
