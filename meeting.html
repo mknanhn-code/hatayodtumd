@@ -9,7 +9,7 @@
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
-    /* STİLLER */
+    /* STİLLER (AYNI KALDI) */
     :root { --odtu-red: #E31E24; --odtu-dark: #2c3e50; --bg-light: #f4f6f9; --white: #ffffff; --meet-green: #00796b; }
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
     body { background-color: var(--bg-light); display: block; min-height: 100vh; }
@@ -48,7 +48,7 @@
     .join-btn:hover { background: #004d40; }
     .delete-btn { background: transparent; color: #999; border: none; cursor: pointer; font-size: 0.8rem; margin-top: 10px; width: 100%; text-decoration: underline; }
     
-    /* MODAL (FORM) */
+    /* MODAL (YENİ ODA FORMU) */
     .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 2000; display: none; justify-content: center; align-items: center; }
     .modal-content { background: white; padding: 30px; border-radius: 12px; width: 90%; max-width: 500px; animation: slideDown 0.3s; }
     @keyframes slideDown { from { transform: translateY(-50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
@@ -57,24 +57,21 @@
     .form-control { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px; outline: none; }
     .input-wrapper { display: flex; gap: 10px; }
     .btn-generate { background: #3498db; color: white; border: none; padding: 0 15px; border-radius: 6px; cursor: pointer; font-size: 0.8rem; white-space: nowrap; }
+    .btn-generate:hover { background: #2980b9; }
 
-    /* VIDEO MODAL (SİNEMA MODU) */
-    .video-modal-overlay { 
-        position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-        background: #000; z-index: 3000; display: none; 
-        flex-direction: column; 
+    /* --- 2. SİNEMA MODU (VIDEO MODAL) STİLLERİ EKLENDİ --- */
+    #cinemaModal {
+        display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+        background: #000; z-index: 3000; flex-direction: column;
     }
-    
-    .video-header { 
-        height: 50px; background: #1a1a1a; display: flex; justify-content: space-between; align-items: center; padding: 0 20px; 
-        color: white; border-bottom: 1px solid #333;
+    #meet-frame { flex: 1; width: 100%; background: #000; }
+    .cinema-header {
+        height: 50px; background: #111; color: white; display: flex; 
+        justify-content: space-between; align-items: center; padding: 0 20px; border-bottom: 1px solid #333;
     }
-    
-    .btn-close-video { 
-        background: #e74c3c; color: white; border: none; padding: 5px 15px; border-radius: 5px; cursor: pointer; font-weight: bold; 
+    .btn-close-cinema {
+        background: #e74c3c; color: white; border: none; padding: 5px 15px; border-radius: 5px; cursor: pointer; font-weight: bold;
     }
-
-    #meet-frame { flex: 1; width: 100%; height: 100%; background-color: #000; }
 
     /* MOBİL */
     @media (max-width: 900px) {
@@ -92,7 +89,7 @@
 <body>
 
     <nav class="navbar">
-        <div class="nav-left"><img src="logo.png" class="nav-logo"><div class="nav-title">Hatay ODTÜ MD <span>Üye Portalı</span></div></div>
+        <div class="nav-left"><img src="logo.jpg" class="nav-logo"><div class="nav-title">Hatay ODTÜ MD <span>Üye Portalı</span></div></div>
         <div class="nav-links">
             <a href="dashboard.html"><i class="fa-solid fa-layer-group"></i> Panel</a>
             <a href="meeting.html" class="active"><i class="fa-solid fa-video"></i> Etkinlik Üssü</a>
@@ -128,26 +125,32 @@
                 <h3>Yeni Oda Aç</h3>
                 <span onclick="closeModal()" style="cursor:pointer; font-size:1.5rem;">&times;</span>
             </div>
-            <div class="form-group"><label>Oda Başlığı</label><input type="text" id="rName" class="form-control" placeholder="Örn: İngilizce Konuşma"></div>
-            <div class="form-group"><label>Konu</label><input type="text" id="rTopic" class="form-control" placeholder="Örn: Pratik yapıyoruz."></div>
-            
-            <input type="hidden" id="jitsiRoomName">
-
+            <div class="form-group">
+                <label>Oda Başlığı</label>
+                <input type="text" id="rName" class="form-control" placeholder="Örn: İngilizce Konuşma Kulübü">
+            </div>
+            <div class="form-group">
+                <label>Konu / Açıklama</label>
+                <input type="text" id="rTopic" class="form-control" placeholder="Örn: Herkes davetlidir.">
+            </div>
             <div class="form-group">
                 <label>Toplantı Linki</label>
                 <div class="input-wrapper">
-                    <input type="text" id="rLink" class="form-control" readonly placeholder="Otomatik üretilecek">
-                    <button class="btn-generate" type="button" onclick="generateAutoLink()"><i class="fa-solid fa-wand-magic-sparkles"></i> Link Üret</button>
+                    <input type="url" id="rLink" class="form-control" placeholder="Link buraya gelecek...">
+                    <button class="btn-generate" type="button" onclick="generateAutoLink()">
+                        <i class="fa-solid fa-wand-magic-sparkles"></i> Link Üret
+                    </button>
                 </div>
+                <small style="color:#777; font-size:0.75rem;">Google Meet linki yapıştırabilir veya 'Link Üret' diyerek anında oluşturabilirsin.</small>
             </div>
             <button onclick="createRoom()" style="width:100%; padding:12px; background:var(--odtu-dark); color:white; border:none; border-radius:6px; font-weight:bold; cursor:pointer;">Odayı Başlat</button>
         </div>
     </div>
 
-    <div id="videoModal" class="video-modal-overlay">
-        <div class="video-header">
-            <span id="videoTitle" style="font-weight:bold; font-size:1.1rem;">Toplantı</span>
-            <button class="btn-close-video" onclick="closeVideo()">Görüşmeyi Sonlandır</button>
+    <div id="cinemaModal">
+        <div class="cinema-header">
+            <span id="cinemaTitle" style="font-weight:bold; font-size:1.1rem;">Toplantı</span>
+            <button class="btn-close-cinema" onclick="closeCinemaMode()">Görüşmeyi Sonlandır</button>
         </div>
         <div id="meet-frame"></div>
     </div>
@@ -156,6 +159,7 @@
     <script>
         const supabaseUrl = 'https://hftrmiiacxgtkarsvupn.supabase.co';
         const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhmdHJtaWlhY3hndGthcnN2dXBuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ3ODUzNzIsImV4cCI6MjA4MDM2MTM3Mn0.BgCk5xuZx6AZuxzfBHcQqg8j8BtxU9FbupDgoFecG_k';
+        
         let supabase; try { supabase = window.supabase.createClient(supabaseUrl, supabaseKey); } catch(e){}
         let currentUser = null;
         let apiObj = null; // Jitsi API nesnesi
@@ -186,79 +190,93 @@
                 const deleteBtn = isMyRoom ? `<button class="delete-btn" onclick="deleteRoom(${room.id})">Odayı Kapat</button>` : '';
                 const avatarInitials = room.creator_name ? room.creator_name.substring(0,2).toUpperCase() : 'ME';
 
-                // joinMeeting fonksiyonuna oda ismini gönderiyoruz
+                // 4. BUTON ARTIK SİNEMA MODUNU AÇIYOR
                 list.insertAdjacentHTML('beforeend', `
                 <div class="room-card">
                     <div class="room-status"><div class="pulsing-dot"></div> Canlı</div>
                     <div class="room-title">${room.room_name}</div>
                     <div class="room-topic">${room.topic || ''}</div>
                     <div class="room-host"><div class="host-avatar">${avatarInitials}</div><div>Moderatör: <strong>${room.creator_name}</strong></div></div>
-                    <button onclick="joinMeeting('${room.jitsi_room_id}', '${room.room_name}')" class="join-btn"><i class="fa-solid fa-video"></i> Katıl</button>
+                    <button onclick="openCinemaMode('${room.meet_link}', '${room.room_name}')" class="join-btn"><i class="fa-solid fa-video"></i> Katıl</button>
                     ${deleteBtn}
                 </div>`);
             });
         }
 
-        // --- SİHİRLİ LİNK & ODA İSMİ ÜRETİCİ ---
-        function generateAutoLink() {
-            // Benzersiz ve tahmin edilemez bir oda ismi oluşturuyoruz
-            const uniqueId = 'ODTU-' + Math.random().toString(36).substring(2, 9).toUpperCase();
-            document.getElementById('jitsiRoomName').value = uniqueId;
-            document.getElementById('rLink').value = `https://meet.jit.si/${uniqueId}`;
-        }
-
-        async function createRoom() {
-            const name = document.getElementById('rName').value;
-            const topic = document.getElementById('rTopic').value;
-            const jitsiId = document.getElementById('jitsiRoomName').value;
-
-            if (!name || !jitsiId) { alert("Lütfen 'Link Üret' butonuna basarak bir oda oluşturun."); return; }
+        // 5. SİNEMA MODU FONKSİYONLARI (YENİ)
+        function openCinemaMode(linkUrl, title) {
+            // Linkin sonundaki oda ismini ayıkla (https://meet.jit.si/HatayODTU-XYZ -> HatayODTU-XYZ)
+            // Eğer Jitsi linki değilse (örn: Zoom), yeni sekmede açmak daha güvenli olabilir, ama burada Jitsi varsayıyoruz.
             
-            const { error } = await supabase.from('virtual_rooms').insert({
-                room_name: name, 
-                topic: topic, 
-                meet_link: `https://meet.jit.si/${jitsiId}`, // Görünen link (opsiyonel)
-                jitsi_room_id: jitsiId, // Arka plandaki gerçek oda ismi
-                created_by: currentUser.id, 
-                creator_name: currentUser.user_metadata.full_name
-            });
+            let roomName = "";
+            if(linkUrl.includes("meet.jit.si")) {
+                const parts = linkUrl.split('/');
+                roomName = parts[parts.length - 1];
+            } else {
+                // Jitsi linki değilse direkt yeni sekmede aç
+                window.open(linkUrl, '_blank');
+                return;
+            }
 
-            if (!error) { closeModal(); loadRooms(); joinMeeting(jitsiId, name); } // Direkt odaya sok
-            else alert("Hata: " + error.message);
-        }
+            document.getElementById('cinemaModal').style.display = 'flex';
+            document.getElementById('cinemaTitle').innerText = title;
 
-        // --- JITSI GÖMÜLÜ OYNATICI ---
-        function joinMeeting(roomId, title) {
-            document.getElementById('videoModal').style.display = 'flex';
-            document.getElementById('videoTitle').innerText = title;
-
+            // Jitsi Başlat
             const domain = 'meet.jit.si';
             const options = {
-                roomName: roomId,
+                roomName: roomName,
                 width: '100%',
                 height: '100%',
                 parentNode: document.querySelector('#meet-frame'),
-                userInfo: {
-                    displayName: currentUser.user_metadata.full_name
+                userInfo: { displayName: currentUser.user_metadata.full_name },
+                configOverwrite: { 
+                    startWithAudioMuted: false, 
+                    startWithVideoMuted: true // Kamera yoksa hata vermesin diye kapalı başlar
                 },
-                configOverwrite: { startWithAudioMuted: true, startWithVideoMuted: true },
                 interfaceConfigOverwrite: { SHOW_JITSI_WATERMARK: false }
             };
 
             apiObj = new JitsiMeetExternalAPI(domain, options);
             
-            // Kullanıcı "Kapat" butonuna basarsa
+            // Kullanıcı "Kapat" butonuna basarsa kapat
             apiObj.addEventListeners({
                 videoConferenceLeft: function () {
-                    closeVideo();
+                    closeCinemaMode();
                 }
             });
         }
 
-        function closeVideo() {
-            if(apiObj) apiObj.dispose(); // Jitsi'yi bellekten sil
-            document.getElementById('videoModal').style.display = 'none';
-            document.querySelector('#meet-frame').innerHTML = ""; // İçeriği temizle
+        function closeCinemaMode() {
+            if(apiObj) apiObj.dispose(); // API'yi temizle
+            document.getElementById('cinemaModal').style.display = 'none';
+            document.querySelector('#meet-frame').innerHTML = ""; // İçeriği boşalt
+        }
+
+        function generateAutoLink() {
+            const uniqueId = Math.random().toString(36).substring(7);
+            const link = `https://meet.jit.si/HatayODTU-${uniqueId}`;
+            
+            document.getElementById('rLink').value = link;
+            const input = document.getElementById('rLink');
+            input.style.borderColor = "#27ae60";
+            input.style.backgroundColor = "#e8f5e9";
+            setTimeout(() => { input.style.borderColor = "#ddd"; input.style.backgroundColor = "white"; }, 500);
+        }
+
+        async function createRoom() {
+            const name = document.getElementById('rName').value;
+            const topic = document.getElementById('rTopic').value;
+            const link = document.getElementById('rLink').value;
+
+            if (!name || !link) { alert("Başlık ve Link zorunludur!"); return; }
+            
+            const { error } = await supabase.from('virtual_rooms').insert({
+                room_name: name, topic: topic, meet_link: link,
+                created_by: currentUser.id, creator_name: currentUser.user_metadata.full_name
+            });
+
+            if (!error) { closeModal(); loadRooms(); alert("Oda açıldı!"); }
+            else alert("Hata: " + error.message);
         }
 
         async function deleteRoom(id) {
