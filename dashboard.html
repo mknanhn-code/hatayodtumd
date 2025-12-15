@@ -6,120 +6,59 @@
 <title>Panel - Hatay ODTÜ MD</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
-    /* GENEL STİLLER */
     :root { --odtu-red: #E31E24; --odtu-dark: #2c3e50; --bg-light: #f4f6f9; --white: #ffffff; }
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
-    
-    /* Sayfa yüklenirken içerik gizli (Güvenlik için) */
-    body { background-color: var(--bg-light); min-height: 100vh; display: none; }
+    body { background-color: var(--bg-light); min-height: 100vh; display: none; } /* JS ile açılacak */
 
-    /* --- NAVBAR --- */
-    .navbar { 
-        width: 100%; height: 70px; background-color: var(--odtu-dark); 
-        display: flex; align-items: center; justify-content: space-between; 
-        padding: 0 20px; position: fixed; top: 0; left: 0; z-index: 5000; 
-        box-shadow: 0 4px 10px rgba(0,0,0,0.1); 
-    }
-    
-    .nav-left { display: flex; align-items: center; gap: 15px; z-index: 5002; }
+    /* NAVBAR */
+    .navbar { width: 100%; height: 70px; background-color: var(--odtu-dark); display: flex; align-items: center; justify-content: space-between; padding: 0 20px; position: fixed; top: 0; z-index: 5000; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+    .nav-left { display: flex; align-items: center; gap: 15px; }
     .nav-logo { height: 40px; background: white; padding: 2px; border-radius: 5px; }
-    .nav-title { color: white; font-size: 1.1rem; font-weight: bold; }
+    .nav-title { color: white; font-weight: bold; font-size: 1.1rem; }
     
-    /* Menü Linkleri */
     .nav-links { display: flex; gap: 20px; align-items: center; }
-    .nav-links a { color: #bdc3c7; text-decoration: none; font-size: 0.95rem; display: flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 6px; transition: 0.3s; position: relative; }
+    .nav-links a { color: #bdc3c7; text-decoration: none; font-size: 0.95rem; transition: 0.3s; padding: 8px 12px; border-radius: 6px; }
     .nav-links a:hover, .nav-links a.active { background-color: rgba(255,255,255,0.1); color: white; }
     
-    /* Admin Butonu (Varsayılan Gizli) */
-    #adminBtn { display: none; color: #ff6b6b; font-weight: bold; }
-    #adminBtn:hover { background-color: rgba(231, 76, 60, 0.2); }
-
-    /* Mobil Çıkış Butonu (Varsayılan: GİZLİ - Sadece mobilde açılacak) */
-    .mobile-only-btn { display: none; }
-
-    /* Bildirim Rozeti */
-    #globalBadge { position: absolute; top: -5px; right: -5px; background: #E31E24; color: white; font-size: 0.65rem; padding: 2px 5px; border-radius: 10px; display: none; border: 1px solid white; }
-
-    /* Sağ Taraf (Masaüstü Çıkış) */
     .nav-right { display: flex; align-items: center; }
-    .logout-btn { color: #e74c3c; border: 1px solid #e74c3c; padding: 6px 15px; border-radius: 20px; text-decoration: none; transition: 0.3s; font-size: 0.9rem; }
+    .logout-btn { color: #e74c3c; border: 1px solid #e74c3c; padding: 6px 15px; border-radius: 20px; text-decoration: none; font-size: 0.9rem; cursor: pointer; }
     .logout-btn:hover { background: #e74c3c; color: white; }
-
-    /* Hamburger İkonu */
-    .hamburger { display: none; font-size: 1.5rem; color: white; cursor: pointer; z-index: 5002; }
-
-    /* --- ANA İÇERİK --- */
-    .main-content { 
-        margin-top: 100px; 
-        padding: 40px; 
-        width: 100%; 
-        max-width: 1200px; 
-        margin-left: auto; 
-        margin-right: auto; 
-    }
-
+    
+    .hamburger { display: none; color: white; font-size: 1.5rem; cursor: pointer; }
+    
+    /* İÇERİK */
+    .main-content { margin-top: 100px; padding: 40px; max-width: 1200px; margin-left: auto; margin-right: auto; }
     .top-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
     
-    .status-badge { display: inline-block; padding: 5px 10px; border-radius: 15px; font-size: 0.75rem; font-weight: bold; margin-left: 10px; }
-    .badge-student { background: #fff3e0; color: #f57c00; } .badge-grad { background: #e8f5e9; color: #2e7d32; }
-    
-    .dashboard-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 25px; margin-bottom: 30px; }
+    /* KARTLAR */
+    .dashboard-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px; }
     .panel-card { background: white; border-radius: 12px; padding: 25px; box-shadow: 0 2px 15px rgba(0,0,0,0.05); display: flex; flex-direction: column; transition: 0.3s; }
-    .panel-card:hover { transform: translateY(-3px); box-shadow: 0 5px 20px rgba(0,0,0,0.1); }
-    
-    .card-header { display: flex; justify-content: space-between; margin-bottom: 15px; align-items: center; }
-    .card-title { font-size: 1.1rem; font-weight: bold; color: var(--odtu-dark); display: flex; align-items: center; gap: 10px; }
-    .card-body { flex: 1; color: #666; font-size: 0.9rem; margin-bottom: 15px; }
+    .panel-card:hover { transform: translateY(-3px); }
+    .card-header { display: flex; justify-content: space-between; margin-bottom: 15px; align-items: center; font-weight: bold; font-size: 1.1rem; color: var(--odtu-dark); }
     
     .btn-action { width: 100%; padding: 10px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; margin-top: auto; }
     .btn-red { background: var(--odtu-red); color: white; } 
     .btn-blue { background: #3498db; color: white; } 
     .btn-dark { background: var(--odtu-dark); color: white; }
-    
-    .calendar-box { background: #e74c3c; color: white; padding: 10px; border-radius: 8px; text-align: center; min-width: 60px; }
-    .notice-list { list-style: none; padding: 0; margin: 0; }
-    .notice-item { padding: 10px 0; border-bottom: 1px solid #eee; display: flex; gap: 10px; font-size: 0.9rem; color: #555; }
-    .stat-number { font-size: 1.8rem; font-weight: bold; }
-    
-    #studentSection, #gradSection, #commonSection, #genericSection { display: none; }
-    
-    /* TOAST */
-    #liveToast { position: fixed; top: 20px; right: 20px; background: white; padding: 15px 20px; border-radius: 8px; box-shadow: 0 5px 25px rgba(0,0,0,0.2); border-left: 6px solid #333; z-index: 9999; display: none; min-width: 320px; animation: slideIn 0.4s; font-family: 'Segoe UI', sans-serif; }
-    @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
 
-    /* --- MOBİL UYUMLULUK (MEDIA QUERY) --- */
+    /* ROZETLER VE GİZLİ ALANLAR */
+    #adminBtn { display: none; color: #ff6b6b !important; font-weight: bold; }
+    #studentSection, #gradSection, #commonSection, #genericSection { display: none; }
+    .status-badge { display: inline-block; padding: 5px 10px; border-radius: 15px; font-size: 0.75rem; font-weight: bold; margin-left: 10px; }
+    .badge-student { background: #fff3e0; color: #f57c00; } 
+    .badge-grad { background: #e8f5e9; color: #2e7d32; }
+
+    /* TOAST */
+    #liveToast { position: fixed; top: 20px; right: 20px; background: white; padding: 15px 20px; border-radius: 8px; box-shadow: 0 5px 25px rgba(0,0,0,0.2); border-left: 6px solid #333; display: none; z-index: 9999; }
+
+    /* MOBİL */
     @media (max-width: 900px) {
-        .navbar { padding: 0 15px; }
-        .hamburger { display: block; } /* İkonu göster */
-        
-        /* Menüyü Gizle ve Yana Kaydır */
-        .nav-links {
-            position: fixed; top: 70px; left: -100%; width: 100%; height: calc(100vh - 70px);
-            background-color: var(--odtu-dark); flex-direction: column;
-            align-items: center; justify-content: flex-start; padding-top: 40px;
-            transition: 0.4s ease-in-out; box-shadow: inset 0 10px 20px rgba(0,0,0,0.2);
-            z-index: 4999;
-        }
-        .nav-links.active { left: 0; } /* Menü Açılınca */
-        
-        .nav-links a { font-size: 1.2rem; margin: 15px 0; width: 80%; justify-content: center; padding: 15px; color: white; }
-        
-        /* Mobilde Masaüstü Sağ Butonu GİZLE */
-        .nav-right { display: none; } 
-        
-        /* Mobilde Menü İçindeki Çıkış Butonunu GÖSTER */
-        .mobile-only-btn { 
-            display: block; 
-            color: #ff6b6b !important; 
-            border: 1px solid #ff6b6b; 
-            margin-top: 20px; 
-            border-radius: 20px;
-        }
-        
-        /* İçerik Düzeni */
-        .main-content { margin-top: 90px; padding: 20px; }
-        .top-header { flex-direction: column; text-align: center; gap: 15px; }
-        .dashboard-grid { grid-template-columns: 1fr; }
+        .nav-links { display: none; position: absolute; top: 70px; left: 0; width: 100%; background: var(--odtu-dark); flex-direction: column; padding: 20px; box-shadow: 0 10px 20px rgba(0,0,0,0.2); }
+        .nav-links.active { display: flex; }
+        .hamburger { display: block; }
+        .nav-right { display: none; }
+        .mobile-logout { display: block !important; margin-top: 10px; border: 1px solid #e74c3c; color: #e74c3c; width: 100%; text-align: center; border-radius: 6px; padding: 8px; }
+        .container { margin-top: 90px; }
     }
 </style>
 </head>
@@ -128,101 +67,88 @@
     <nav class="navbar">
         <div class="nav-left">
             <img src="logo.png" class="nav-logo">
-            <div class="nav-title">Hatay ODTÜ MD <span>Üye Portalı</span></div>
+            <span class="nav-title">Hatay ODTÜ MD</span>
         </div>
-        
-        <div class="hamburger" onclick="toggleMenu()">
-            <i class="fa-solid fa-bars"></i>
-        </div>
-
+        <div class="hamburger" onclick="toggleMenu()"><i class="fa-solid fa-bars"></i></div>
         <div class="nav-links" id="navLinks">
-            <a href="dashboard.html" class="active"><i class="fa-solid fa-layer-group"></i> Panel</a>
-            <a href="meeting.html"><i class="fa-solid fa-video"></i>Etkinlik Üssü</a>
-            <a href="mentor.html"><i class="fa-solid fa-handshake-angle"></i> Mentorluk</a>
-            <a href="career.html"><i class="fa-solid fa-briefcase"></i> Kariyer Lab</a>
-            <a href="network.html"><i class="fa-solid fa-users-viewfinder"></i> Mezun Ağı</a>
-            <a href="profile.html" style="position:relative;">
-                <i class="fa-solid fa-user"></i> Profil 
-                <span id="globalBadge">0</span>
-            </a>
-            
-            <a href="admin.html" id="adminBtn"><i class="fa-solid fa-user-shield"></i> Yönetim</a>
-            
-            <a href="#" onclick="logout()" class="mobile-only-btn">Çıkış Yap</a>
+            <a href="dashboard.html" class="active">Panel</a>
+            <a href="meeting.html">Meeting Hub</a>
+            <a href="mentor.html">Mentorluk</a>
+            <a href="career.html">Kariyer Lab</a>
+            <a href="network.html">Mezun Ağı</a>
+            <a href="profile.html">Profilim <span id="globalBadge" style="background:red; color:white; border-radius:50%; padding:2px 6px; font-size:0.7rem; display:none;">0</span></a>
+            <a href="admin.html" id="adminBtn">Yönetim</a>
+            <a href="#" onclick="logout()" class="mobile-logout" style="display:none;">Çıkış Yap</a>
         </div>
-
-        <div class="nav-right">
-            <a href="#" class="logout-btn" onclick="logout()"><i class="fa-solid fa-right-from-bracket"></i> Çıkış</a>
-        </div>
+        <div class="nav-right"><button class="logout-btn" onclick="logout()">Çıkış</button></div>
     </nav>
 
     <div class="main-content">
         <div class="top-header">
-            <div class="welcome-text">
-                <h2>Merhaba, <span id="userName">Yükleniyor...</span> <span id="userBadge"></span></h2>
-                <p id="welcomeMsg">Hoş Geldin.</p>
-            </div>
+            <div><h2>Merhaba, <span id="userName">...</span> <span id="userBadge"></span></h2><p>Hoş Geldin.</p></div>
         </div>
-        <div id="loadingSpinner" style="text-align:center; padding:50px; color:#999;"><i class="fa-solid fa-spinner fa-spin fa-2x"></i><br>Yükleniyor...</div>
+        
+        <div id="loadingSpinner" style="text-align:center; padding:50px; color:#999;">
+            <i class="fa-solid fa-spinner fa-spin fa-2x"></i><br><br>Yükleniyor...
+        </div>
 
         <div id="studentSection" class="dashboard-grid">
             <div class="panel-card">
-                <div class="card-header"><div class="card-title"><i class="fa-solid fa-graduation-cap" style="color:#f39c12;"></i> Mentor Bul</div></div>
-                <div class="card-body">Kariyer rehberliği al.</div>
+                <div class="card-header"><i class="fa-solid fa-graduation-cap"></i> Mentor Bul</div>
+                <div style="flex:1; margin-bottom:15px; color:#666;">Kariyer rehberliği al.</div>
                 <button class="btn-action btn-red" onclick="window.location.href='mentor.html'">Mentorları İncele</button>
             </div>
             <div class="panel-card">
-                <div class="card-header"><div class="card-title"><i class="fa-solid fa-briefcase" style="color:#3498db;"></i> Kariyer Lab</div></div>
-                <div class="card-body">Staj ve gelişim fırsatları.</div>
+                <div class="card-header"><i class="fa-solid fa-briefcase"></i> Kariyer Lab</div>
+                <div style="flex:1; margin-bottom:15px; color:#666;">Staj ve gelişim fırsatları.</div>
                 <button class="btn-action btn-blue" onclick="window.location.href='career.html'">Göz At</button>
             </div>
         </div>
 
         <div id="gradSection" class="dashboard-grid">
             <div class="panel-card">
-                <div class="card-header"><div class="card-title"><i class="fa-solid fa-handshake-angle" style="color:#27ae60;"></i> Mentor Ol</div></div>
-                <div class="card-body">Gençlere yol göster.</div>
+                <div class="card-header"><i class="fa-solid fa-handshake-angle"></i> Mentor Ol</div>
+                <div style="flex:1; margin-bottom:15px; color:#666;">Gençlere yol göster.</div>
                 <button class="btn-action btn-red" onclick="window.location.href='mentor.html'">Başvur</button>
             </div>
             <div class="panel-card">
-                <div class="card-header"><div class="card-title"><i class="fa-solid fa-briefcase" style="color:#3498db;"></i> İlan Ver</div></div>
-                <div class="card-body">Pozisyon paylaş.</div>
+                <div class="card-header"><i class="fa-solid fa-briefcase"></i> İlan Ver</div>
+                <div style="flex:1; margin-bottom:15px; color:#666;">Pozisyon paylaş.</div>
                 <button class="btn-action btn-blue" onclick="window.location.href='career.html'">İlan Ekle</button>
             </div>
         </div>
 
         <div id="commonSection" class="dashboard-grid">
             <div class="panel-card" id="eventCard">
-                <div class="card-header"><div class="card-title"><i class="fa-solid fa-calendar-day" style="color: #e74c3c;"></i> Etkinlik</div></div>
-                <div id="eventContent" style="text-align:center; padding:20px; color:#777;">Yükleniyor...</div>
+                <div class="card-header"><i class="fa-solid fa-calendar-day"></i> Etkinlik</div>
+                <div id="eventContent" style="text-align:center; padding:10px;">Yükleniyor...</div>
             </div>
             <div class="panel-card">
-                <div class="card-header"><div class="card-title"><i class="fa-solid fa-bullhorn" style="color: #f39c12;"></i> Duyurular</div></div>
-                <ul class="notice-list" id="noticeList" style="min-height: 100px;"></ul>
+                <div class="card-header"><i class="fa-solid fa-bullhorn"></i> Duyurular</div>
+                <ul id="noticeList" style="padding-left:20px; margin:0;"></ul>
             </div>
-            <div class="panel-card" style="background: linear-gradient(135deg, #2c3e50, #34495e); color: white;">
-                <div class="card-header"><div class="card-title" style="color:white;"><i class="fa-solid fa-chart-pie"></i> Topluluk</div></div>
-                <div style="display:flex; justify-content:space-around; text-align:center; margin:20px 0;">
-                    <div><div class="stat-number" id="countMembers" style="color:#f1c40f;">-</div><div style="font-size:0.8rem;">Üye</div></div>
-                    <div><div class="stat-number" id="countMentorships" style="color:#2ecc71;">-</div><div style="font-size:0.8rem;">Eşleşme</div></div>
-                    <div><div class="stat-number" id="countJobs" style="color:#3498db;">-</div><div style="font-size:0.8rem;">İlan</div></div>
+            <div class="panel-card" style="background:#2c3e50; color:white;">
+                <div class="card-header" style="color:white;"><i class="fa-solid fa-chart-pie"></i> Topluluk</div>
+                <div style="display:flex; justify-content:space-around; margin-top:20px;">
+                    <div style="text-align:center;"><div style="font-size:1.5rem; font-weight:bold;" id="countMembers">-</div><small>Üye</small></div>
+                    <div style="text-align:center;"><div style="font-size:1.5rem; font-weight:bold;" id="countJobs">-</div><small>İlan</small></div>
                 </div>
             </div>
         </div>
 
         <div id="genericSection" style="text-align:center; background:white; padding:40px; border-radius:12px;">
             <h3>👋 Profilini Tamamla</h3>
-            <p>Sistemi kullanmak için mezuniyet yılını girmelisin.</p><br>
-            <button class="btn-action btn-red" style="max-width:200px;" onclick="window.location.href='profile.html'">Ayarlara Git</button>
+            <p>Sistemi kullanmak için mezuniyet yılını girmelisin.</p>
+            <button class="btn-action btn-red" style="max-width:200px; margin-top:15px;" onclick="window.location.href='profile.html'">Ayarlara Git</button>
         </div>
     </div>
 
     <div id="liveToast">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-            <strong id="toastTitle" style="font-size:1rem; display:flex; align-items:center; gap:8px;"></strong>
-            <span onclick="document.getElementById('liveToast').style.display='none'" style="cursor:pointer; color:#aaa; font-size:1.2rem;">&times;</span>
+            <strong id="toastTitle" style="font-size:1rem;">Bildirim</strong>
+            <span onclick="document.getElementById('liveToast').style.display='none'" style="cursor:pointer;">&times;</span>
         </div>
-        <p id="toastMessage" style="color:#555; font-size:0.9rem; margin:0; line-height:1.4;">...</p>
+        <p id="toastMessage" style="margin:0;">...</p>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -235,120 +161,90 @@
             if(!supabase) return;
             const { data: { session } } = await supabase.auth.getSession();
             if (!session) { window.location.href = 'index.html'; return; }
-
+            
             const { data: profile } = await supabase.from('profiles').select('*').eq('id', session.user.id).single();
             
-            // --- ONAY KONTROLÜ (GİRİŞ KAPISI) ---
-            if (!profile || profile.is_approved !== true) {
+            // ONAY KONTROLÜ
+            if (!profile || profile.is_approved !== true) { 
                 alert("⛔ Üyeliğiniz henüz yönetici onayı almamıştır.\nLütfen onay bekleyiniz.");
                 await supabase.auth.signOut(); 
                 window.location.href = 'index.html'; 
-                return;
+                return; 
             }
-
-            // --- ONAYLI İSE İÇERİĞİ GÖSTER ---
+            
+            // İÇERİĞİ GÖSTER
             document.body.style.display = 'block';
+            document.getElementById("userName").innerText = profile.full_name || "Üye";
+            
+            // ADMIN BUTONU
+            if(profile.roles && profile.roles.includes('admin')) {
+                document.getElementById('adminBtn').style.display = 'flex';
+            }
+            
+            document.getElementById('loadingSpinner').style.display = 'none';
 
-            if(profile) {
-                document.getElementById("userName").innerText = profile.full_name || "Üye";
-                
-                // Admin Butonu Kontrolü
-                if(profile.roles && profile.roles.includes('admin') && document.getElementById('adminBtn')) {
-                    document.getElementById('adminBtn').style.display = 'flex';
-                }
-                
-                const currentYear = new Date().getFullYear();
-                const gradYear = profile.grad_year;
-                document.getElementById('loadingSpinner').style.display = 'none';
-
-                if (!gradYear && !profile.class_level) { 
-                    document.getElementById('genericSection').style.display = 'block'; 
-                } else {
-                    document.getElementById('commonSection').style.display = 'grid';
-                    if (profile.user_type === 'student') { 
-                        document.getElementById('studentSection').style.display = 'grid'; 
-                        document.getElementById('userBadge').innerText = "Öğrenci"; 
-                        document.getElementById('userBadge').className = "status-badge badge-student"; 
-                    } else { 
-                        document.getElementById('gradSection').style.display = 'grid'; 
-                        document.getElementById('userBadge').innerText = "Mezun"; 
-                        document.getElementById('userBadge').className = "status-badge badge-grad"; 
-                    }
+            // PROFİL TAMAMLAMA KONTROLÜ
+            if (!profile.grad_year && !profile.class_level) { 
+                document.getElementById('genericSection').style.display = 'block'; 
+            } else {
+                document.getElementById('commonSection').style.display = 'grid';
+                if (profile.user_type === 'student') { 
+                    document.getElementById('studentSection').style.display = 'grid'; 
+                    document.getElementById('userBadge').innerText = "Öğrenci"; 
+                    document.getElementById('userBadge').className = "status-badge badge-student"; 
+                } else { 
+                    document.getElementById('gradSection').style.display = 'grid'; 
+                    document.getElementById('userBadge').innerText = "Mezun"; 
+                    document.getElementById('userBadge').className = "status-badge badge-grad"; 
                 }
             }
-
-            fetchStats(); fetchAnnouncements(); fetchNextEvent();
-            checkGlobalNotifications(); setupRealtime(session.user.id);
+            fetchStats(); fetchAnnouncements(); fetchNextEvent(); checkGlobalNotifications(); setupRealtime(session.user.id);
         });
 
-        // --- MOBİL MENÜ TOGGLE ---
-        function toggleMenu() {
-            document.getElementById('navLinks').classList.toggle('active');
-        }
+        function toggleMenu() { document.getElementById('navLinks').classList.toggle('active'); }
 
-        // --- DASHBOARD FONKSİYONLARI ---
         async function fetchStats() {
             const { count: members } = await supabase.from('profiles').select('*', { count: 'exact', head: true });
-            const { count: mentors } = await supabase.from('mentorships').select('*', { count: 'exact', head: true });
             const { count: jobs } = await supabase.from('jobs').select('*', { count: 'exact', head: true });
             document.getElementById('countMembers').innerText = members || 0;
-            document.getElementById('countMentorships').innerText = mentors || 0;
             document.getElementById('countJobs').innerText = jobs || 0;
         }
 
         async function fetchAnnouncements() {
             const { data } = await supabase.from('announcements').select('*').order('created_at', {ascending: false}).limit(3);
             const list = document.getElementById('noticeList');
-            if(!data || data.length === 0) { list.innerHTML = '<li style="padding:10px; text-align:center;">Duyuru yok.</li>'; return; }
-            list.innerHTML = '';
-            data.forEach(a => { list.insertAdjacentHTML('beforeend', `<li class="notice-item"><span style="color:${a.color}; font-weight:bold; font-size:1.2rem; line-height:1;">•</span> ${a.title}</li>`); });
+            if(!data || data.length === 0) { list.innerHTML = '<li>Duyuru yok.</li>'; return; }
+            list.innerHTML = ''; 
+            data.forEach(a => list.insertAdjacentHTML('beforeend', `<li>${a.title}</li>`));
         }
 
         async function fetchNextEvent() {
             const today = new Date().toISOString().split('T')[0];
             const { data } = await supabase.from('events').select('*').gte('event_date', today).order('event_date', { ascending: true }).limit(1);
             const container = document.getElementById('eventContent');
-            
-            if (!data || data.length === 0) { container.innerHTML = '<div style="padding:20px;">Yaklaşan etkinlik bulunmuyor.</div>'; return; }
-            
-            const event = data[0];
-            const dateParts = new Date(event.event_date);
-            const day = dateParts.getDate();
-            const months = ["OCAK", "ŞUB", "MART", "NİS", "MAY", "HAZ", "TEM", "AĞU", "EYL", "EKİM", "KAS", "ARA"];
-            const month = months[dateParts.getMonth()];
-            
-            container.innerHTML = `<div style="display: flex; gap: 15px; align-items: center;"><div class="calendar-box"><div>${day}</div><div style="font-size: 0.8rem;">${month}</div></div><div><h4 style="margin: 0; color: var(--odtu-dark);">${event.title}</h4><p style="margin: 5px 0 0 0; font-size: 0.85rem; color: #777;">📍 ${event.location}</p></div></div><button class="btn-action btn-dark" style="margin-top:10px;" onclick="window.location.href='meeting.html'">Detaylar</button>`;
+            if (!data || data.length === 0) { container.innerHTML = 'Yaklaşan etkinlik yok.'; return; }
+            const e = data[0]; 
+            container.innerHTML = `<h4>${e.title}</h4><p>${new Date(e.event_date).toLocaleDateString()}</p><button class="btn-action btn-dark" style="margin-top:10px;" onclick="window.location.href='meeting.html'">Detaylar</button>`;
         }
 
-        // --- BİLDİRİM & REALTIME ---
         async function checkGlobalNotifications() {
             const { data: { session } } = await supabase.auth.getSession();
-            if(!session) return;
             const { count } = await supabase.from('direct_messages').select('*', { count: 'exact', head: true }).eq('receiver_id', session.user.id).eq('is_read', false);
-            const badge = document.getElementById('globalBadge');
-            if(badge) { if(count > 0) { badge.style.display = 'inline-block'; badge.innerText = count; } else { badge.style.display = 'none'; } }
+            const b = document.getElementById('globalBadge');
+            if(count > 0) { b.style.display = 'inline-block'; b.innerText = count; }
         }
 
-        function setupRealtime(userId) {
-            const channel = supabase.channel('global-alerts');
-            channel.on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'broadcasts' }, payload => { showNotification("YÖNETİM DUYURUSU", payload.new.message, "admin"); });
-            channel.on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'direct_messages', filter: `receiver_id=eq.${userId}` }, payload => {
-                showNotification(`💬 ${payload.new.sender_name || 'Bir Üye'}`, payload.new.content, "user");
-                checkGlobalNotifications();
-            });
-            channel.subscribe();
+        function setupRealtime(uid) {
+            supabase.channel('global').on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'direct_messages', filter: `receiver_id=eq.${uid}` }, payload => {
+                showToast(`💬 Yeni Mesaj: ${payload.new.content}`); checkGlobalNotifications();
+            }).subscribe();
         }
 
-        function showNotification(title, msg, type) {
-            const toast = document.getElementById('liveToast');
-            const titleEl = document.getElementById('toastTitle');
-            const msgEl = document.getElementById('toastMessage');
-            msgEl.innerText = msg;
-            if (type === 'admin') { toast.style.borderLeftColor = "#8e44ad"; titleEl.style.color = "#8e44ad"; titleEl.innerHTML = `<i class="fa-solid fa-tower-broadcast"></i> ${title}`; } 
-            else { toast.style.borderLeftColor = "#3498db"; titleEl.style.color = "#3498db"; titleEl.innerHTML = `${title}`; }
-            toast.style.display = 'block';
-            new Audio('https://actions.google.com/sounds/v1/alarms/beep_short.ogg').play().catch(()=>{});
-            setTimeout(() => { toast.style.display = 'none'; }, 6000);
+        function showToast(msg) { 
+            const t=document.getElementById('liveToast'); 
+            document.getElementById('toastMessage').innerText=msg; 
+            t.style.display='block'; 
+            setTimeout(()=>t.style.display='none', 4000); 
         }
 
         async function logout() { await supabase.auth.signOut(); window.location.href = "index.html"; }
