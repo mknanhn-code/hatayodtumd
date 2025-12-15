@@ -180,7 +180,6 @@
                     </div>
 
                     <div class="section-divider"></div>
-
                     <div class="form-group"><label>LinkedIn URL</label><input type="url" id="linkedin" class="form-control"></div>
                     <div class="form-group"><label>Yetkinlikler (Virgülle ayırın)</label><input type="text" id="skills" class="form-control"></div>
                     <div class="form-group"><label>Biyografi</label><textarea id="bio" class="form-control"></textarea></div>
@@ -191,7 +190,7 @@
             </div>
 
             <div id="messages" class="tab-content">
-                <div class="page-title">Mesajlar <button class="btn-new-msg" onclick="openComposeModal()"><i class="fa-solid fa-pen-to-square"></i> Yeni Mesaj</button></div>
+                <div class="page-title">Mesajlar <button class="btn-new-msg" onclick="openComposeModal()"><i class="fa-solid fa-pen-to-square"></i> Yeni</button></div>
                 <ul id="msgList" class="msg-list"></ul>
             </div>
             <div id="mentorRequests" class="tab-content">
@@ -223,7 +222,7 @@
             const { data: { session } } = await supabaseClient.auth.getSession();
             if (!session) { window.location.href = 'index.html'; return; }
             currentUser = session.user;
-            initMap(); loadProfile(); loadMessages(); loadNotes();
+            initMap(); loadProfile(); loadMessages(); loadNotes(); setupRealtime();
         });
 
         function toggleMenu() { document.getElementById('navLinks').classList.toggle('active'); }
@@ -243,7 +242,6 @@
                 document.getElementById('lat').value=lat; document.getElementById('lng').value=lng;
             });
         }
-        
         function toggleUserTypeFields() {
             const type = document.getElementById('userTypeSelect').value;
             if(type === 'grad') {
@@ -256,7 +254,6 @@
                 document.getElementById('mentorOption').style.display = 'none';
             }
         }
-
         async function loadProfile() {
             const { data } = await supabaseClient.from('profiles').select('*').eq('id', currentUser.id).single();
             if(data) {
@@ -289,7 +286,6 @@
                 }
             }
         }
-        
         document.getElementById('profileForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const btn = document.querySelector('.btn-save'); btn.innerHTML = 'Kaydediliyor...'; btn.disabled = true;
@@ -323,7 +319,7 @@
             btn.innerHTML = 'Değişiklikleri Kaydet'; btn.disabled = false;
         });
 
-        // --- DİĞER JS FONKSİYONLARI ---
+        // --- İSTEKLER VE MESAJLAR ---
         async function loadMentorRequests() {
             const listDiv = document.getElementById('reqListContainer');
             const badge = document.getElementById('mentorReqCount');
@@ -356,6 +352,21 @@
         async function addNote() { const c = document.getElementById('newNote').value; if(!c)return; await supabaseClient.from('personal_notes').insert({user_id:currentUser.id, content:c}); document.getElementById('newNote').value=''; loadNotes(); }
         async function deleteNote(id) { if(confirm("Sil?")) { await supabaseClient.from('personal_notes').delete().eq('id',id); loadNotes(); } }
         function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+        
+        // --- REALTIME BİLDİRİM ---
+        function setupRealtime() {
+            supabaseClient.channel('custom-all-channel')
+            .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'mentor_requests', filter: `mentor_id=eq.${currentUser.id}` }, payload => {
+                showToast("🔔 Yeni bir mentorluk isteği aldınız!");
+                loadMentorRequests(); // Listeyi yenile
+            })
+            .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'direct_messages', filter: `receiver_id=eq.${currentUser.id}` }, payload => {
+                showToast("💬 Yeni mesajınız var!");
+                loadMessages();
+            })
+            .subscribe();
+        }
+
         function showToast(msg) { const t=document.getElementById('liveToast'); t.innerText=msg; t.style.display='block'; setTimeout(()=>t.style.display='none',3000); }
         async function logout() { await supabaseClient.auth.signOut(); window.location.href = "index.html"; }
     </script>
