@@ -176,19 +176,18 @@
             if(window.supabase) supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
         } catch(e){ console.error(e); }
 
-        // --- GİZLİ KONSOL SANATI (TAM BOYUT HATAY) ---
+        // --- GİZLİ KONSOL SANATI (DÜZELTİLMİŞ BAŞLIK) ---
         (function() {
-            // 1. Kırmızı Başlık (HATAY ODTÜ MD)
+            // 1. Kırmızı Başlık (HATAY ODTÜ MD) - DAHA NET VE OKUNAKLI
             const headerArt = `
-  ██    ██  ██████  ████████  ██████  ██    ██      ██████  ██████  ████████ ██    ██      ███    ███ ██████  
-  ██    ██ ██    ██    ██    ██    ██  ██  ██      ██    ██ ██   ██    ██    ██    ██      ████  ████ ██   ██ 
-  ████████ ████████    ██    ████████   ████       ██    ██ ██   ██    ██    ██    ██      ██ ████ ██ ██   ██ 
-  ██    ██ ██    ██    ██    ██    ██    ██        ██    ██ ██   ██    ██    ██    ██      ██  ██  ██ ██   ██ 
-  ██    ██ ██    ██    ██    ██    ██    ██         ██████  ██████     ██     ██████       ██      ██ ██████  
+  ██    ██   ██████   ████████   ██████   ██    ██       ██████   ██████   ████████  ██    ██       ███    ███  ██████  
+  ██    ██  ██    ██     ██     ██    ██   ██  ██       ██    ██  ██   ██     ██     ██    ██       ████  ████  ██   ██ 
+  ████████  ████████     ██     ████████    ████        ██    ██  ██   ██     ██     ██    ██       ██ ████ ██  ██   ██ 
+  ██    ██  ██    ██     ██     ██    ██     ██         ██    ██  ██   ██     ██     ██    ██       ██  ██  ██  ██   ██ 
+  ██    ██  ██    ██     ██     ██    ██     ██          ██████   ██████      ██      ██████        ██      ██  ██████  
             `;
 
             // 2. HATAY COĞRAFİ ASCII HARİTASI (PIXEL ART STYLE)
-            // Kuzeyden Güneye doğru ilçe dizilimi
             const mapArt = `
                   ▒▒▒▒▒▒▒▒
                 ▒▒▒ ERZİN ▒▒▒
@@ -213,15 +212,15 @@
                             ▒▒▒▒▒▒▒
             `;
 
-            // Stiller
-            const redStyle = 'color: #E31E24; font-weight: 900; font-family: monospace; font-size: 10px; line-height: 1; text-shadow: 2px 2px 0px #222;';
+            // Stiller (Başlık için aralıklar açıldı)
+            const redStyle = 'color: #E31E24; font-weight: 800; font-family: monospace; font-size: 12px; line-height: 1.2; letter-spacing: 0.5px; text-shadow: 1px 1px 0px #222;';
             const mapStyle = 'color: #34495e; font-family: monospace; font-size: 10px; font-weight: bold; line-height: 1.1;';
             const signatureStyle = 'color: #2c3e50; font-family: "Segoe UI", sans-serif; font-size: 13px; font-weight: bold; padding: 20px 0; border-top: 2px dashed #E31E24;';
             
             console.clear();
             console.log(`%c${headerArt}`, redStyle);
             console.log(`%c${mapArt}`, mapStyle);
-            console.log('%c🚀 Bu kod Hatay ODTÜ MD Kurucu Başkanı tarafından geliştirilmiştir.', signatureStyle);
+            console.log('%c🚀 Bu sistem Hatay ODTÜ MD Kurucu Başkanı tarafından özel olarak geliştirilmiştir.', signatureStyle);
         })();
 
         async function handleLogin(e) {
