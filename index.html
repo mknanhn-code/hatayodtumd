@@ -176,18 +176,17 @@
             if(window.supabase) supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
         } catch(e){ console.error(e); }
 
-        // --- GİZLİ KONSOL SANATI (V3 - FINAL) ---
+        // --- GİZLİ KONSOL SANATI (V4 - KOMPAKT & TOK BAŞLIK) ---
         (function() {
-            // 1. Kırmızı Başlık (KOMPAKT VE BOLD)
+            // 1. KOMPAKT VE KALIN BAŞLIK (HATAY ODTU) - MD Kaldırıldı, daha sıkı yapıldı.
             const headerArt = `
-  ██   ██  █████  ████████  █████  ██   ██      ██████  ██████  ████████ ██   ██      ███    ███ ██████  
-  ██   ██ ██   ██    ██    ██   ██  ██ ██      ██    ██ ██   ██    ██    ██   ██      ████  ████ ██   ██ 
-  ███████ ███████    ██    ███████   ███       ██    ██ ██   ██    ██    ██   ██      ██ ████ ██ ██   ██ 
-  ██   ██ ██   ██    ██    ██   ██   ██        ██    ██ ██   ██    ██    ██   ██      ██  ██  ██ ██   ██ 
-  ██   ██ ██   ██    ██    ██   ██   ██         ██████  ██████     ██     █████       ██      ██ ██████  
+  ██  ██  ████  ██████  ████  ██  ██    ████   ████  ██████ ██  ██
+  ██████ ██  ██   ██   ██  ██  ████    ██  ██ ██  ██   ██   ██  ██
+  ██  ██ ██████   ██   ██████   ██     ██  ██ ██  ██   ██   ██████
+  ██  ██ ██  ██   ██   ██  ██   ██      ████  ████     ██    ████ 
             `;
 
-            // 2. HATAY COĞRAFİ ASCII HARİTASI (PIXEL ART - BÜYÜK BOYUT)
+            // 2. HATAY COĞRAFİ ASCII HARİTASI (AYNEN KORUNDU)
             const mapArt = `
                     ▒▒▒▒▒▒▒▒▒
                   ▒▒▒ ERZİN ▒▒▒▒
@@ -212,10 +211,10 @@
                                 ▒▒▒▒▒▒▒▒▒▒
             `;
 
-            // Stiller
-            const redStyle = 'color: #E31E24; font-weight: 900; font-family: monospace; font-size: 10px; line-height: 1.0; letter-spacing: -0.5px;';
+            // Stiller - YAZIYI TOPARLAYAN GÜÇLÜ FONT AYARLARI
+            const redStyle = 'color: #E31E24; font-weight: 900; font-family: monospace; font-size: 14px; line-height: 1.0; letter-spacing: -1px; text-shadow: 2px 2px 0px #2c3e50;';
             const mapStyle = 'color: #34495e; font-family: monospace; font-size: 11px; font-weight: bold; line-height: 1.1;';
-            const signatureStyle = 'color: #2c3e50; font-family: "Segoe UI", sans-serif; font-size: 12px; font-weight: bold; padding: 20px 0; border-top: 2px dashed #E31E24;';
+            const signatureStyle = 'color: #2c3e50; font-family: "Segoe UI", sans-serif; font-size: 13px; font-weight: bold; padding: 20px 0; border-top: 2px dashed #E31E24;';
             
             console.clear();
             console.log(`%c${headerArt}`, redStyle);
