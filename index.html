@@ -84,9 +84,10 @@
         width: 30px; height: 30px; background: var(--odtu-red); color: white; border-radius: 50%;
         display: flex; align-items: center; justify-content: center; font-size: 0.9rem; flex-shrink: 0; transition: transform 0.4s ease;
     }
+    /* Hover Düzeltmesi: Genişlik artırıldı */
     .dev-text { max-width: 0; opacity: 0; white-space: nowrap; font-size: 0.85rem; font-weight: 600; transition: all 0.4s ease; color: #555; }
     .dev-signature:hover { padding-right: 15px; gap: 10px; transform: translateY(-3px); }
-    .dev-signature:hover .dev-text { max-width: 150px; opacity: 1; }
+    .dev-signature:hover .dev-text { max-width: 350px; opacity: 1; }
     .dev-signature:hover .dev-icon { transform: rotate(360deg); }
     
     #liveToast { position: fixed; top: 20px; right: 20px; background: white; padding: 15px 20px; border-radius: 8px; border-left: 5px solid #27ae60; display: none; z-index: 10000; box-shadow: 0 10px 30px rgba(0,0,0,0.15); }
@@ -148,36 +149,68 @@
             if(window.supabase) supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
         } catch(e){ console.error(e); }
 
-        // --- GİZLİ KONSOL İMZASI (HATAY MOZAİK) ---
+        // --- GELİŞMİŞ GİZLİ KONSOL ANİMASYONU ---
         (function() {
-            const logo = `
-   ██   ██  █████  ████████  █████  ██     ██
-   ██   ██ ██   ██    ██     ██   ██  ██   ██ 
-   ███████ ███████    ██     ███████   ████  
-   ██   ██ ██   ██    ██     ██   ██    ██    
-   ██   ██ ██   ██    ██     ██   ██    ██    
-            `;
+            const frames = ["▒", "░", "▓", "█"];
+            const colors = ["#E31E24", "#e67e22", "#f1c40f", "#2ecc71", "#3498db", "#9b59b6"];
             
-            // Mozaik ve Pixel Art Tasarımı - Antakya Merkezde
-            const mosaic = `
-      ░░░░░░░ ERZİN ░░░░░░░ HASSA ░░░░
-     ░░░░ DÖRTYOL ░░░░ KIRIKHAN ░░░░
-    ░░ PAYAS ░░░░░░░░░░░░░░░░░ KUMLU ░░
-   ░░ İSKENDERUN ░░▓▓▓▓▓▓░░ REYHANLI ░░
-    ░░ ARSUZ ░░░░▓▓ ANTAKYA ▓▓░░░░░░░
-     ░░░░ BELEN ░░▓▓▓▓▓▓▓▓▓▓░░ ALTINÖZÜ
-       ░░ SAMANDAĞ ░░ DEFNE ░░░░░░░
-          ░░░░ YAYLADAĞI ░░░░░
-            `;
+            // Rastgele Renk Seçici
+            const rc = () => colors[Math.floor(Math.random() * colors.length)];
+            
+            // Çerçeve Deseni (Rastgele Karakterler)
+            const b = () => frames[Math.floor(Math.random() * frames.length)];
 
-            const redStyle = 'color: #E31E24; font-weight: 900; font-family: monospace; font-size: 10px; line-height: 1.1;';
-            const mosaicStyle = 'color: #34495e; font-family: monospace; font-size: 10px; font-weight: bold; line-height: 1.2; text-shadow: 1px 1px 0px #eee;';
-            const signatureStyle = 'color: #2c3e50; font-family: "Segoe UI", sans-serif; font-size: 12px; font-weight: bold; padding: 15px 0; border-top: 1px solid #ddd;';
+            function drawConsole() {
+                console.clear(); // Animasyon için ekranı temizle
+
+                // 1. HEADER
+                console.log(`%c
+   ██   ██  █████  ████████  █████  ██     ██      ██████  ██████  ████████ ██     ██
+   ██   ██ ██   ██    ██     ██   ██  ██   ██     ██    ██ ██   ██    ██     ██     ██
+   ███████ ███████    ██     ███████   ████       ██    ██ ██   ██    ██     ██     ██
+   ██   ██ ██   ██    ██     ██   ██    ██        ██    ██ ██   ██    ██     ██     ██
+   ██   ██ ██   ██    ██     ██   ██    ██         ██████  ██████     ██      ██████ 
+                `, 'color: #E31E24; font-weight: 900; font-size: 10px; line-height: 1;');
+
+                // 2. BİLİM AĞACI (Science Tree) - Görsele Uygun
+                console.log(`%c
+              (      )
+            (          )
+           (            )
+          |              |
+           \\            /
+            \\          /
+             \\   ||   /
+              \\  ||  /
+               \\ || /
+                \\||/
+                 ||
+                 ||
+              ___||___
+                `, 'color: #8B4513; font-weight: bold; font-size: 12px; line-height: 1;');
+
+                // 3. HATAY MOZAİK HARİTASI (İlçeler + Yanıp Sönen Çerçeve)
+                // Her saniye renkler değişir
+                console.log(`%c
+    ${b()}${b()}${b()}${b()}${b()}     ERZİN      ${b()}${b()}${b()}${b()}${b()}${b()}${b()}    HASSA    ${b()}${b()}${b()}${b()}
+   ${b()}   PAYAS   ${b()}  DÖRTYOL  ${b()}  KIRIKHAN  ${b()}   KUMLU   ${b()}
+  ${b()} İSKENDERUN ${b()}${b()}${b()}${b()}${b()}${b()}${b()}${b()}${b()}${b()}${b()}${b()}${b()}${b()} REYHANLI ${b()}
+  ${b()}   ARSUZ    ${b()}      ANTAKYA      ${b()}           ${b()}
+   ${b()}${b()}${b()}${b()}${b()}    BELEN   ${b()}${b()}${b()}${b()}${b()}${b()}${b()}     ALTINÖZÜ  ${b()}
+       ${b()} SAMANDAĞ ${b()}   DEFNE   ${b()}${b()}${b()}${b()}${b()}${b()}${b()}${b()}
+          ${b()}${b()}${b()}${b()}  YAYLADAĞI  ${b()}${b()}${b()}${b()}
+                `, `color: ${rc()}; font-weight: bold; font-size: 10px; background: #222; padding: 10px; border-radius: 5px; line-height: 1.3;`);
+
+                console.log('%c🚀 Bu kod Hatay ODTÜ MD Kurucu Başkanı tarafından geliştirilmiştir.', 'color: #2c3e50; font-family: "Segoe UI", sans-serif; font-size: 12px; font-weight: bold; padding-top: 10px;');
+            }
+
+            // Animasyonu Başlat (Her 700ms'de bir yenile)
+            setInterval(drawConsole, 700);
             
-            console.log('%c' + logo, redStyle);
-            console.log('%c' + mosaic, mosaicStyle);
-            console.log('%c🚀 Bu kod Hatay ODTÜ MD Kurucu Başkanı tarafından geliştirilmiştir.', signatureStyle);
+            // İlk çizim
+            drawConsole();
         })();
+        // ---------------------------------------------------------
 
         async function handleLogin(e) {
             e.preventDefault();
