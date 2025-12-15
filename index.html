@@ -40,14 +40,10 @@
     }
     .form-control:focus { border-color: var(--odtu-dark); box-shadow: 0 0 0 3px rgba(44, 62, 80, 0.1); }
 
-    .forgot-pass-link { display: block; text-align: right; margin-bottom: 20px; font-size: 0.9rem; }
-    .forgot-pass-link a { color: #6b7280; text-decoration: none; transition: 0.3s; font-weight: 500; }
-    .forgot-pass-link a:hover { color: var(--odtu-red); }
-
     .btn-login { 
         width: 100%; padding: 14px; background: var(--odtu-red); color: white; 
         border: none; border-radius: 8px; font-size: 1rem; font-weight: bold; 
-        cursor: pointer; transition: 0.3s; 
+        cursor: pointer; transition: 0.3s; margin-top: 10px;
     }
     .btn-login:hover { background: #c01b20; transform: translateY(-2px); box-shadow: 0 5px 15px rgba(227, 30, 36, 0.2); }
     .btn-login:disabled { background: #cbd5e1; cursor: not-allowed; transform: none; box-shadow: none; }
@@ -67,22 +63,17 @@
         max-width: 450px; width: 90%; box-shadow: 0 20px 50px rgba(0,0,0,0.2); 
         animation: slideUp 0.4s ease; position: relative;
     }
-    .modal-close { position: absolute; top: 15px; right: 20px; font-size: 1.5rem; color: #9ca3af; cursor: pointer; transition: 0.2s; }
-    .modal-close:hover { color: var(--odtu-dark); }
-    @keyframes slideUp { from {transform: translateY(30px); opacity:0;} to {transform: translateY(0); opacity:1;} }
-    
     .modal-icon {
         width: 70px; height: 70px; background: #fef3c7; color: #d97706; border-radius: 50%; 
         display: flex; align-items: center; justify-content: center; font-size: 2rem; margin: 0 auto 20px;
     }
-    .modal-icon.blue { background: #eff6ff; color: #3b82f6; }
-    
     .modal-btn {
         background: var(--odtu-dark); color: white; padding: 12px 30px; border-radius: 8px; 
         text-decoration: none; font-weight: bold; display: inline-block; cursor: pointer; border: none; margin-top: 15px;
     }
+    @keyframes slideUp { from {transform: translateY(30px); opacity:0;} to {transform: translateY(0); opacity:1;} }
     
-    /* GİZLİ İMZA (HOVER EFEKTLİ) */
+    /* GİZLİ İMZA */
     .dev-signature {
         position: fixed; bottom: 20px; right: 20px; background: white; padding: 8px;
         border-radius: 50px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); display: flex; align-items: center;
@@ -120,10 +111,6 @@
                 <div class="input-wrapper"><i class="fa-solid fa-lock"></i><input type="password" id="password" class="form-control" placeholder="********" required></div>
             </div>
             
-            <div class="forgot-pass-link">
-                <a href="#" onclick="openResetModal()">Şifremi Unuttum?</a>
-            </div>
-
             <button type="submit" id="loginBtn" class="btn-login">Giriş Yap</button>
         </form>
 
@@ -139,26 +126,6 @@
                 Lütfen onay sürecinin tamamlanmasını bekleyiniz.
             </p>
             <div class="modal-btn" onclick="document.getElementById('pendingModal').style.display='none'">Tamam</div>
-        </div>
-    </div>
-
-    <div id="resetModal" class="modal-overlay">
-        <div class="modal-box">
-            <span class="modal-close" onclick="closeResetModal()">&times;</span>
-            <div class="modal-icon blue"><i class="fa-solid fa-key"></i></div>
-            <h3 style="color:#2c3e50; margin-bottom:10px;">Şifre Sıfırlama</h3>
-            <p style="color:#666; font-size:0.9rem; margin-bottom:20px;">
-                Kayıtlı e-posta adresinizi giriniz. Size şifrenizi yenilemeniz için bir bağlantı göndereceğiz.
-            </p>
-            <form onsubmit="handleResetPassword(event)">
-                <div class="form-group">
-                    <div class="input-wrapper">
-                        <i class="fa-regular fa-envelope"></i>
-                        <input type="email" id="resetEmail" class="form-control" placeholder="E-posta adresiniz" required>
-                    </div>
-                </div>
-                <button type="submit" id="resetBtn" class="btn-login" style="background: var(--odtu-dark);">Bağlantı Gönder</button>
-            </form>
         </div>
     </div>
 
@@ -195,12 +162,6 @@
    ██    ██ ██   ██    ██     ██     ██      
    ██    ██ ██   ██    ██     ██     ██      
     ██████  ██████     ██      ██████       
-                                            
-    ███     ███ ██████                      
-    ████   ████ ██   ██                     
-    ██ ████ ██ ██   ██                     
-    ██  ██  ██ ██   ██                     
-    ██      ██ ██████                      
             `;
             const style = 'color: #E31E24; font-weight: bold; font-family: monospace; font-size: 10px;';
             const signatureStyle = 'color: #2c3e50; font-family: "Segoe UI", sans-serif; font-size: 12px; font-weight: bold; padding: 10px 0;';
@@ -208,7 +169,6 @@
             console.log('%c' + art, style);
             console.log('%c🚀 Bu kod Hatay ODTÜ MD Kurucu Başkanı tarafından geliştirilmiştir.', signatureStyle);
         })();
-        // ---------------------------
 
         async function handleLogin(e) {
             e.preventDefault();
@@ -239,48 +199,6 @@
                 } else {
                     window.location.href = "dashboard.html";
                 }
-            }
-        }
-
-        // --- Şifre Sıfırlama ---
-        function openResetModal() {
-            const loginEmail = document.getElementById('email').value;
-            if(loginEmail) document.getElementById('resetEmail').value = loginEmail;
-            document.getElementById('resetModal').style.display = 'flex';
-        }
-        function closeResetModal() {
-            document.getElementById('resetModal').style.display = 'none';
-        }
-
-        async function handleResetPassword(e) {
-            e.preventDefault();
-            const email = document.getElementById('resetEmail').value;
-            const btn = document.getElementById('resetBtn');
-
-            btn.innerText = "Gönderiliyor...";
-            btn.disabled = true;
-
-            const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
-                // Şifre sıfırlama sayfası (update-password.html) olmalı
-                redirectTo: window.location.origin + '/update-password.html', 
-            });
-
-            if (error) {
-                showToast("Hata: " + error.message, 'error');
-                btn.innerText = "Bağlantı Gönder";
-                btn.disabled = false;
-            } else {
-                showToast("Bağlantı e-posta adresinize gönderildi! Spam kutusunu kontrol ediniz.", 'success');
-                setTimeout(() => { closeResetModal(); }, 3000);
-                btn.innerText = "Bağlantı Gönder";
-                btn.disabled = false;
-            }
-        }
-
-        // Modal Dışına Tıklayınca Kapatma
-        window.onclick = function(event) {
-            if (event.target.classList.contains('modal-overlay')) {
-                event.target.style.display = "none";
             }
         }
 
