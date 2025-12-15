@@ -4,9 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Giriş Yap - Hatay ODTÜ MD</title>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <style>
-    :root { --odtu-red: #E31E24; --odtu-dark: #2c3e50; --bg-light: #f8f9fa; }
+    :root { --odtu-red: #E31E24; --odtu-dark: #2c3e50; --bg-light: #f3f4f6; }
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
     
     body { 
@@ -19,142 +19,95 @@
     }
 
     .login-card {
-        background: white;
-        padding: 40px;
-        border-radius: 15px;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-        width: 100%;
-        max-width: 400px;
-        text-align: center;
+        background: white; padding: 40px; border-radius: 16px;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.08); width: 100%; max-width: 400px; text-align: center;
+        border: 1px solid #e5e7eb;
     }
 
-    .logo-area img { height: 70px; margin-bottom: 20px; }
-    .login-header h2 { color: var(--odtu-dark); margin-bottom: 5px; }
-    .login-header p { color: #666; font-size: 0.9rem; margin-bottom: 30px; }
+    .logo-area img { height: 80px; margin-bottom: 20px; }
+    .login-header h2 { color: var(--odtu-dark); margin: 0 0 5px 0; font-size: 1.8rem; }
+    .login-header p { color: #666; font-size: 0.95rem; margin-bottom: 30px; }
 
     .form-group { margin-bottom: 20px; text-align: left; }
-    .form-group label { display: block; font-weight: 600; margin-bottom: 8px; color: #444; font-size: 0.9rem; }
+    .form-group label { display: block; font-weight: 600; margin-bottom: 8px; color: var(--odtu-dark); font-size: 0.9rem; }
     
     .input-wrapper { position: relative; }
-    .input-wrapper i { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #999; }
+    .input-wrapper i { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #9ca3af; font-size: 1.1rem; }
     
     .form-control { 
         width: 100%; padding: 12px 15px 12px 45px; 
-        border: 1px solid #ddd; border-radius: 8px; 
-        outline: none; font-size: 1rem; transition: 0.3s;
+        border: 1px solid #d1d5db; border-radius: 8px; outline: none; font-size: 1rem; transition: 0.3s;
     }
     .form-control:focus { border-color: var(--odtu-dark); box-shadow: 0 0 0 3px rgba(44, 62, 80, 0.1); }
 
+    .forgot-pass-link { display: block; text-align: right; margin-bottom: 20px; font-size: 0.9rem; }
+    .forgot-pass-link a { color: #6b7280; text-decoration: none; transition: 0.3s; font-weight: 500; }
+    .forgot-pass-link a:hover { color: var(--odtu-red); }
+
     .btn-login { 
-        width: 100%; padding: 14px; 
-        background: var(--odtu-red); color: white; 
-        border: none; border-radius: 8px; 
-        font-size: 1rem; font-weight: bold; 
-        cursor: pointer; transition: 0.3s; margin-top: 10px;
+        width: 100%; padding: 14px; background: var(--odtu-red); color: white; 
+        border: none; border-radius: 8px; font-size: 1rem; font-weight: bold; 
+        cursor: pointer; transition: 0.3s; 
     }
-    .btn-login:hover { background: #c0392b; }
-    .btn-login:disabled { background: #bdc3c7; cursor: not-allowed; }
+    .btn-login:hover { background: #c01b20; transform: translateY(-2px); box-shadow: 0 5px 15px rgba(227, 30, 36, 0.2); }
+    .btn-login:disabled { background: #cbd5e1; cursor: not-allowed; transform: none; box-shadow: none; }
 
-    .register-link { margin-top: 20px; display: block; font-size: 0.9rem; color: #666; }
+    .register-link { margin-top: 25px; display: block; font-size: 0.95rem; color: #4b5563; }
     .register-link a { color: var(--odtu-red); text-decoration: none; font-weight: bold; }
+    .register-link a:hover { text-decoration: underline; }
 
-    /* UYARI MODALI */
+    /* MODAL */
     .modal-overlay {
         position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-        background: rgba(0,0,0,0.8); z-index: 9999;
-        display: none; justify-content: center; align-items: center;
-        backdrop-filter: blur(5px);
+        background: rgba(0,0,0,0.6); z-index: 9999; display: none; 
+        justify-content: center; align-items: center; backdrop-filter: blur(4px);
     }
     .modal-box {
-        background: white; padding: 40px; border-radius: 15px;
-        text-align: center; max-width: 450px; width: 90%;
-        box-shadow: 0 20px 50px rgba(0,0,0,0.3); animation: slideUp 0.4s ease;
+        background: white; padding: 40px; border-radius: 16px; text-align: center; 
+        max-width: 450px; width: 90%; box-shadow: 0 20px 50px rgba(0,0,0,0.2); 
+        animation: slideUp 0.4s ease; position: relative;
     }
-    @keyframes slideUp { from {transform: translateY(50px); opacity:0;} to {transform: translateY(0); opacity:1;} }
+    .modal-close { position: absolute; top: 15px; right: 20px; font-size: 1.5rem; color: #9ca3af; cursor: pointer; transition: 0.2s; }
+    .modal-close:hover { color: var(--odtu-dark); }
+    @keyframes slideUp { from {transform: translateY(30px); opacity:0;} to {transform: translateY(0); opacity:1;} }
     
     .modal-icon {
-        width: 70px; height: 70px; background: #f39c12; color: white;
-        border-radius: 50%; display: flex; align-items: center; justify-content: center;
-        font-size: 2rem; margin: 0 auto 20px;
+        width: 70px; height: 70px; background: #fef3c7; color: #d97706; border-radius: 50%; 
+        display: flex; align-items: center; justify-content: center; font-size: 2rem; margin: 0 auto 20px;
     }
+    .modal-icon.blue { background: #eff6ff; color: #3b82f6; }
+    
     .modal-btn {
-        background: var(--odtu-dark); color: white; padding: 10px 25px;
-        border-radius: 6px; text-decoration: none; font-weight: bold; display: inline-block; cursor: pointer;
+        background: var(--odtu-dark); color: white; padding: 12px 30px; border-radius: 8px; 
+        text-decoration: none; font-weight: bold; display: inline-block; cursor: pointer; border: none; margin-top: 15px;
     }
-
-    /* --- YÖNTEM 1: CSS HOVER İMZA KODLARI BURADA --- */
+    
+    /* GİZLİ İMZA */
     .dev-signature {
-        position: fixed;
-        bottom: 20px;
-        right: 20px;
-        background: white;
-        padding: 10px;
-        border-radius: 50px;
-        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-        display: flex;
-        align-items: center;
-        gap: 0; /* Başlangıçta boşluk yok */
-        cursor: pointer;
-        transition: all 0.4s ease;
-        z-index: 100;
-        overflow: hidden;
-        color: var(--odtu-dark);
+        position: fixed; bottom: 20px; right: 20px; background: white; padding: 8px;
+        border-radius: 50px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); display: flex; align-items: center;
+        gap: 0; cursor: pointer; transition: all 0.4s ease; z-index: 100; overflow: hidden; color: var(--odtu-dark);
         border: 1px solid rgba(0,0,0,0.05);
     }
-
-    /* İkonun kendisi */
     .dev-icon {
-        width: 30px;
-        height: 30px;
-        background: var(--odtu-red);
-        color: white;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 0.9rem;
-        flex-shrink: 0; /* İkonun sıkışmasını engeller */
-        transition: transform 0.4s ease;
+        width: 30px; height: 30px; background: var(--odtu-red); color: white; border-radius: 50%;
+        display: flex; align-items: center; justify-content: center; font-size: 0.9rem; flex-shrink: 0; transition: transform 0.4s ease;
     }
-
-    /* Gizli Metin */
-    .dev-text {
-        max-width: 0;
-        opacity: 0;
-        white-space: nowrap;
-        font-size: 0.9rem;
-        font-weight: 600;
-        transition: all 0.4s ease;
-        color: #555;
-    }
-
-    /* --- HOVER EFEKTİ --- */
-    .dev-signature:hover {
-        padding-right: 20px; /* Metin açılınca sağdan boşluk ver */
-        gap: 10px;
-        box-shadow: 0 8px 25px rgba(227, 30, 36, 0.2); /* Kırmızımsı gölge */
-        transform: translateY(-3px);
-    }
-
-    .dev-signature:hover .dev-text {
-        max-width: 200px; /* Metin için yer aç */
-        opacity: 1;
-    }
-
-    .dev-signature:hover .dev-icon {
-        transform: rotate(360deg); /* İkon dönsün */
-    }
-
-    .dev-text span { color: var(--odtu-red); }
+    .dev-text { max-width: 0; opacity: 0; white-space: nowrap; font-size: 0.85rem; font-weight: 600; transition: all 0.4s ease; color: #555; }
+    .dev-signature:hover { padding-right: 15px; gap: 10px; transform: translateY(-3px); }
+    .dev-signature:hover .dev-text { max-width: 150px; opacity: 1; }
+    .dev-signature:hover .dev-icon { transform: rotate(360deg); }
+    
+    #liveToast { position: fixed; top: 20px; right: 20px; background: white; padding: 15px 20px; border-radius: 8px; border-left: 5px solid #27ae60; display: none; z-index: 10000; box-shadow: 0 10px 30px rgba(0,0,0,0.15); }
 </style>
 </head>
 <body>
 
     <div class="login-card">
-        <div class="logo-area"><img src="logo.png" alt="Logo"></div>
+        <div class="logo-area"><img src="logo.png" alt="ODTÜ MD Logo"></div>
         <div class="login-header">
             <h2>Giriş Yap</h2>
-            <p>Hatay ODTÜ MD Üye ve Öğrenci Portalı</p>
+            <p>Hatay ODTÜ MD Üye Portalı</p>
         </div>
 
         <form id="loginForm" onsubmit="handleLogin(event)">
@@ -166,6 +119,11 @@
                 <label>Şifre</label>
                 <div class="input-wrapper"><i class="fa-solid fa-lock"></i><input type="password" id="password" class="form-control" placeholder="********" required></div>
             </div>
+            
+            <div class="forgot-pass-link">
+                <a href="#" onclick="openResetModal()">Şifremi Unuttum?</a>
+            </div>
+
             <button type="submit" id="loginBtn" class="btn-login">Giriş Yap</button>
         </form>
 
@@ -175,13 +133,32 @@
     <div id="pendingModal" class="modal-overlay">
         <div class="modal-box">
             <div class="modal-icon"><i class="fa-solid fa-lock"></i></div>
-            <h3 style="color:#2c3e50; margin-bottom:15px;">Onay Bekleniyor</h3>
-            <p style="color:#555; line-height:1.6; margin-bottom:25px;">
-                Hesabınız oluşturulmuş ancak henüz yönetici onayı almamıştır.<br>
-                Erişim için lütfen iletişime geçiniz: <br><br>
-                <strong style="color:#E31E24;">dernek@hatayodtumd.org</strong>
+            <h3 style="color:#2c3e50; margin-bottom:10px;">Onay Bekleniyor</h3>
+            <p style="color:#666; line-height:1.6; margin-bottom:20px;">
+                Hesabınız henüz yönetici onayı almamıştır.<br>
+                Lütfen onay sürecinin tamamlanmasını bekleyiniz.
             </p>
             <div class="modal-btn" onclick="document.getElementById('pendingModal').style.display='none'">Tamam</div>
+        </div>
+    </div>
+
+    <div id="resetModal" class="modal-overlay">
+        <div class="modal-box">
+            <span class="modal-close" onclick="closeResetModal()">&times;</span>
+            <div class="modal-icon blue"><i class="fa-solid fa-key"></i></div>
+            <h3 style="color:#2c3e50; margin-bottom:10px;">Şifre Sıfırlama</h3>
+            <p style="color:#666; font-size:0.9rem; margin-bottom:20px;">
+                Kayıtlı e-posta adresinizi giriniz. Size şifrenizi yenilemeniz için bir bağlantı göndereceğiz.
+            </p>
+            <form onsubmit="handleResetPassword(event)">
+                <div class="form-group">
+                    <div class="input-wrapper">
+                        <i class="fa-regular fa-envelope"></i>
+                        <input type="email" id="resetEmail" class="form-control" placeholder="E-posta adresiniz" required>
+                    </div>
+                </div>
+                <button type="submit" id="resetBtn" class="btn-login" style="background: var(--odtu-dark);">Bağlantı Gönder</button>
+            </form>
         </div>
     </div>
 
@@ -191,11 +168,18 @@
             <div class="dev-text">Designed by <span>Hatay ODTÜ MD</span></div>
         </div>
     </a>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <div id="liveToast">İşlem Başarılı</div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.7/dist/umd/supabase.min.js"></script>
     <script>
         const supabaseUrl = 'https://hftrmiiacxgtkarsvupn.supabase.co';
         const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhmdHJtaWlhY3hndGthcnN2dXBuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ3ODUzNzIsImV4cCI6MjA4MDM2MTM3Mn0.BgCk5xuZx6AZuxzfBHcQqg8j8BtxU9FbupDgoFecG_k';
-        const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+        
+        let supabase;
+        try { 
+            if(window.supabase) supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+        } catch(e){ console.error(e); }
 
         async function handleLogin(e) {
             e.preventDefault();
@@ -209,7 +193,7 @@
             const { data, error } = await supabase.auth.signInWithPassword({ email, password });
 
             if (error) {
-                alert("Giriş Başarısız: " + error.message);
+                showToast("Giriş Başarısız: " + error.message, 'error');
                 btn.innerText = "Giriş Yap";
                 btn.disabled = false;
                 return;
@@ -227,6 +211,58 @@
                     window.location.href = "dashboard.html";
                 }
             }
+        }
+
+        // --- Şifre Sıfırlama ---
+        function openResetModal() {
+            const loginEmail = document.getElementById('email').value;
+            if(loginEmail) document.getElementById('resetEmail').value = loginEmail;
+            document.getElementById('resetModal').style.display = 'flex';
+        }
+        function closeResetModal() {
+            document.getElementById('resetModal').style.display = 'none';
+        }
+
+        async function handleResetPassword(e) {
+            e.preventDefault();
+            const email = document.getElementById('resetEmail').value;
+            const btn = document.getElementById('resetBtn');
+
+            btn.innerText = "Gönderiliyor...";
+            btn.disabled = true;
+
+            const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
+                // Şifre sıfırlama sayfası (update-password.html) olmalı
+                redirectTo: window.location.origin + '/update-password.html', 
+            });
+
+            if (error) {
+                showToast("Hata: " + error.message, 'error');
+                btn.innerText = "Bağlantı Gönder";
+                btn.disabled = false;
+            } else {
+                showToast("Bağlantı e-posta adresinize gönderildi! Spam kutusunu kontrol ediniz.", 'success');
+                setTimeout(() => { closeResetModal(); }, 3000);
+                btn.innerText = "Bağlantı Gönder";
+                btn.disabled = false;
+            }
+        }
+
+        // Modal Dışına Tıklayınca Kapatma
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal-overlay')) {
+                event.target.style.display = "none";
+            }
+        }
+
+        function showToast(msg, type='success') {
+            const t = document.getElementById('liveToast');
+            t.innerText = msg;
+            if(type === 'error') t.style.borderLeftColor = "#ef4444";
+            else t.style.borderLeftColor = "#27ae60";
+            
+            t.style.display='block';
+            setTimeout(()=>t.style.display='none', 4000);
         }
     </script>
 </body>
