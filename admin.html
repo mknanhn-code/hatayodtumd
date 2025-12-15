@@ -10,13 +10,12 @@
     :root { --admin-dark: #1e293b; --admin-light: #f1f5f9; --accent: #E31E24; --text: #334155; }
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
     
-    /* GÜVENLİK İÇİN: Sayfa yüklenirken içerik gizli başlar */
+    /* --- ÇOK ÖNEMLİ GÜVENLİK AYARI --- */
+    /* Sayfa varsayılan olarak tamamen GİZLİDİR. JS onayı gelmeden açılmaz. */
     body { 
-        display: block; background-color: var(--admin-light); 
+        display: none; /* JS ile admin olduğu kanıtlanana kadar kapalı */
+        background-color: var(--admin-light); 
         min-height: 100vh; color: var(--text);
-        visibility: hidden; /* JS yetki verene kadar gizli */
-        opacity: 0; 
-        transition: opacity 0.3s ease;
     }
 
     /* --- STANDART NAVBAR --- */
@@ -175,18 +174,21 @@
 
         document.addEventListener("DOMContentLoaded", async () => {
             const { data: { session } } = await supabase.auth.getSession();
+            
+            // 1. OTURUM YOKSA DİREKT AT
             if (!session) { window.location.href = 'index.html'; return; }
             
-            // GÜVENLİK KONTROLÜ: Admin mi?
+            // 2. ADMİN YETKİ KONTROLÜ
             const { data: profile } = await supabase.from('profiles').select('*').eq('id', session.user.id).single();
             if (!profile || !profile.roles || !profile.roles.includes('admin')) {
-                // Admin değilse index.html sayfasına yönlendir
+                // Admin değilse, sayfayı hiç göstermeden index'e at
                 alert("Bu sayfaya erişim yetkiniz yok!");
                 window.location.href = 'index.html'; 
                 return;
             }
 
-            // Admin ise, sayfayı görünür yap ve verileri çek
+            // 3. YETKİ TAMAMSA SAYFAYI GÖSTER
+            document.body.style.display = 'block'; // Block yaparak göster (CSS'de default none yaptık)
             document.body.style.visibility = 'visible';
             document.body.style.opacity = '1';
             document.getElementById('adminName').innerText = profile.full_name;
