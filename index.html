@@ -81,6 +81,71 @@
         background: var(--odtu-dark); color: white; padding: 10px 25px;
         border-radius: 6px; text-decoration: none; font-weight: bold; display: inline-block; cursor: pointer;
     }
+
+    /* --- YÖNTEM 1: CSS HOVER İMZA KODLARI BURADA --- */
+    .dev-signature {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        background: white;
+        padding: 10px;
+        border-radius: 50px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        display: flex;
+        align-items: center;
+        gap: 0; /* Başlangıçta boşluk yok */
+        cursor: pointer;
+        transition: all 0.4s ease;
+        z-index: 100;
+        overflow: hidden;
+        color: var(--odtu-dark);
+        border: 1px solid rgba(0,0,0,0.05);
+    }
+
+    /* İkonun kendisi */
+    .dev-icon {
+        width: 30px;
+        height: 30px;
+        background: var(--odtu-red);
+        color: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.9rem;
+        flex-shrink: 0; /* İkonun sıkışmasını engeller */
+        transition: transform 0.4s ease;
+    }
+
+    /* Gizli Metin */
+    .dev-text {
+        max-width: 0;
+        opacity: 0;
+        white-space: nowrap;
+        font-size: 0.9rem;
+        font-weight: 600;
+        transition: all 0.4s ease;
+        color: #555;
+    }
+
+    /* --- HOVER EFEKTİ --- */
+    .dev-signature:hover {
+        padding-right: 20px; /* Metin açılınca sağdan boşluk ver */
+        gap: 10px;
+        box-shadow: 0 8px 25px rgba(227, 30, 36, 0.2); /* Kırmızımsı gölge */
+        transform: translateY(-3px);
+    }
+
+    .dev-signature:hover .dev-text {
+        max-width: 200px; /* Metin için yer aç */
+        opacity: 1;
+    }
+
+    .dev-signature:hover .dev-icon {
+        transform: rotate(360deg); /* İkon dönsün */
+    }
+
+    .dev-text span { color: var(--odtu-red); }
 </style>
 </head>
 <body>
@@ -112,15 +177,20 @@
             <div class="modal-icon"><i class="fa-solid fa-lock"></i></div>
             <h3 style="color:#2c3e50; margin-bottom:15px;">Onay Bekleniyor</h3>
             <p style="color:#555; line-height:1.6; margin-bottom:25px;">
-                Hesabınız oluşturulmuş ancak henüz yönetici onayı almamıştır.<br><br>
-                Güvenlik prosedürleri gereği erişiminiz kapalıdır. Onay sürecini hızlandırmak için lütfen iletişime geçiniz:
-                <br><br>
-                <strong style="color:#E31E24; font-size:1.1rem;">dernek@hatayodtumd.org</strong>
+                Hesabınız oluşturulmuş ancak henüz yönetici onayı almamıştır.<br>
+                Erişim için lütfen iletişime geçiniz: <br><br>
+                <strong style="color:#E31E24;">dernek@hatayodtumd.org</strong>
             </p>
             <div class="modal-btn" onclick="document.getElementById('pendingModal').style.display='none'">Tamam</div>
         </div>
     </div>
 
+    <a href="https://www.hatayodtumd.org" target="_blank" style="text-decoration: none;">
+        <div class="dev-signature">
+            <div class="dev-icon"><i class="fa-solid fa-code"></i></div>
+            <div class="dev-text">Designed by <span>Hatay ODTÜ MD</span></div>
+        </div>
+    </a>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
         const supabaseUrl = 'https://hftrmiiacxgtkarsvupn.supabase.co';
@@ -136,7 +206,6 @@
             btn.innerText = "Kontrol Ediliyor...";
             btn.disabled = true;
 
-            // 1. Önce Giriş Yapmayı Dene
             const { data, error } = await supabase.auth.signInWithPassword({ email, password });
 
             if (error) {
@@ -146,19 +215,15 @@
                 return;
             }
 
-            // 2. KİLİT NOKTASI: Profili ve Onay Durumunu Kontrol Et
             if (data.user) {
                 const { data: profile } = await supabase.from('profiles').select('is_approved').eq('id', data.user.id).single();
 
                 if (!profile || profile.is_approved !== true) {
-                    // ONAY YOKSA: Hemen çıkış yaptır ve modalı göster
                     await supabase.auth.signOut();
-                    
                     document.getElementById('pendingModal').style.display = 'flex';
                     btn.innerText = "Giriş Yap";
                     btn.disabled = false;
                 } else {
-                    // ONAY VARSA: Yönlendir
                     window.location.href = "dashboard.html";
                 }
             }
