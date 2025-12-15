@@ -13,11 +13,15 @@
 
     /* --- STANDART NAVBAR --- */
     .navbar { width: 100%; height: 70px; background-color: var(--odtu-dark); display: flex; align-items: center; justify-content: space-between; padding: 0 20px; position: fixed; top: 0; z-index: 5000; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+    
+    /* Sol: Logo + Linkler */
+    .nav-container-left { display: flex; align-items: center; gap: 40px; }
+    
     .nav-left { display: flex; align-items: center; gap: 15px; }
     .nav-logo { height: 40px; background: white; padding: 2px; border-radius: 6px; }
     .nav-title { color: white; font-weight: 700; font-size: 1.2rem; letter-spacing: 0.5px; }
     
-    .nav-links { display: flex; gap: 25px; align-items: center; }
+    .nav-links { display: flex; gap: 15px; align-items: center; }
     .nav-links a { color: #d1d5db; text-decoration: none; font-size: 0.95rem; transition: all 0.3s; padding: 8px 12px; border-radius: 6px; position: relative; }
     .nav-links a:hover, .nav-links a.active { color: white; background: rgba(255,255,255,0.1); }
     
@@ -27,7 +31,9 @@
     .nav-right { display: flex; align-items: center; }
     .logout-btn { color: #ef4444; border: 1px solid #ef4444; padding: 6px 18px; border-radius: 20px; text-decoration: none; font-size: 0.9rem; transition: 0.3s; background: transparent; cursor: pointer; }
     .logout-btn:hover { background: #ef4444; color: white; }
+    
     .hamburger { display: none; color: white; font-size: 1.5rem; cursor: pointer; }
+    .mobile-logout { display: none; }
     
     /* --- İÇERİK DÜZENİ --- */
     .main-content { margin-top: 100px; padding: 30px; max-width: 1200px; margin-left: auto; margin-right: auto; }
@@ -95,11 +101,18 @@
 
     /* MOBİL */
     @media (max-width: 900px) {
+        .navbar { justify-content: space-between; }
+        .nav-container-left { width: auto; }
+        
         .nav-links { display: none; position: absolute; top: 70px; left: 0; width: 100%; background: var(--odtu-dark); flex-direction: column; padding: 20px; box-shadow: 0 10px 20px rgba(0,0,0,0.2); }
         .nav-links.active { display: flex; }
+        .nav-links a { width: 100%; text-align: center; margin: 5px 0; }
+        
         .hamburger { display: block; }
         .nav-right { display: none; }
+        
         .mobile-logout { display: block !important; margin-top: 15px; border: 1px solid #ef4444; color: #ef4444 !important; width: 100%; text-align: center; border-radius: 8px; padding: 10px; }
+        
         .container { margin-top: 90px; }
         .top-header { flex-direction: column; align-items: flex-start; gap: 15px; }
         .stats-container { flex-direction: column; gap: 20px; }
@@ -109,21 +122,28 @@
 <body>
 
     <nav class="navbar">
-        <div class="nav-left">
-            <img src="logo.png" class="nav-logo">
-            <span class="nav-title">Hatay ODTÜ MD</span>
+        <div class="nav-container-left">
+            <div class="nav-left">
+                <img src="logo.png" class="nav-logo">
+                <span class="nav-title">Hatay ODTÜ MD</span>
+            </div>
+            
+            <div class="nav-links" id="navLinks">
+                <a href="dashboard.html" class="active">Panel</a>
+                <a href="meeting.html">Meeting Hub</a>
+                <a href="network.html">Ağ & Mentorluk</a>
+                <a href="career.html">Kariyer Lab</a>
+                <a href="profile.html">Profilim <span id="globalBadge">0</span></a>
+                <a href="admin.html" id="adminBtn"><i class="fa-solid fa-shield-halved"></i> Yönetim</a>
+                <a href="#" onclick="logout()" class="mobile-logout">Çıkış Yap</a>
+            </div>
         </div>
+
         <div class="hamburger" onclick="toggleMenu()"><i class="fa-solid fa-bars"></i></div>
-        <div class="nav-links" id="navLinks">
-            <a href="dashboard.html" class="active">Panel</a>
-            <a href="meeting.html">Meeting Hub</a>
-            <a href="mentor.html">Mentorluk</a>
-            <a href="career.html">Kariyer Lab</a>
-            <a href="network.html">Mezun Ağı</a>
-            <a href="profile.html">Profilim <span id="globalBadge">0</span></a>
-            <a href="admin.html" id="adminBtn"><i class="fa-solid fa-shield-halved"></i> Yönetim</a>
+        
+        <div class="nav-right">
+            <button class="logout-btn" onclick="logout()">Çıkış</button>
         </div>
-        <div class="nav-right"><button class="logout-btn" onclick="logout()">Çıkış</button></div>
     </nav>
 
     <div class="main-content">
@@ -143,7 +163,7 @@
             <div class="panel-card">
                 <div class="card-header"><div class="card-icon bg-light-orange"><i class="fa-solid fa-graduation-cap"></i></div><div class="card-title">Mentor Bul</div></div>
                 <div class="card-body">Kariyer yolculuğunuzda size rehberlik edecek deneyimli mezunlarımızla eşleşin.</div>
-                <button class="btn-action btn-red" onclick="window.location.href='mentor.html'">Mentorları İncele <i class="fa-solid fa-arrow-right"></i></button>
+                <button class="btn-action btn-red" onclick="window.location.href='network.html'">Mentorları İncele <i class="fa-solid fa-arrow-right"></i></button>
             </div>
             <div class="panel-card">
                 <div class="card-header"><div class="card-icon bg-light-blue"><i class="fa-solid fa-flask"></i></div><div class="card-title">Kariyer Lab</div></div>
@@ -156,7 +176,7 @@
             <div class="panel-card">
                 <div class="card-header"><div class="card-icon bg-light-green"><i class="fa-solid fa-handshake-angle"></i></div><div class="card-title">Mentor Ol</div></div>
                 <div class="card-body">Tecrübelerinizi genç ODTÜ'lülerle paylaşarak onların gelişimine katkıda bulunun.</div>
-                <button class="btn-action btn-red" onclick="window.location.href='mentor.html'">Başvur <i class="fa-solid fa-check"></i></button>
+                <button class="btn-action btn-red" onclick="window.location.href='profile.html'">Başvur <i class="fa-solid fa-check"></i></button>
             </div>
             <div class="panel-card">
                 <div class="card-header"><div class="card-icon bg-light-blue"><i class="fa-solid fa-briefcase"></i></div><div class="card-title">İlan Ver</div></div>
@@ -194,7 +214,7 @@
             </div>
         </div>
 
-        <div id="genericSection" style="text-align:center; background:white; padding:50px; border-radius:16px; box-shadow:0 10px 30px rgba(0,0,0,0.05); border:1px solid #eee;">
+        <div id="genericSection" style="text-align:center; background:white; padding:50px; border-radius:16px; box-shadow:0 10px 30px rgba(0,0,0,0.05); border:1px solid #eee; margin-top:30px;">
             <i class="fa-solid fa-user-gear fa-3x" style="color:#cbd5e1; margin-bottom:20px;"></i>
             <h3>Profilinizi Tamamlayın</h3>
             <p style="color:#666; max-width:500px; margin:10px auto 20px auto;">Sistemin tüm özelliklerini kullanabilmek için lütfen profil ayarlarından mezuniyet yılı veya sınıf bilgilerinizi giriniz.</p>
