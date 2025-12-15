@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Mezun Ağı - Hatay ODTÜ MD</title>
-<link rel="stylesheet" href="[https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css](https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css)">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
     :root { --odtu-red: #E31E24; --odtu-dark: #2c3e50; --bg-light: #f8f9fa; --white: #ffffff; }
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
@@ -53,6 +53,7 @@
     .msg-window-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 6000; display: none; justify-content: center; align-items: center; }
     .msg-window { background: white; width: 600px; max-width: 90%; border-radius: 12px; padding: 20px; }
     textarea { width: 100%; height: 150px; padding: 10px; border: 1px solid #ddd; border-radius: 6px; margin: 10px 0; }
+    #liveToast { position: fixed; top: 20px; right: 20px; background: white; padding: 15px 20px; border-radius: 8px; border-left: 5px solid #27ae60; box-shadow: 0 5px 15px rgba(0,0,0,0.2); display:none; z-index: 7000; }
 </style>
 </head>
 <body>
@@ -110,18 +111,24 @@
         </div>
     </div>
 
-    <div id="liveToast" style="position: fixed; top: 20px; right: 20px; background: white; padding: 15px; border-radius: 8px; border-left: 5px solid #27ae60; display: none;">İşlem Başarılı</div>
+    <div id="liveToast">İşlem Başarılı</div>
 
-    <script src="[https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2](https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2)"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
-        const supabaseUrl = '[https://hftrmiiacxgtkarsvupn.supabase.co](https://hftrmiiacxgtkarsvupn.supabase.co)';
+        const supabaseUrl = 'https://hftrmiiacxgtkarsvupn.supabase.co';
         const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhmdHJtaWlhY3hndGthcnN2dXBuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ3ODUzNzIsImV4cCI6MjA4MDM2MTM3Mn0.BgCk5xuZx6AZuxzfBHcQqg8j8BtxU9FbupDgoFecG_k';
-        let supabase; try { supabase = window.supabase.createClient(supabaseUrl, supabaseKey); } catch(e){}
+        
+        let supabaseClient;
+        try { 
+            if(window.supabase) supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey); 
+            else console.error("Supabase yüklenemedi");
+        } catch(e){ console.error(e); }
+        
         let currentUser = null, allProfiles = [], selectedUserIds = new Set();
 
         document.addEventListener("DOMContentLoaded", async () => {
-            if(!supabase) return;
-            const { data: { session } } = await supabase.auth.getSession();
+            if(!supabaseClient) return;
+            const { data: { session } } = await supabaseClient.auth.getSession();
             if (!session) { window.location.href = 'index.html'; return; }
             currentUser = session.user;
             fetchProfiles(); loadSideNotes();
@@ -130,7 +137,11 @@
         function toggleMenu() { document.getElementById('navLinks').classList.toggle('active'); }
 
         async function fetchProfiles() {
-            const { data } = await supabase.from('profiles').select('*').order('created_at', {ascending:false});
+            const { data, error } = await supabaseClient.from('profiles').select('*').order('created_at', {ascending:false});
+            if (error) { 
+                document.getElementById('profileGrid').innerHTML = '<p>Veri çekme hatası.</p>';
+                return;
+            }
             if(data) { allProfiles = data; renderProfiles(data); }
         }
 
@@ -138,9 +149,24 @@
             const grid = document.getElementById('profileGrid'); grid.innerHTML = '';
             const visible = profiles.filter(p => p.id !== currentUser.id);
             document.getElementById('resultCount').innerText = `${visible.length} Üye Bulundu`;
+            
+            if(visible.length === 0) {
+                 grid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: #999;">Kriterlere uygun üye bulunamadı.</p>';
+                 return;
+            }
+
             visible.forEach(p => {
                 const isChecked = selectedUserIds.has(p.id) ? 'checked' : '';
-                grid.innerHTML += `<div class="profile-card"><input type="checkbox" class="profile-select" value="${p.id}" ${isChecked} onchange="toggleSelection('${p.id}', this.checked)"><div class="p-avatar">${p.full_name.substring(0,2).toUpperCase()}</div><div style="font-weight:bold;">${p.full_name}</div><div style="color:#666; font-size:0.9rem; margin-bottom:10px;">${p.department}</div><button class="btn-msg" onclick="openMsgModal('${p.id}', '${p.full_name}')">Mesaj</button></div>`;
+                const avatarChar = p.full_name ? p.full_name.substring(0,2).toUpperCase() : 'U';
+                
+                grid.innerHTML += `
+                <div class="profile-card">
+                    <input type="checkbox" class="profile-select" value="${p.id}" ${isChecked} onchange="toggleSelection('${p.id}', this.checked)">
+                    <div class="p-avatar">${avatarChar}</div>
+                    <div style="font-weight:bold;">${p.full_name || 'İsimsiz'}</div>
+                    <div style="color:#666; font-size:0.9rem; margin-bottom:10px;">${p.department || 'Bölüm Yok'}</div>
+                    <button class="btn-msg" onclick="openMsgModal('${p.id}', '${p.full_name}')">Mesaj</button>
+                </div>`;
             });
         }
 
@@ -171,30 +197,30 @@
             const btn = event.target; btn.innerText="..."; btn.disabled=true;
             
             if(isBulk) {
-                const promises = Array.from(selectedUserIds).map(r => supabase.from('direct_messages').insert({ sender_id: currentUser.id, receiver_id: r, content: txt, sender_name: myName }));
+                const promises = Array.from(selectedUserIds).map(r => supabaseClient.from('direct_messages').insert({ sender_id: currentUser.id, receiver_id: r, content: txt, sender_name: myName }));
                 await Promise.all(promises); showToast("Toplu Gönderildi!"); clearBulkSelection();
             } else {
                 const tId = document.getElementById('msgTargetId').value;
-                await supabase.from('direct_messages').insert({ sender_id: currentUser.id, receiver_id: tId, content: txt, sender_name: myName });
+                await supabaseClient.from('direct_messages').insert({ sender_id: currentUser.id, receiver_id: tId, content: txt, sender_name: myName });
                 showToast("Gönderildi!");
             }
             closeModal(); document.getElementById('msgContent').value=''; btn.innerText="Gönder"; btn.disabled=false;
         }
 
         async function loadSideNotes() {
-            const { data } = await supabase.from('personal_notes').select('*').eq('user_id', currentUser.id).order('created_at', {ascending:false});
+            const { data } = await supabaseClient.from('personal_notes').select('*').eq('user_id', currentUser.id).order('created_at', {ascending:false});
             const l = document.getElementById('sideNoteList'); l.innerHTML='';
             if(data) data.forEach(n => l.innerHTML+=`<li style="background:#fff3e0; padding:5px; margin-bottom:5px; border-radius:4px;">${n.content} <i class="fa-solid fa-times" style="float:right; cursor:pointer; color:red;" onclick="delSideNote(${n.id})"></i></li>`);
         }
         async function addSideNote() {
             const t = document.getElementById('sideNoteInput').value; if(!t)return;
-            await supabase.from('personal_notes').insert({user_id:currentUser.id, content:t});
+            await supabaseClient.from('personal_notes').insert({user_id:currentUser.id, content:t});
             document.getElementById('sideNoteInput').value=''; loadSideNotes();
         }
-        async function delSideNote(id) { await supabase.from('personal_notes').delete().eq('id', id); loadSideNotes(); }
+        async function delSideNote(id) { await supabaseClient.from('personal_notes').delete().eq('id', id); loadSideNotes(); }
 
         function showToast(msg) { const t=document.getElementById('liveToast'); t.innerText=msg; t.style.display='block'; setTimeout(()=>t.style.display='none',3000); }
-        async function logout() { await supabase.auth.signOut(); window.location.href = "index.html"; }
+        async function logout() { await supabaseClient.auth.signOut(); window.location.href = "index.html"; }
     </script>
 </body>
 </html>
