@@ -82,7 +82,7 @@
         text-decoration: none; font-weight: bold; display: inline-block; cursor: pointer; border: none; margin-top: 15px;
     }
     
-    /* GİZLİ İMZA */
+    /* GİZLİ İMZA (HOVER EFEKTLİ) */
     .dev-signature {
         position: fixed; bottom: 20px; right: 20px; background: white; padding: 8px;
         border-radius: 50px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); display: flex; align-items: center;
@@ -180,6 +180,35 @@
         try { 
             if(window.supabase) supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
         } catch(e){ console.error(e); }
+
+        // --- GİZLİ KONSOL İMZASI ---
+        (function() {
+            const art = `
+   ██   ██  █████  ████████  █████  ██     ██
+   ██   ██ ██   ██    ██     ██   ██  ██   ██ 
+   ███████ ███████    ██     ███████   ████  
+   ██   ██ ██   ██    ██     ██   ██    ██    
+   ██   ██ ██   ██    ██     ██   ██    ██    
+                                              
+    ██████  ██████  ████████ ██     ██      
+   ██    ██ ██   ██    ██     ██     ██      
+   ██    ██ ██   ██    ██     ██     ██      
+   ██    ██ ██   ██    ██     ██     ██      
+    ██████  ██████     ██      ██████       
+                                            
+    ███     ███ ██████                      
+    ████   ████ ██   ██                     
+    ██ ████ ██ ██   ██                     
+    ██  ██  ██ ██   ██                     
+    ██      ██ ██████                      
+            `;
+            const style = 'color: #E31E24; font-weight: bold; font-family: monospace; font-size: 10px;';
+            const signatureStyle = 'color: #2c3e50; font-family: "Segoe UI", sans-serif; font-size: 12px; font-weight: bold; padding: 10px 0;';
+            
+            console.log('%c' + art, style);
+            console.log('%c🚀 Bu kod Hatay ODTÜ MD Kurucu Başkanı tarafından geliştirilmiştir.', signatureStyle);
+        })();
+        // ---------------------------
 
         async function handleLogin(e) {
             e.preventDefault();
