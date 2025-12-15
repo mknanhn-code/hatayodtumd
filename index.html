@@ -84,7 +84,6 @@
         width: 30px; height: 30px; background: var(--odtu-red); color: white; border-radius: 50%;
         display: flex; align-items: center; justify-content: center; font-size: 0.9rem; flex-shrink: 0; transition: transform 0.4s ease;
     }
-    /* Hover Düzeltmesi: Genişlik artırıldı */
     .dev-text { max-width: 0; opacity: 0; white-space: nowrap; font-size: 0.85rem; font-weight: 600; transition: all 0.4s ease; color: #555; }
     .dev-signature:hover { padding-right: 15px; gap: 10px; transform: translateY(-3px); }
     .dev-signature:hover .dev-text { max-width: 350px; opacity: 1; }
@@ -149,31 +148,19 @@
             if(window.supabase) supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
         } catch(e){ console.error(e); }
 
-        // --- GELİŞMİŞ GİZLİ KONSOL ANİMASYONU ---
+        // --- GİZLİ KONSOL SANATI (SABİT - KAYMA YAPMAZ) ---
         (function() {
-            const frames = ["▒", "░", "▓", "█"];
-            const colors = ["#E31E24", "#e67e22", "#f1c40f", "#2ecc71", "#3498db", "#9b59b6"];
-            
-            // Rastgele Renk Seçici
-            const rc = () => colors[Math.floor(Math.random() * colors.length)];
-            
-            // Çerçeve Deseni (Rastgele Karakterler)
-            const b = () => frames[Math.floor(Math.random() * frames.length)];
-
-            function drawConsole() {
-                console.clear(); // Animasyon için ekranı temizle
-
-                // 1. HEADER
-                console.log(`%c
+            // 1. Kırmızı Başlık (HATAY ODTÜ)
+            const headerArt = `
    ██   ██  █████  ████████  █████  ██     ██      ██████  ██████  ████████ ██     ██
    ██   ██ ██   ██    ██     ██   ██  ██   ██     ██    ██ ██   ██    ██     ██     ██
    ███████ ███████    ██     ███████   ████       ██    ██ ██   ██    ██     ██     ██
    ██   ██ ██   ██    ██     ██   ██    ██        ██    ██ ██   ██    ██     ██     ██
    ██   ██ ██   ██    ██     ██   ██    ██         ██████  ██████     ██      ██████ 
-                `, 'color: #E31E24; font-weight: 900; font-size: 10px; line-height: 1;');
+            `;
 
-                // 2. BİLİM AĞACI (Science Tree) - Görsele Uygun
-                console.log(`%c
+            // 2. ODTÜ Bilim Ağacı (Science Tree)
+            const treeArt = `
               (      )
             (          )
            (            )
@@ -187,30 +174,32 @@
                  ||
                  ||
               ___||___
-                `, 'color: #8B4513; font-weight: bold; font-size: 12px; line-height: 1;');
+            `;
 
-                // 3. HATAY MOZAİK HARİTASI (İlçeler + Yanıp Sönen Çerçeve)
-                // Her saniye renkler değişir
-                console.log(`%c
-    ${b()}${b()}${b()}${b()}${b()}     ERZİN      ${b()}${b()}${b()}${b()}${b()}${b()}${b()}    HASSA    ${b()}${b()}${b()}${b()}
-   ${b()}   PAYAS   ${b()}  DÖRTYOL  ${b()}  KIRIKHAN  ${b()}   KUMLU   ${b()}
-  ${b()} İSKENDERUN ${b()}${b()}${b()}${b()}${b()}${b()}${b()}${b()}${b()}${b()}${b()}${b()}${b()}${b()} REYHANLI ${b()}
-  ${b()}   ARSUZ    ${b()}      ANTAKYA      ${b()}           ${b()}
-   ${b()}${b()}${b()}${b()}${b()}    BELEN   ${b()}${b()}${b()}${b()}${b()}${b()}${b()}     ALTINÖZÜ  ${b()}
-       ${b()} SAMANDAĞ ${b()}   DEFNE   ${b()}${b()}${b()}${b()}${b()}${b()}${b()}${b()}
-          ${b()}${b()}${b()}${b()}  YAYLADAĞI  ${b()}${b()}${b()}${b()}
-                `, `color: ${rc()}; font-weight: bold; font-size: 10px; background: #222; padding: 10px; border-radius: 5px; line-height: 1.3;`);
+            // 3. Dev Hatay Mozaiği (Sabit)
+            const mapArt = `
+      ░░░░░░░░░░░░░░░░░░░░░░ ERZİN ░░░░░░░░░░ HASSA ░░░░░░░░░░░░░░░░░
+     ░░░░░░░░░░░░░ DÖRTYOL ░░░░░░░░░ KIRIKHAN ░░░░░░░░░░░░░░░░░░░░░
+    ░░░░░░ PAYAS ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ KUMLU ░░░░░░░░░░
+   ░░░░░░ İSKENDERUN ░░░░░░▓▓▓▓▓▓▓▓▓░░░░░ REYHANLI ░░░░░░░░░░░░░░░░
+    ░░ ARSUZ ░░░░░░░░░░▓▓▓▓ ANTAKYA ▓▓▓▓░░░░░░░░░░░░░░░░░░░░░░░░░░
+     ░░░░░░ BELEN ░░░░▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░░░ ALTINÖZÜ ░░░░░░░░░░░░
+       ░░░░ SAMANDAĞ ░░░░░░ DEFNE ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
+          ░░░░░░░ YAYLADAĞI ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
+            `;
 
-                console.log('%c🚀 Bu kod Hatay ODTÜ MD Kurucu Başkanı tarafından geliştirilmiştir.', 'color: #2c3e50; font-family: "Segoe UI", sans-serif; font-size: 12px; font-weight: bold; padding-top: 10px;');
-            }
-
-            // Animasyonu Başlat (Her 700ms'de bir yenile)
-            setInterval(drawConsole, 700);
+            // Stiller
+            const redStyle = 'color: #E31E24; font-weight: 900; font-family: monospace; font-size: 12px; line-height: 1; text-shadow: 2px 2px 0px #2c3e50;';
+            const treeStyle = 'color: #2c3e50; font-weight: bold; font-family: monospace; font-size: 11px; line-height: 1;';
+            const mosaicStyle = 'color: #546e7a; font-family: monospace; font-size: 11px; font-weight: bold; line-height: 1.2;';
+            const finalStyle = 'color: #E31E24; font-family: "Segoe UI", sans-serif; font-size: 13px; font-weight: bold; padding: 20px 0; border-top: 2px dashed #E31E24;';
             
-            // İlk çizim
-            drawConsole();
+            // Animasyon (setInterval) KALDIRILDI. Sadece bir kere yazar.
+            console.log(`%c${headerArt}`, redStyle);
+            console.log(`%c${treeArt}`, treeStyle);
+            console.log(`%c${mapArt}`, mosaicStyle);
+            console.log('%c🚀 Bu kod Hatay ODTÜ MD Kurucu Başkanı tarafından geliştirilmiştir.', finalStyle);
         })();
-        // ---------------------------------------------------------
 
         async function handleLogin(e) {
             e.preventDefault();
