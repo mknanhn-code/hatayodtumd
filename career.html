@@ -7,26 +7,50 @@
 
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
 <style>
     :root { --odtu-red: #E31E24; --odtu-dark: #2c3e50; --bg-light: #f8f9fa; --white: #ffffff; }
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
     body { background-color: var(--bg-light); min-height: 100vh; color: #333; }
 
-    /* NAVBAR */
-    .navbar { width: 100%; height: 70px; background-color: var(--odtu-dark); display: flex; align-items: center; justify-content: space-between; padding: 0 20px; position: fixed; top: 0; z-index: 1000; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+    /* --- PROFESYONEL NAVBAR (TÜM SAYFALAR İÇİN STANDART) --- */
+    .navbar { 
+        width: 100%; height: 70px; background-color: var(--odtu-dark); 
+        display: flex; align-items: center; justify-content: space-between; 
+        padding: 0 20px; position: fixed; top: 0; left: 0; z-index: 1000; 
+        box-shadow: 0 4px 10px rgba(0,0,0,0.1); 
+    }
+    
     .nav-left { display: flex; align-items: center; gap: 15px; }
     .nav-logo { height: 40px; background: white; padding: 2px; border-radius: 5px; }
     .nav-title { color: white; font-weight: bold; font-size: 1.1rem; }
-    .nav-links { display: flex; gap: 20px; }
-    .nav-links a { color: #bdc3c7; text-decoration: none; font-size: 0.95rem; transition: 0.3s; }
-    .nav-links a:hover, .nav-links a.active { color: white; }
-    .logout-btn { color: #e74c3c; border: 1px solid #e74c3c; padding: 6px 15px; border-radius: 20px; text-decoration: none; font-size: 0.9rem; cursor: pointer; }
-    .logout-btn:hover { background: #e74c3c; color: white; }
-    .hamburger { display: none; color: white; font-size: 1.5rem; cursor: pointer; }
+    
+    /* Orta Linkler */
+    .nav-links { display: flex; gap: 20px; align-items: center; }
+    .nav-links a { 
+        color: #bdc3c7; text-decoration: none; font-size: 0.95rem; 
+        display: flex; align-items: center; gap: 8px; padding: 8px 12px; 
+        border-radius: 6px; transition: 0.3s; 
+    }
+    .nav-links a:hover, .nav-links a.active { background-color: rgba(255,255,255,0.1); color: white; }
+    
+    /* Masaüstünde Menü içindeki Çıkış Linkini GİZLE */
+    .mobile-logout { display: none; } 
 
-    /* İÇERİK */
+    /* Sağ Taraf (Masaüstü Çıkış Butonu) */
+    .nav-right { display: flex; align-items: center; }
+    .logout-btn { 
+        color: #ef4444; border: 1px solid #ef4444; padding: 6px 15px; 
+        border-radius: 20px; text-decoration: none; transition: 0.3s; 
+        font-size: 0.9rem; cursor: pointer; background: transparent;
+    }
+    .logout-btn:hover { background: #ef4444; color: white; }
+
+    /* Hamburger İkonu */
+    .hamburger { display: none; font-size: 1.5rem; color: white; cursor: pointer; }
+
+    /* --- İÇERİK STİLLERİ --- */
     .main-content { margin-top: 100px; padding: 30px; max-width: 1200px; margin-left: auto; margin-right: auto; }
     .header-area { text-align: center; margin-bottom: 50px; }
     .header-area h2 { font-size: 2.5rem; color: var(--odtu-dark); margin-bottom: 10px; }
@@ -61,13 +85,35 @@
     #alumniMap { width: 100%; height: 400px; border-radius: 10px; z-index: 1; }
     #liveToast { position: fixed; top: 20px; right: 20px; background: white; padding: 15px 20px; border-radius: 8px; border-left: 5px solid #27ae60; display: none; z-index: 9999; box-shadow: 0 5px 25px rgba(0,0,0,0.2); }
 
-    /* MOBİL */
+    /* --- MOBİL UYUMLULUK (MEDIA QUERY) --- */
     @media (max-width: 900px) {
-        .nav-links { display: none; position: absolute; top: 70px; left: 0; width: 100%; background: var(--odtu-dark); flex-direction: column; padding: 20px; }
-        .nav-links.active { display: flex; }
-        .hamburger { display: block; }
-        .nav-right { display: none; }
-        .job-row { flex-direction: column; align-items: flex-start; gap: 15px; } .btn-apply { width: 100%; }
+        .navbar { padding: 0 15px; }
+        .hamburger { display: block; } /* İkonu göster */
+        
+        /* Menü Gizli ve Yana Kayar */
+        .nav-links { 
+            display: none; /* JS ile flex olacak */
+            position: fixed; top: 70px; left: 0; width: 100%; 
+            background: var(--odtu-dark); flex-direction: column; 
+            padding: 20px; box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+        .nav-links.active { display: flex; } /* Menü Açılınca */
+        
+        .nav-links a { font-size: 1.1rem; margin: 10px 0; width: 100%; justify-content: center; }
+        .nav-right { display: none; } /* Masaüstü sağ butonu gizle */
+        
+        /* Mobilde Çıkış Butonunu Menü İçinde Göster */
+        .mobile-logout { 
+            display: block !important; 
+            color: #ef4444 !important; 
+            border: 1px solid #ef4444; 
+            border-radius: 20px; 
+            text-align: center;
+        }
+
+        .job-row { flex-direction: column; align-items: flex-start; gap: 15px; } 
+        .btn-apply { width: 100%; }
+        .lab-grid { grid-template-columns: 1fr; }
     }
 </style>
 </head>
@@ -78,7 +124,11 @@
             <img src="logo.png" class="nav-logo">
             <span class="nav-title">Hatay ODTÜ MD</span>
         </div>
-        <div class="hamburger" onclick="toggleMenu()"><i class="fa-solid fa-bars"></i></div>
+        
+        <div class="hamburger" onclick="toggleMenu()">
+            <i class="fa-solid fa-bars"></i>
+        </div>
+
         <div class="nav-links" id="navLinks">
             <a href="dashboard.html">Panel</a>
             <a href="meeting.html">Meeting Hub</a>
@@ -86,11 +136,13 @@
             <a href="career.html" class="active">Kariyer Lab</a>
             <a href="network.html">Mezun Ağı</a>
             <a href="profile.html">Profilim</a>
-            <a href="#" onclick="logout()" style="color: #ff6b6b; border: 1px solid #ff6b6b; margin-top: 20px;">Çıkış Yap</a>
+            <a href="#" onclick="logout()" class="mobile-logout">Çıkış Yap</a>
         </div>
-        <div class="nav-right"><a href="#" class="logout-btn" onclick="logout()">Çıkış</a></div>
-    </nav>
 
+        <div class="nav-right">
+            <button class="logout-btn" onclick="logout()">Çıkış</button>
+        </div>
+    </nav>
     <div class="main-content">
         <div class="header-area">
             <h2>🧪 Kariyer Lab & Fırsatlar</h2>
@@ -129,42 +181,43 @@
         const supabaseUrl = 'https://hftrmiiacxgtkarsvupn.supabase.co';
         const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhmdHJtaWlhY3hndGthcnN2dXBuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ3ODUzNzIsImV4cCI6MjA4MDM2MTM3Mn0.BgCk5xuZx6AZuxzfBHcQqg8j8BtxU9FbupDgoFecG_k';
         
-        let supabaseClient;
+        let supabase; 
         try { 
-            if(window.supabase) supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey); 
+            if(window.supabase) supabase = window.supabase.createClient(supabaseUrl, supabaseKey); 
             else console.error("Supabase yüklenemedi");
         } catch(e){ console.error(e); }
         
         let currentUser = null, myApplications = new Set();
 
         document.addEventListener("DOMContentLoaded", async () => {
-            if(!supabaseClient) return;
-            const { data: { session } } = await supabaseClient.auth.getSession();
+            if(!supabase) return;
+            const { data: { session } } = await supabase.auth.getSession();
             if (!session) { window.location.href = 'index.html'; return; }
             currentUser = session.user;
             initMap(); checkUserType(); await loadMyApps(); loadJobs();
         });
 
+        // --- MOBİL MENÜ TOGGLE ---
         function toggleMenu() { document.getElementById('navLinks').classList.toggle('active'); }
 
         async function initMap() {
             var map = L.map('alumniMap').setView([39, 35], 3);
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
-            const { data } = await supabaseClient.from('profiles').select('full_name, company, latitude, longitude, user_type').not('latitude', 'is', null); 
+            const { data } = await supabase.from('profiles').select('full_name, company, latitude, longitude, user_type').not('latitude', 'is', null); 
             if (data) data.forEach(p => { L.marker([p.latitude, p.longitude]).addTo(map).bindPopup(`<b>${p.full_name}</b><br>${p.company||p.user_type}`); });
         }
 
         async function checkUserType() {
-            const { data } = await supabaseClient.from('profiles').select('user_type').eq('id', currentUser.id).single();
+            const { data } = await supabase.from('profiles').select('user_type').eq('id', currentUser.id).single();
             if (data && data.user_type !== 'student') document.getElementById('addJobBtn').style.display = 'block';
         }
         async function loadMyApps() {
-            const { data } = await supabaseClient.from('job_applications').select('job_id').eq('applicant_id', currentUser.id);
+            const { data } = await supabase.from('job_applications').select('job_id').eq('applicant_id', currentUser.id);
             if(data) data.forEach(a => myApplications.add(a.job_id));
         }
         async function loadJobs() {
             const list = document.getElementById('jobList');
-            const { data } = await supabaseClient.from('jobs').select('*').order('created_at', { ascending: false });
+            const { data } = await supabase.from('jobs').select('*').order('created_at', { ascending: false });
             if(!data || data.length === 0) { list.innerHTML = '<div style="padding:20px; text-align:center;">İlan yok.</div>'; return; }
             list.innerHTML = '';
             data.forEach(job => {
@@ -178,17 +231,17 @@
         }
         async function postJob() {
             const t = document.getElementById('jTitle').value; const c = document.getElementById('jComp').value; const l = document.getElementById('jLoc').value; const type = document.getElementById('jType').value;
-            const { error } = await supabaseClient.from('jobs').insert({ title: t, company: c, location: l, type: type, posted_by: currentUser.id });
+            const { error } = await supabase.from('jobs').insert({ title: t, company: c, location: l, type: type, posted_by: currentUser.id });
             if(!error) { closeModal('jobModal'); loadJobs(); showToast("İlan Yayında!"); }
         }
         async function applyJob(jobId, btn) {
             if(!confirm("Başvurulsun mu?")) return;
-            const { error } = await supabaseClient.from('job_applications').insert({ job_id: jobId, applicant_id: currentUser.id });
+            const { error } = await supabase.from('job_applications').insert({ job_id: jobId, applicant_id: currentUser.id });
             if(!error) { btn.className = 'btn-applied'; btn.innerText='Başvuruldu'; myApplications.add(jobId); showToast("Başvuruldu!"); }
         }
         async function viewApplicants(jobId) {
             openModal('applicantsModal'); document.getElementById('applicantsList').innerHTML = 'Yükleniyor...';
-            const { data } = await supabaseClient.from('job_applications').select(`applied_at, profiles!applicant_id(full_name, department)`).eq('job_id', jobId);
+            const { data } = await supabase.from('job_applications').select(`applied_at, profiles!applicant_id(full_name, department)`).eq('job_id', jobId);
             let html = '';
             if(data) data.forEach(a => html += `<div style="padding:10px; border-bottom:1px solid #eee;"><b>${a.profiles.full_name}</b> (${a.profiles.department})<br><small>${new Date(a.applied_at).toLocaleDateString()}</small></div>`);
             document.getElementById('applicantsList').innerHTML = html || 'Başvuru yok.';
@@ -201,14 +254,14 @@
         async function submitCas() { handleLab('case_submissions', { user_id: currentUser.id, case_topic: document.getElementById('casTopic').value, solution_url: document.getElementById('casLink').value }, 'casModal'); }
 
         async function handleLab(table, data, modalId) {
-            const { error } = await supabaseClient.from(table).insert(data);
+            const { error } = await supabase.from(table).insert(data);
             if(error) alert("Hata: " + error.message); else { closeModal(modalId); showToast("Talep Alındı!"); }
         }
 
         function openModal(id) { document.getElementById(id).style.display='flex'; }
         function closeModal(id) { document.getElementById(id).style.display='none'; }
-        function showToast(msg) { const t=document.getElementById('liveToast'); t.innerText=msg; t.style.display='block'; setTimeout(()=>t.style.display='none',3000); }
-        async function logout() { await supabaseClient.auth.signOut(); window.location.href = "index.html"; }
+        function showToast(msg) { const t=document.getElementById('liveToast'); document.getElementById('toastMessage') ? document.getElementById('toastMessage').innerText = msg : t.innerText = msg; t.style.display='block'; setTimeout(()=>t.style.display='none', 3000); }
+        async function logout() { await supabase.auth.signOut(); window.location.href = "index.html"; }
     </script>
 </body>
 </html>
