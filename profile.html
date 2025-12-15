@@ -13,35 +13,18 @@
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
     body { background-color: var(--bg-light); color: #333; min-height: 100vh; }
 
-    /* --- NAVBAR --- */
-    .navbar { 
-        width: 100%; height: 70px; background-color: var(--odtu-dark); 
-        display: flex; align-items: center; justify-content: space-between; 
-        padding: 0 20px; position: fixed; top: 0; left: 0; z-index: 5000; 
-        box-shadow: 0 4px 10px rgba(0,0,0,0.1); 
-    }
-    
+    /* NAVBAR */
+    .navbar { width: 100%; height: 70px; background-color: var(--odtu-dark); display: flex; align-items: center; justify-content: space-between; padding: 0 20px; position: fixed; top: 0; left: 0; z-index: 5000; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
     .nav-container-left { display: flex; align-items: center; gap: 40px; }
     .nav-left { display: flex; align-items: center; gap: 15px; }
     .nav-logo { height: 40px; background: white; padding: 2px; border-radius: 6px; }
     .nav-title { color: white; font-weight: 700; font-size: 1.2rem; letter-spacing: 0.5px; white-space: nowrap; }
-    
     .nav-links { display: flex; gap: 15px; align-items: center; }
-    .nav-links a { 
-        color: #d1d5db; text-decoration: none; font-size: 0.95rem; 
-        transition: all 0.3s; padding: 8px 12px; border-radius: 6px; 
-        display: flex; align-items: center; gap: 6px;
-    }
+    .nav-links a { color: #d1d5db; text-decoration: none; font-size: 0.95rem; transition: all 0.3s; padding: 8px 12px; border-radius: 6px; display: flex; align-items: center; gap: 6px; }
     .nav-links a:hover, .nav-links a.active { color: white; background: rgba(255,255,255,0.1); }
-    
     .nav-right { display: flex; align-items: center; }
-    .logout-btn { 
-        color: #ef4444; border: 1px solid #ef4444; padding: 6px 18px; 
-        border-radius: 20px; text-decoration: none; font-size: 0.9rem; 
-        transition: 0.3s; background: transparent; cursor: pointer; 
-    }
+    .logout-btn { color: #ef4444; border: 1px solid #ef4444; padding: 6px 18px; border-radius: 20px; text-decoration: none; font-size: 0.9rem; transition: 0.3s; background: transparent; cursor: pointer; }
     .logout-btn:hover { background: #ef4444; color: white; }
-    
     .hamburger { display: none; color: white; font-size: 1.5rem; cursor: pointer; }
     .mobile-logout { display: none; }
 
@@ -72,7 +55,7 @@
     input:checked + .slider { background-color: #16a34a; }
     input:checked + .slider:before { transform: translateX(24px); }
 
-    /* DİĞER STİLLER */
+    /* DİĞER */
     #liveToast { position: fixed; top: 20px; right: 20px; background: white; padding: 15px 20px; border-radius: 8px; border-left: 5px solid #27ae60; box-shadow: 0 5px 15px rgba(0,0,0,0.2); display:none; z-index: 7000; }
     .request-item { display: flex; justify-content: space-between; align-items: center; padding: 15px; background: #fff; border: 1px solid #eee; border-radius: 8px; margin-bottom: 10px; }
     .btn-group button { border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; color: white; margin-left: 5px; }
@@ -137,8 +120,8 @@
                 <form id="profileForm">
                     <div class="form-group"><label>Ad Soyad</label><input type="text" id="fullName" class="form-control"></div>
                     
-                    <div class="form-group">
-                        <label>Üyelik Tipi</label>
+                    <div class="form-group" style="background:#f9f9f9; padding:15px; border-radius:8px; border:1px solid #eee;">
+                        <label style="color:var(--odtu-red);">Üyelik Tipi (Lütfen Seçiniz)</label>
                         <select id="userTypeSelect" class="form-control" onchange="toggleUserTypeFields()">
                             <option value="student">Öğrenci</option>
                             <option value="grad">Mezun</option>
@@ -148,30 +131,7 @@
                     <div class="form-group"><label>Bölüm</label><input type="text" id="dept" class="form-control"></div>
                     
                     <div class="section-divider"></div>
-                    <h4 style="color:var(--odtu-dark); margin-bottom:15px;">Kariyer & Mentorluk</h4>
-                    <div class="form-group"><label>LinkedIn URL</label><input type="url" id="linkedin" class="form-control" placeholder="https://linkedin.com/in/..."></div>
-                    <div class="form-group"><label>Yetkinlikler (Virgülle ayırın)</label><input type="text" id="skills" class="form-control" placeholder="Örn: Python, Pazarlama, Satış"></div>
-                    <div class="form-group"><label>Biyografi</label><textarea id="bio" class="form-control" placeholder="Kısa özgeçmiş..."></textarea></div>
                     
-                    <div id="mentorOption" class="mentor-switch-container">
-                        <label class="switch">
-                            <input type="checkbox" id="isMentorCheck">
-                            <span class="slider"></span>
-                        </label>
-                        <div>
-                            <strong>Mentor Olmak İstiyorum</strong>
-                            <p style="font-size:0.85rem; color:#666; margin:0;">Profilinizi mentor ağında yayınlayın.</p>
-                        </div>
-                    </div>
-
-                    <div class="section-divider"></div>
-
-                    <div id="gradFields" style="display:none;">
-                        <div class="form-group"><label>Şirket</label><input type="text" id="company" class="form-control"></div>
-                        <div class="form-group"><label>Sektör</label><input type="text" id="sector" class="form-control"></div>
-                        <div class="form-group"><label>Mezuniyet Yılı</label><input type="number" id="gradYear" class="form-control"></div>
-                    </div>
-
                     <div id="studentFields" style="display:none;">
                         <div class="form-group">
                             <label>Sınıf / Akademik Seviye</label>
@@ -188,14 +148,37 @@
                         </div>
                     </div>
 
+                    <div id="gradFields" style="display:none;">
+                        <div class="form-group"><label>Şirket</label><input type="text" id="company" class="form-control"></div>
+                        <div class="form-group"><label>Sektör</label><input type="text" id="sector" class="form-control"></div>
+                        <div class="form-group"><label>Mezuniyet Yılı</label><input type="number" id="gradYear" class="form-control"></div>
+                    </div>
+
+                    <div id="mentorOption" class="mentor-switch-container">
+                        <label class="switch">
+                            <input type="checkbox" id="isMentorCheck">
+                            <span class="slider"></span>
+                        </label>
+                        <div>
+                            <strong>Mentor Olmak İstiyorum</strong>
+                            <p style="font-size:0.85rem; color:#666; margin:0;">Profilinizi mentor ağında yayınlayın.</p>
+                        </div>
+                    </div>
+
+                    <div class="section-divider"></div>
+
+                    <h4 style="color:var(--odtu-dark); margin-bottom:15px;">Ek Bilgiler</h4>
+                    <div class="form-group"><label>LinkedIn URL</label><input type="url" id="linkedin" class="form-control" placeholder="https://linkedin.com/in/..."></div>
+                    <div class="form-group"><label>Yetkinlikler (Virgülle ayırın)</label><input type="text" id="skills" class="form-control" placeholder="Örn: Python, Pazarlama, Satış"></div>
+                    <div class="form-group"><label>Biyografi</label><textarea id="bio" class="form-control" placeholder="Kısa özgeçmiş..."></textarea></div>
+
                     <div class="form-group"><label>Konumunu İşaretle</label><div id="locationMap"></div><input type="hidden" id="lat"><input type="hidden" id="lng"></div>
                     <button type="submit" class="btn-save">Değişiklikleri Kaydet</button>
                 </form>
             </div>
 
             <div id="messages" class="tab-content">
-                <div class="page-title">Mesajlar <button class="btn-new-msg" onclick="openComposeModal()"><i class="fa-solid fa-pen-to-square"></i> Yeni</button></div>
-                <ul id="msgList" class="msg-list"></ul>
+                <div class="page-title">Mesajlar</div><ul id="msgList" class="msg-list"></ul>
             </div>
             <div id="mentorRequests" class="tab-content">
                 <div class="page-title">Mentorluk Yönetimi</div>
@@ -209,17 +192,14 @@
         </div>
     </div>
 
-    <div id="readModal" class="modal-overlay" style="display:none;"><div class="modal-content"><span class="close-modal" onclick="closeModal('readModal')">&times;</span><div style="border-bottom:1px solid #eee; padding-bottom:10px; margin-bottom:15px;"><h3 id="readSender" style="margin:0;">...</h3><small id="readDate" style="color:#888;">...</small></div><div id="readContent" style="background:#f9f9f9; padding:15px; border-radius:8px; margin-bottom:20px;">...</div><input type="hidden" id="replyTargetId"><textarea id="replyText" class="form-control" rows="3" placeholder="Yanıtınız..."></textarea><button onclick="sendReply()" class="btn-save" style="margin-top:10px; width:100%;">Yanıtla</button></div></div>
-    <div id="composeModal" class="modal-overlay" style="display:none;"><div class="modal-content"><span class="close-modal" onclick="closeModal('composeModal')">&times;</span><h3>Yeni Mesaj</h3><div class="recipients-container" onclick="document.getElementById('userSearchInput').focus()"><div id="recipientChips" style="display:flex; gap:5px; flex-wrap:wrap;"></div><input type="text" id="userSearchInput" class="search-input-ghost" placeholder="Kişi ara..." onkeyup="searchUsers(this.value)"><div id="searchDropdown" class="search-dropdown"></div></div><textarea id="composeContent" class="form-control" rows="6" placeholder="Mesajınız..."></textarea><button onclick="sendNewMessage()" class="btn-save" style="margin-top:15px; width:100%;">Gönder 🚀</button></div></div>
     <div id="liveToast">Mesaj</div>
 
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.7/dist/umd/supabase.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
         const supabaseUrl = 'https://hftrmiiacxgtkarsvupn.supabase.co';
         const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhmdHJtaWlhY3hndGthcnN2dXBuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ3ODUzNzIsImV4cCI6MjA4MDM2MTM3Mn0.BgCk5xuZx6AZuxzfBHcQqg8j8BtxU9FbupDgoFecG_k';
         let supabaseClient; try { supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey); } catch(e){}
         let map, marker, currentUser;
-        let loadedMessages=[], selectedRecipients=[];
 
         document.addEventListener("DOMContentLoaded", async () => {
             if(!supabaseClient) { alert("Bağlantı Hatası"); return; }
@@ -246,6 +226,8 @@
                 document.getElementById('lat').value=lat; document.getElementById('lng').value=lng;
             });
         }
+        
+        // --- BU FONKSİYON ÖNEMLİ: SEÇİME GÖRE ALANLARI AÇAR ---
         function toggleUserTypeFields() {
             const type = document.getElementById('userTypeSelect').value;
             if(type === 'grad') {
@@ -258,6 +240,7 @@
                 document.getElementById('mentorOption').style.display = 'none';
             }
         }
+
         async function loadProfile() {
             const { data } = await supabaseClient.from('profiles').select('*').eq('id', currentUser.id).single();
             if(data) {
@@ -267,8 +250,11 @@
                 document.getElementById('bio').value = data.bio||'';
                 if(data.skills) document.getElementById('skills').value = data.skills.join(', ');
 
+                // 1. Tipi Belirle ve Seçimi Ayarla
                 const userType = data.user_type || 'student';
                 document.getElementById('userTypeSelect').value = userType;
+                
+                // 2. Alanları Görünür Yap (FONKSİYONU ÇAĞIR)
                 toggleUserTypeFields();
 
                 if(userType === 'grad') {
@@ -278,14 +264,12 @@
                     document.getElementById('isMentorCheck').checked = data.is_mentor;
                     if(data.is_mentor) document.getElementById('mentorTabBtn').style.display = 'flex';
                 } else {
-                    // class_level metin (text) olarak gelirse sorun yok, int gelirse de stringe çevirip seçer.
                     document.getElementById('classLevel').value = data.class_level || '1'; 
                 }
 
                 if(data.roles?.includes('admin')) document.getElementById('navAdminBtn').style.display = 'block';
                 if(data.latitude) {
                     marker = L.marker([data.latitude, data.longitude]).addTo(map);
-                    map.setView([data.latitude, data.longitude], 10);
                     document.getElementById('lat').value=data.latitude; document.getElementById('lng').value=data.longitude;
                 }
             }
@@ -322,7 +306,7 @@
             btn.innerHTML = 'Değişiklikleri Kaydet'; btn.disabled = false;
         });
 
-        // --- DİĞER JS FONKSİYONLARI (Aynı) ---
+        // --- DİĞER FONKSİYONLAR (Aynı) ---
         async function loadMentorRequests() {
             const listDiv = document.getElementById('reqListContainer');
             const badge = document.getElementById('mentorReqCount');
@@ -342,19 +326,10 @@
             });
         }
         async function respondRequest(id, status) { if(!confirm("Onaylıyor musunuz?")) return; await supabaseClient.from('mentor_requests').update({ status: status }).eq('id', id); loadMentorRequests(); }
-        async function loadMessages() { /* Mesaj kodları... */ const list = document.getElementById('msgList'); const { data } = await supabaseClient.from('direct_messages').select('*').eq('receiver_id', currentUser.id).order('created_at', {ascending: false}); if(!data || data.length === 0) { list.innerHTML = '<div style="text-align:center; padding:20px; color:#999;">Mesaj kutusu boş.</div>'; return; } loadedMessages = data; list.innerHTML = ''; data.forEach((m, index) => { list.innerHTML += `<li class="msg-item" onclick="openMessage(${index})"><div class="msg-header"><strong>${m.sender_name || 'İsimsiz'}</strong><small>${new Date(m.created_at).toLocaleDateString()}</small></div><div class="msg-preview">${m.content}</div></li>`; }); }
-        function openMessage(index) { const msg = loadedMessages[index]; document.getElementById('readSender').innerText = msg.sender_name; document.getElementById('readDate').innerText = new Date(msg.created_at).toLocaleString(); document.getElementById('readContent').innerText = msg.content; document.getElementById('replyTargetId').value = msg.sender_id; document.getElementById('readModal').style.display = 'flex'; }
-        async function sendReply() { const tId = document.getElementById('replyTargetId').value; const txt = document.getElementById('replyText').value; if(!txt) return alert("Boş mesaj"); await supabaseClient.from('direct_messages').insert({sender_id: currentUser.id, receiver_id: tId, content: txt, sender_name: currentUser.user_metadata?.full_name}); showToast("Gönderildi"); closeModal('readModal'); }
-        function openComposeModal() { selectedRecipients=[]; updateRecipientsUI(); document.getElementById('composeContent').value=''; document.getElementById('composeModal').style.display='flex'; }
-        async function searchUsers(q) { const dd = document.getElementById('searchDropdown'); if(q.length<3) { dd.style.display='none'; return; } const {data} = await supabaseClient.from('profiles').select('id,full_name').ilike('full_name', `%${q}%`).limit(5); dd.innerHTML=''; if(data && data.length>0) { dd.style.display='block'; data.forEach(u=>{ dd.innerHTML+=`<div class="search-item" onclick="addRecipient('${u.id}','${u.full_name}')">${u.full_name}</div>`; }); } else dd.style.display='none'; }
-        function addRecipient(id, name) { selectedRecipients.push({id,name}); updateRecipientsUI(); document.getElementById('userSearchInput').value=''; document.getElementById('searchDropdown').style.display='none'; }
-        function removeRecipient(id) { selectedRecipients = selectedRecipients.filter(r=>r.id!==id); updateRecipientsUI(); }
-        function updateRecipientsUI() { document.getElementById('recipientChips').innerHTML = selectedRecipients.map(r=>`<div class="recipient-chip">${r.name} <i onclick="removeRecipient('${r.id}')" class="fa-solid fa-times" style="margin-left:5px;"></i></div>`).join(''); }
-        async function sendNewMessage() { if(selectedRecipients.length===0) return alert("Alıcı seçin"); const txt = document.getElementById('composeContent').value; const promises = selectedRecipients.map(r=>supabaseClient.from('direct_messages').insert({sender_id:currentUser.id, receiver_id:r.id, content:txt, sender_name:currentUser.user_metadata?.full_name})); await Promise.all(promises); showToast("Gönderildi"); closeModal('composeModal'); }
-        async function loadNotes() { const { data } = await supabaseClient.from('personal_notes').select('*').eq('user_id', currentUser.id).order('created_at', {ascending:false}); const l = document.getElementById('noteList'); l.innerHTML=''; if(data) data.forEach(n => l.innerHTML+=`<div class="note-item">${n.content} <i class="fa-solid fa-trash delete-note" onclick="deleteNote(${n.id})"></i></div>`); }
+        async function loadMessages() { const list = document.getElementById('msgList'); const { data } = await supabaseClient.from('direct_messages').select('*').eq('receiver_id', currentUser.id).order('created_at', {ascending: false}); if(!data || data.length === 0) { list.innerHTML = '<div style="text-align:center; padding:20px; color:#999;">Mesaj kutusu boş.</div>'; return; } list.innerHTML = ''; data.forEach((m, index) => { list.innerHTML += `<li class="msg-item"><div class="msg-header"><strong>${m.sender_name || 'İsimsiz'}</strong><small>${new Date(m.created_at).toLocaleDateString()}</small></div><div class="msg-preview">${m.content}</div></li>`; }); }
+        async function loadNotes() { const { data } = await supabaseClient.from('personal_notes').select('*').eq('user_id', currentUser.id).order('created_at', {ascending:false}); const l = document.getElementById('noteList'); l.innerHTML=''; if(data) data.forEach(n => l.innerHTML+=`<div class="note-item">${n.content} <i class="fa-solid fa-trash" style="float:right; cursor:pointer; color:red;" onclick="deleteNote(${n.id})"></i></div>`); }
         async function addNote() { const c = document.getElementById('newNote').value; if(!c)return; await supabaseClient.from('personal_notes').insert({user_id:currentUser.id, content:c}); document.getElementById('newNote').value=''; loadNotes(); }
         async function deleteNote(id) { if(confirm("Sil?")) { await supabaseClient.from('personal_notes').delete().eq('id',id); loadNotes(); } }
-        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
         function showToast(msg) { const t=document.getElementById('liveToast'); t.innerText=msg; t.style.display='block'; setTimeout(()=>t.style.display='none',3000); }
         async function logout() { await supabaseClient.auth.signOut(); window.location.href = "index.html"; }
     </script>
