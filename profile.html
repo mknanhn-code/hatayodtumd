@@ -34,6 +34,10 @@
     .menu-card { background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
     .menu-btn { display: flex; align-items: center; gap: 10px; width: 100%; padding: 15px 20px; border: none; background: white; cursor: pointer; text-align: left; font-size: 1rem; border-bottom: 1px solid #f1f1f1; transition: 0.2s; color: #555; position: relative; }
     .menu-btn:hover, .menu-btn.active { background: var(--odtu-red); color: white; }
+    
+    .badge-count { position: absolute; top: 10px; right: 10px; background: var(--odtu-red); color: white; border-radius: 50%; padding: 2px 6px; font-size: 0.75rem; display: none; box-shadow: 0 0 5px rgba(0,0,0,0.2); }
+    #globalBadge { background: var(--odtu-red); color: white; font-size: 0.65rem; padding: 2px 6px; border-radius: 10px; display: none; border: 2px solid var(--odtu-dark); margin-left: 5px; }
+
     .content-area { flex: 1; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); min-height: 500px; }
     .tab-content { display: none; } .tab-content.active { display: block; }
     .page-title { font-size: 1.5rem; color: var(--odtu-dark); margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid #eee; display: flex; justify-content: space-between; align-items: center; }
@@ -42,6 +46,7 @@
     .form-group { margin-bottom: 20px; }
     .form-group label { display: block; font-weight: bold; margin-bottom: 8px; color: #555; }
     .form-control { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; outline: none; }
+    .form-control:disabled { background-color: #e9ecef; cursor: not-allowed; color: #6c757d; }
     .btn-save { background: var(--odtu-dark); color: white; border: none; padding: 12px 30px; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.3s; }
     #locationMap { width: 100%; height: 300px; border-radius: 8px; border: 1px solid #ddd; margin-top: 10px; z-index: 1; }
     .section-divider { margin: 30px 0; border-top: 1px dashed #ddd; }
@@ -62,16 +67,20 @@
     .btn-accept { background: #27ae60; } .btn-reject { background: #c0392b; }
     .msg-list { list-style: none; padding: 0; }
     .msg-item { background: #f9f9f9; padding: 15px; margin-bottom: 10px; border-radius: 8px; border: 1px solid #eee; }
-    
-    /* BİLDİRİM ROZETİ (Menü Butonu İçin) */
-    .badge-count {
-        position: absolute; top: 10px; right: 10px;
-        background: var(--odtu-red); color: white;
-        border-radius: 50%; padding: 2px 6px;
-        font-size: 0.75rem; display: none;
-        box-shadow: 0 0 5px rgba(0,0,0,0.2);
-    }
-    .menu-btn:hover .badge-count, .menu-btn.active .badge-count { border: 1px solid white; }
+    .btn-new-msg { background: var(--odtu-red); color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; font-size: 0.9rem; }
+
+    /* ARAMA VE COMPOSE */
+    .recipients-container { border: 1px solid #ddd; border-radius: 8px; padding: 5px; display: flex; flex-wrap: wrap; gap: 5px; min-height: 45px; align-items: center; margin-bottom: 10px; position: relative; cursor: text; }
+    .recipient-chip { background: #e3f2fd; color: #1565c0; padding: 5px 10px; border-radius: 15px; font-size: 0.9rem; display: flex; align-items: center; gap: 5px; }
+    .search-input-ghost { border: none; outline: none; flex: 1; padding: 5px; font-size: 0.95rem; min-width: 100px; }
+    .search-dropdown { position: absolute; top: 100%; left: 0; width: 100%; background: white; border: 1px solid #ddd; border-radius: 0 0 8px 8px; max-height: 150px; overflow-y: auto; display: none; z-index: 10; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+    .search-item { padding: 10px; cursor: pointer; border-bottom: 1px solid #eee; }
+    .search-item:hover { background: #f0f8ff; }
+
+    /* MODAL */
+    .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 6000; display: none; justify-content: center; align-items: center; }
+    .modal-content { background: white; padding: 30px; border-radius: 12px; width: 90%; max-width: 600px; max-height: 90vh; overflow-y: auto; position:relative; }
+    .close-modal { position: absolute; top: 15px; right: 20px; font-size: 1.5rem; cursor: pointer; }
 
     /* MOBİL */
     @media (max-width: 900px) {
@@ -101,7 +110,9 @@
                 <a href="meeting.html">Meeting Hub</a>
                 <a href="network.html">Ağ & Mentorluk</a>
                 <a href="career.html">Kariyer Lab</a>
-                <a href="profile.html" class="active">Profilim</a>
+                <a href="profile.html" class="active">
+                    Profilim <span id="globalBadge">0</span>
+                </a>
                 <a href="admin.html" id="navAdminBtn" style="display:none; color:#ff6b6b; font-weight:bold;">Yönetim</a>
                 <a href="#" onclick="logout()" class="mobile-logout">Çıkış Yap</a>
             </div>
@@ -136,12 +147,15 @@
                     <div class="form-group"><label>Ad Soyad</label><input type="text" id="fullName" class="form-control"></div>
                     
                     <div class="form-group" style="background:#f9f9f9; padding:15px; border:1px solid #eee; border-radius:8px;">
-                        <label style="color:var(--odtu-red);">Üyelik Tipi (Lütfen Seçiniz)</label>
+                        <label style="color:var(--odtu-red);">Üyelik Tipi</label>
                         <select id="userTypeSelect" class="form-control" onchange="toggleUserTypeFields()">
                             <option value="">Seçiniz...</option>
                             <option value="student">Öğrenci</option>
                             <option value="grad">Mezun</option>
                         </select>
+                        <small id="typeLockMsg" style="display:none; color:#666; margin-top:5px;">
+                            <i class="fa-solid fa-lock"></i> Bu bilgi güvenlik gereği sadece bir kez seçilebilir.
+                        </small>
                     </div>
 
                     <div class="form-group"><label>Bölüm</label><input type="text" id="dept" class="form-control"></div>
@@ -161,11 +175,9 @@
                                 <option value="Doktora Sonrası">Doktora Sonrası</option>
                             </select>
                         </div>
-                        
                         <div class="form-group">
-                            <label>Kariyer Hedefleri & İlgi Alanları</label>
-                            <textarea id="careerGoals" class="form-control" rows="3" placeholder="Örn: Yapay zeka alanında çalışmak, akademisyen olmak, yurtdışı master planı..."></textarea>
-                            <small style="color:#666;">Mentorların sizi daha iyi tanıması için hedeflerinizden bahsedin.</small>
+                            <label>Kariyer Hedefleri</label>
+                            <textarea id="careerGoals" class="form-control" rows="3" placeholder="Örn: Akademi, Yapay Zeka..."></textarea>
                         </div>
                     </div>
 
@@ -176,14 +188,8 @@
                     </div>
 
                     <div id="mentorOption" class="mentor-switch-container">
-                        <label class="switch">
-                            <input type="checkbox" id="isMentorCheck">
-                            <span class="slider"></span>
-                        </label>
-                        <div>
-                            <strong>Mentor Olmak İstiyorum</strong>
-                            <p style="font-size:0.85rem; color:#666; margin:0;">Profilinizi mentor ağında yayınlayın.</p>
-                        </div>
+                        <label class="switch"><input type="checkbox" id="isMentorCheck"><span class="slider"></span></label>
+                        <div><strong>Mentor Olmak İstiyorum</strong><p style="font-size:0.85rem; color:#666; margin:0;">Profilinizi mentor ağında yayınlayın.</p></div>
                     </div>
 
                     <div class="section-divider"></div>
@@ -200,11 +206,16 @@
                 <div class="page-title">Mesajlar <button class="btn-new-msg" onclick="openComposeModal()"><i class="fa-solid fa-pen-to-square"></i> Yeni Mesaj</button></div>
                 <ul id="msgList" class="msg-list"></ul>
             </div>
+            
             <div id="mentorRequests" class="tab-content">
                 <div class="page-title">Mentorluk Yönetimi</div>
+                <div style="margin-bottom:20px; padding:15px; background:#f0f9ff; border-left:4px solid #3b82f6; border-radius:4px; font-size:0.9rem; color:#0c4a6e;">
+                    <i class="fa-solid fa-circle-info"></i> Mentorluk durumunuzu <strong>Profil Ayarları</strong> sekmesinden değiştirebilirsiniz.
+                </div>
                 <h3 style="font-size:1.1rem; border-bottom:1px solid #eee; padding-bottom:10px; margin-bottom:15px;">Gelen İstekler</h3>
                 <div id="reqListContainer">Yükleniyor...</div>
             </div>
+            
             <div id="notes" class="tab-content"><div class="page-title">Notlar</div><div style="display:flex; gap:10px;"><input type="text" id="newNote" class="form-control"><button class="btn-save" style="width:auto;" onclick="addNote()">Ekle</button></div><div id="noteList" style="margin-top:20px;"></div></div>
         </div>
     </div>
@@ -226,7 +237,8 @@
             const { data: { session } } = await supabaseClient.auth.getSession();
             if (!session) { window.location.href = 'index.html'; return; }
             currentUser = session.user;
-            initMap(); loadProfile(); loadMessages(); loadNotes(); setupRealtime();
+            initMap(); loadProfile(); loadMessages(); loadNotes(); 
+            updateNotificationCounts(); setupRealtime();
         });
 
         function toggleMenu() { document.getElementById('navLinks').classList.toggle('active'); }
@@ -246,6 +258,7 @@
                 document.getElementById('lat').value=lat; document.getElementById('lng').value=lng;
             });
         }
+        
         function toggleUserTypeFields() {
             const type = document.getElementById('userTypeSelect').value;
             if(type === 'grad') {
@@ -258,6 +271,7 @@
                 document.getElementById('mentorOption').style.display = 'none';
             }
         }
+
         async function loadProfile() {
             const { data } = await supabaseClient.from('profiles').select('*').eq('id', currentUser.id).single();
             if(data) {
@@ -267,9 +281,16 @@
                 document.getElementById('bio').value = data.bio||'';
                 if(data.skills) document.getElementById('skills').value = data.skills.join(', ');
 
-                const userType = data.user_type || 'student';
-                document.getElementById('userTypeSelect').value = userType;
-                toggleUserTypeFields();
+                // --- ÜYELİK TİPİ KONTROLÜ VE KİLİTLEME ---
+                const userType = data.user_type || ''; 
+                const typeSelect = document.getElementById('userTypeSelect');
+                typeSelect.value = userType;
+                
+                if (userType) {
+                    typeSelect.disabled = true; // KİLİTLE
+                    document.getElementById('typeLockMsg').style.display = 'block'; // MESAJ GÖSTER
+                    toggleUserTypeFields(); // Alanları aç
+                }
 
                 if(userType === 'grad') {
                     document.getElementById('company').value = data.company||'';
@@ -277,7 +298,7 @@
                     document.getElementById('gradYear').value = data.grad_year||'';
                     document.getElementById('isMentorCheck').checked = data.is_mentor;
                     if(data.is_mentor) document.getElementById('mentorTabBtn').style.display = 'flex';
-                } else {
+                } else if(userType === 'student') {
                     document.getElementById('classLevel').value = data.class_level || '1'; 
                     document.getElementById('careerGoals').value = data.career_goals || ''; 
                 }
@@ -290,11 +311,14 @@
                 }
             }
         }
+        
         document.getElementById('profileForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const btn = document.querySelector('.btn-save'); btn.innerHTML = 'Kaydediliyor...'; btn.disabled = true;
             
             const uType = document.getElementById('userTypeSelect').value;
+            if(!uType) { alert("Lütfen Üyelik Tipini seçiniz."); btn.disabled=false; btn.innerHTML='Değişiklikleri Kaydet'; return; }
+
             let skillsArray = [];
             if(document.getElementById('skills').value) skillsArray = document.getElementById('skills').value.split(',').map(s=>s.trim());
 
@@ -319,6 +343,11 @@
             if(!error) {
                 showToast("Kaydedildi! ✅");
                 document.getElementById('mentorTabBtn').style.display = updates.is_mentor ? 'flex' : 'none';
+                
+                // Kaydettikten sonra kilitle
+                document.getElementById('userTypeSelect').disabled = true;
+                document.getElementById('typeLockMsg').style.display = 'block';
+
             } else alert("Hata: " + error.message);
             btn.innerHTML = 'Değişiklikleri Kaydet'; btn.disabled = false;
         });
@@ -326,11 +355,8 @@
         // --- İSTEKLER VE MESAJLAR ---
         async function loadMentorRequests() {
             const listDiv = document.getElementById('reqListContainer');
-            const badge = document.getElementById('mentorReqCount');
             const { data: requests, error } = await supabaseClient.from('mentor_requests').select('*').eq('mentor_id', currentUser.id).order('created_at', { ascending: false });
             if (error) return;
-            const pending = requests ? requests.filter(r => r.status === 'pending').length : 0;
-            if (pending > 0) { badge.innerText = pending; badge.style.display = 'inline-block'; } else badge.style.display = 'none';
             if (!requests || requests.length === 0) { listDiv.innerHTML = '<p style="text-align:center;">Talep yok.</p>'; return; }
             let sIds = requests.map(r => r.student_id);
             let sMap = {};
@@ -342,8 +368,8 @@
                 listDiv.innerHTML += `<div class="request-item"><div><strong>${s.full_name}</strong><br><small>${s.department}</small><br><i>"${req.request_message}"</i></div>${actions}</div>`;
             });
         }
-        async function respondRequest(id, status) { if(!confirm("Onaylıyor musunuz?")) return; await supabaseClient.from('mentor_requests').update({ status: status }).eq('id', id); loadMentorRequests(); }
-        async function loadMessages() { const list = document.getElementById('msgList'); const { data } = await supabaseClient.from('direct_messages').select('*').eq('receiver_id', currentUser.id).order('created_at', {ascending: false}); if(!data || data.length === 0) { list.innerHTML = '<div style="text-align:center; padding:20px; color:#999;">Mesaj kutusu boş.</div>'; return; } loadedMessages = data; list.innerHTML = ''; const unread = data.filter(m => !m.is_read).length; const badge = document.getElementById('msgCount'); if(unread > 0) { badge.style.display='inline-block'; badge.innerText=unread; } data.forEach((m, index) => { list.innerHTML += `<li class="msg-item" onclick="openMessage(${index})"><div class="msg-header"><strong>${m.sender_name || 'İsimsiz'}</strong><small>${new Date(m.created_at).toLocaleDateString()}</small></div><div class="msg-preview">${m.content}</div></li>`; }); }
+        async function respondRequest(id, status) { if(!confirm("Onaylıyor musunuz?")) return; await supabaseClient.from('mentor_requests').update({ status: status }).eq('id', id); loadMentorRequests(); updateNotificationCounts(); }
+        async function loadMessages() { const list = document.getElementById('msgList'); const { data } = await supabaseClient.from('direct_messages').select('*').eq('receiver_id', currentUser.id).order('created_at', {ascending: false}); if(!data || data.length === 0) { list.innerHTML = '<div style="text-align:center; padding:20px; color:#999;">Mesaj kutusu boş.</div>'; return; } loadedMessages = data; list.innerHTML = ''; data.forEach((m, index) => { list.innerHTML += `<li class="msg-item" onclick="openMessage(${index})"><div class="msg-header"><strong>${m.sender_name || 'İsimsiz'}</strong><small>${new Date(m.created_at).toLocaleDateString()}</small></div><div class="msg-preview">${m.content}</div></li>`; }); }
         function openMessage(index) { const msg = loadedMessages[index]; document.getElementById('readSender').innerText = msg.sender_name; document.getElementById('readDate').innerText = new Date(msg.created_at).toLocaleString(); document.getElementById('readContent').innerText = msg.content; document.getElementById('replyTargetId').value = msg.sender_id; document.getElementById('readModal').style.display = 'flex'; }
         async function sendReply() { const tId = document.getElementById('replyTargetId').value; const txt = document.getElementById('replyText').value; if(!txt) return alert("Boş mesaj"); await supabaseClient.from('direct_messages').insert({sender_id: currentUser.id, receiver_id: tId, content: txt, sender_name: currentUser.user_metadata?.full_name}); showToast("Gönderildi"); closeModal('readModal'); }
         function openComposeModal() { selectedRecipients=[]; updateRecipientsUI(); document.getElementById('composeContent').value=''; document.getElementById('composeModal').style.display='flex'; }
@@ -357,16 +383,24 @@
         async function deleteNote(id) { if(confirm("Sil?")) { await supabaseClient.from('personal_notes').delete().eq('id',id); loadNotes(); } }
         function closeModal(id) { document.getElementById(id).style.display = 'none'; }
         
-        // --- REALTIME BİLDİRİM ---
+        async function updateNotificationCounts() {
+            const { count: msgCount } = await supabaseClient.from('direct_messages').select('*', { count: 'exact', head: true }).eq('receiver_id', currentUser.id).eq('is_read', false);
+            const { count: reqCount } = await supabaseClient.from('mentor_requests').select('*', { count: 'exact', head: true }).eq('mentor_id', currentUser.id).eq('status', 'pending');
+            const msgBadge = document.getElementById('msgCount'); if(msgCount > 0) { msgBadge.style.display='inline-block'; msgBadge.innerText = msgCount; } else msgBadge.style.display='none';
+            const reqBadge = document.getElementById('mentorReqCount'); if(reqCount > 0) { reqBadge.style.display='inline-block'; reqBadge.innerText = reqCount; } else reqBadge.style.display='none';
+            const total = (msgCount||0) + (reqCount||0);
+            const globalBadge = document.getElementById('globalBadge'); if(total > 0) { globalBadge.style.display='inline-flex'; globalBadge.innerText = total; } else globalBadge.style.display='none';
+        }
+
         function setupRealtime() {
             supabaseClient.channel('custom-all-channel')
             .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'mentor_requests', filter: `mentor_id=eq.${currentUser.id}` }, payload => {
                 showToast("🔔 Yeni bir mentorluk isteği aldınız!");
-                loadMentorRequests(); 
+                loadMentorRequests(); updateNotificationCounts();
             })
             .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'direct_messages', filter: `receiver_id=eq.${currentUser.id}` }, payload => {
                 showToast("💬 Yeni mesajınız var!");
-                loadMessages();
+                loadMessages(); updateNotificationCounts();
             })
             .subscribe();
         }
