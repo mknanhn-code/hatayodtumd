@@ -3,15 +3,20 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Mezun Ağı - Hatay ODTÜ MD</title>
+<title>Ağ & Mentorluk - Hatay ODTÜ MD</title>
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
 <style>
     :root { --odtu-red: #E31E24; --odtu-dark: #2c3e50; --bg-light: #f8f9fa; --white: #ffffff; }
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
     body { background-color: var(--bg-light); min-height: 100vh; color: #333; }
 
     /* NAVBAR */
-    .navbar { width: 100%; height: 70px; background-color: var(--odtu-dark); display: flex; align-items: center; justify-content: space-between; padding: 0 20px; position: fixed; top: 0; z-index: 5000; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+    .navbar { width: 100%; height: 70px; background-color: var(--odtu-dark); display: flex; align-items: center; justify-content: space-between; padding: 0 20px; position: fixed; top: 0; left: 0; z-index: 5000; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
     .nav-left { display: flex; align-items: center; gap: 15px; }
     .nav-logo { height: 40px; background: white; padding: 2px; border-radius: 5px; }
     .nav-title { color: white; font-weight: bold; font-size: 1.1rem; }
@@ -29,14 +34,45 @@
     .filter-input { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; margin-bottom: 10px; }
     .btn-filter { width: 100%; background: var(--odtu-dark); color: white; border: none; padding: 10px; border-radius: 6px; cursor: pointer; font-weight: bold; }
     
+    /* TOGGLE SWITCH (Mentor Filtresi) */
+    .toggle-container { display: flex; align-items: center; gap: 10px; margin-bottom: 15px; cursor: pointer; }
+    .toggle-switch { position: relative; width: 40px; height: 20px; background: #ccc; border-radius: 20px; transition: 0.3s; }
+    .toggle-switch::after { content: ''; position: absolute; top: 2px; left: 2px; width: 16px; height: 16px; background: white; border-radius: 50%; transition: 0.3s; }
+    input:checked + .toggle-switch { background: var(--odtu-red); }
+    input:checked + .toggle-switch::after { transform: translateX(20px); }
+
+    /* HARİTA KUTUSU */
+    .map-container { width: 100%; height: 350px; border-radius: 12px; overflow: hidden; margin-bottom: 30px; border: 1px solid #ddd; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+    #alumniMap { width: 100%; height: 100%; z-index: 1; }
+
+    /* KARTLAR */
     .content-area { flex: 1; }
     .network-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 25px; }
-    .profile-card { background: white; border-radius: 12px; padding: 25px; text-align: center; border: 1px solid #eee; transition: 0.3s; position: relative; }
-    .profile-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.08); }
-    .profile-select { position: absolute; top: 15px; left: 15px; transform: scale(1.5); }
+    .profile-card { background: white; border-radius: 12px; padding: 25px; text-align: center; border: 1px solid #eee; transition: 0.3s; position: relative; display:flex; flex-direction:column; }
+    .profile-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.08); border-color: var(--odtu-dark); }
+    .profile-card.is-mentor { border-top: 4px solid var(--odtu-red); }
+
     .p-avatar { width: 80px; height: 80px; background: #eee; border-radius: 50%; margin: 0 auto 15px; display: flex; justify-content: center; align-items: center; font-size: 1.5rem; font-weight: bold; color: #555; }
-    .btn-msg { background: white; border: 1px solid var(--odtu-dark); color: var(--odtu-dark); padding: 8px 20px; border-radius: 20px; cursor: pointer; font-size: 0.9rem; font-weight: 600; width: 100%; }
-    .btn-msg:hover { background: var(--odtu-dark); color: white; }
+    .p-name { font-weight: bold; font-size: 1.1rem; color: var(--odtu-dark); }
+    .p-role { color: #666; font-size: 0.85rem; margin-bottom: 10px; min-height: 40px; }
+    
+    .badges { display: flex; justify-content: center; gap: 5px; margin-bottom: 15px; flex-wrap: wrap; }
+    .badge { font-size: 0.7rem; padding: 3px 8px; border-radius: 12px; font-weight: bold; }
+    .bg-mentor { background: #fee2e2; color: #b91c1c; border: 1px solid #fca5a5; }
+    .bg-grad { background: #e0e7ff; color: #3730a3; border: 1px solid #c7d2fe; }
+
+    .card-actions { margin-top: auto; display: flex; flex-direction: column; gap: 8px; }
+    .btn-msg { background: white; border: 1px solid var(--odtu-dark); color: var(--odtu-dark); padding: 8px; border-radius: 6px; cursor: pointer; font-size: 0.9rem; font-weight: 600; width: 100%; transition: 0.2s; }
+    .btn-msg:hover { background: #f3f4f6; }
+    .btn-req { background: var(--odtu-red); color: white; border: none; padding: 8px; border-radius: 6px; cursor: pointer; font-size: 0.9rem; font-weight: 600; width: 100%; }
+    .btn-req:hover { background: #c01b20; }
+
+    /* MODALLER */
+    .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 6000; display: none; justify-content: center; align-items: center; }
+    .modal-content { background: white; padding: 30px; border-radius: 12px; width: 90%; max-width: 500px; }
+    .close-modal { float: right; cursor: pointer; font-size: 1.5rem; }
+    textarea { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; margin: 10px 0; min-height: 100px; resize: vertical; }
+    #liveToast { position: fixed; top: 20px; right: 20px; background: white; padding: 15px 20px; border-radius: 8px; border-left: 5px solid #27ae60; box-shadow: 0 5px 15px rgba(0,0,0,0.2); display:none; z-index: 7000; }
 
     /* MOBİL */
     @media (max-width: 900px) {
@@ -44,16 +80,9 @@
         .nav-links.active { display: flex; }
         .hamburger { display: block; }
         .nav-right { display: none; }
-        .container { flex-direction: column; margin-top: 90px; }
+        .container { flex-direction: column; margin-top: 90px; padding: 20px; }
         .sidebar { width: 100%; position: static; }
     }
-    
-    /* EXTRA: Toplu Mesaj Bar */
-    .bulk-action-bar { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: var(--odtu-dark); color: white; padding: 15px 30px; border-radius: 50px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); display: none; align-items: center; gap: 20px; z-index: 4000; }
-    .msg-window-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 6000; display: none; justify-content: center; align-items: center; }
-    .msg-window { background: white; width: 600px; max-width: 90%; border-radius: 12px; padding: 20px; }
-    textarea { width: 100%; height: 150px; padding: 10px; border: 1px solid #ddd; border-radius: 6px; margin: 10px 0; }
-    #liveToast { position: fixed; top: 20px; right: 20px; background: white; padding: 15px 20px; border-radius: 8px; border-left: 5px solid #27ae60; box-shadow: 0 5px 15px rgba(0,0,0,0.2); display:none; z-index: 7000; }
 </style>
 </head>
 <body>
@@ -64,161 +93,207 @@
         <div class="nav-links" id="navLinks">
             <a href="dashboard.html">Panel</a>
             <a href="meeting.html">Meeting Hub</a>
-            <a href="mentor.html">Mentorluk</a>
+            <a href="network.html" class="active">Ağ & Mentorluk</a>
             <a href="career.html">Kariyer Lab</a>
-            <a href="network.html" class="active">Mezun Ağı</a>
             <a href="profile.html">Profilim</a>
             <a href="#" onclick="logout()" style="color: #ff6b6b; border: 1px solid #ff6b6b; margin-top: 20px;">Çıkış Yap</a>
         </div>
-        <div class="nav-right"><a href="#" class="logout-btn" onclick="logout()">Çıkış</a></div>
+
     </nav>
 
     <div class="container">
         <div class="sidebar">
             <div class="sidebar-box">
                 <h3><i class="fa-solid fa-filter"></i> Filtrele</h3>
+                
+                <label class="toggle-container">
+                    <input type="checkbox" id="showMentorsOnly" style="display:none;" onchange="filterProfiles()">
+                    <div class="toggle-switch"></div>
+                    <span style="font-weight:bold; color:var(--odtu-red);">Sadece Mentorlar</span>
+                </label>
+
                 <input type="text" id="searchName" class="filter-input" placeholder="Ad Soyad..." onkeyup="filterProfiles()">
                 <input type="text" id="searchDept" class="filter-input" placeholder="Bölüm..." onkeyup="filterProfiles()">
                 <button class="btn-filter" onclick="fetchProfiles()">Sıfırla</button>
             </div>
-            <div class="sidebar-box">
-                <h3>Hızlı Notlar</h3>
-                <input type="text" id="sideNoteInput" class="filter-input" placeholder="Not al...">
-                <button class="btn-filter" style="background:#f39c12;" onclick="addSideNote()">Ekle</button>
-                <ul id="sideNoteList" style="list-style:none; padding:0; margin-top:10px;"></ul>
+            
+            <div class="sidebar-box" style="margin-top:15px; font-size:0.9rem; color:#666;">
+                <p><i class="fa-solid fa-map-location-dot"></i> Haritada görünmek için profilinizden konumunuzu işaretlemeyi unutmayın.</p>
             </div>
         </div>
 
         <div class="content-area">
-            <div style="margin-bottom:20px;"><h2>Mezunlar Dizini</h2><span id="resultCount">Yükleniyor...</span></div>
-            <div class="network-grid" id="profileGrid"></div>
+            <div class="map-container">
+                <div id="alumniMap"></div>
+            </div>
+
+            <div style="margin-bottom:20px; display:flex; justify-content:space-between; align-items:center;">
+                <h2 style="margin:0;">ODTÜ Topluluğu</h2>
+                <span id="resultCount" style="background:#e3f2fd; color:#1565c0; padding:5px 15px; border-radius:20px; font-weight:bold; font-size:0.9rem;">...</span>
+            </div>
+
+            <div class="network-grid" id="profileGrid">
+                <div style="grid-column:1/-1; text-align:center; padding:50px; color:#999;"><i class="fa-solid fa-spinner fa-spin fa-2x"></i><br>Yükleniyor...</div>
+            </div>
         </div>
     </div>
 
-    <div id="bulkActionBar" class="bulk-action-bar">
-        <span id="bulkCount">0 Seçildi</span>
-        <button onclick="openBulkMsgModal()" style="background:white; color:#333; border:none; padding:5px 15px; border-radius:15px; cursor:pointer;">Toplu Mesaj</button>
-        <i class="fa-solid fa-times" style="cursor:pointer;" onclick="clearBulkSelection()"></i>
+    <div id="msgModal" class="modal-overlay" style="display:none;">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal('msgModal')">&times;</span>
+            <h3>Mesaj Gönder</h3>
+            <p>Alıcı: <b id="msgTargetName">...</b></p>
+            <input type="hidden" id="msgTargetId">
+            <textarea id="msgContent" placeholder="Merhaba..."></textarea>
+            <button onclick="sendMessage()" class="btn-filter">Gönder 🚀</button>
+        </div>
     </div>
 
-    <div id="msgModal" class="msg-window-overlay" style="display:none;">
-        <div class="msg-window">
-            <h3>Yeni Mesaj <span onclick="closeModal()" style="float:right; cursor:pointer;">&times;</span></h3>
-            <div id="msgTargetName">...</div>
-            <input type="hidden" id="msgTargetId"><input type="hidden" id="isBulk">
-            <textarea id="msgContent" placeholder="Mesajınız..."></textarea>
-            <button onclick="sendMessage()" style="width:100%; padding:10px; background:var(--odtu-red); color:white; border:none; border-radius:6px; cursor:pointer;">Gönder</button>
+    <div id="reqModal" class="modal-overlay" style="display:none;">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal('reqModal')">&times;</span>
+            <h3 style="color:var(--odtu-red);">Mentorluk İsteği</h3>
+            <p>Sayın <b id="reqTargetName">...</b> ile mentorluk süreci başlatmak üzeresiniz.</p>
+            <input type="hidden" id="reqTargetId">
+            <textarea id="reqContent" placeholder="Kendinizden ve hedeflerinizden kısaca bahsedin..."></textarea>
+            <button onclick="sendRequest()" class="btn-filter" style="background:var(--odtu-red);">İstek Gönder</button>
         </div>
     </div>
 
     <div id="liveToast">İşlem Başarılı</div>
 
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.7/dist/umd/supabase.min.js"></script>
     <script>
         const supabaseUrl = 'https://hftrmiiacxgtkarsvupn.supabase.co';
         const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhmdHJtaWlhY3hndGthcnN2dXBuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ3ODUzNzIsImV4cCI6MjA4MDM2MTM3Mn0.BgCk5xuZx6AZuxzfBHcQqg8j8BtxU9FbupDgoFecG_k';
+        let supabaseClient; try { supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey); } catch(e){}
         
-        let supabaseClient;
-        try { 
-            if(window.supabase) supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey); 
-            else console.error("Supabase yüklenemedi");
-        } catch(e){ console.error(e); }
-        
-        let currentUser = null, allProfiles = [], selectedUserIds = new Set();
+        let currentUser = null, userProfile = null, allProfiles = [], map;
 
         document.addEventListener("DOMContentLoaded", async () => {
             if(!supabaseClient) return;
             const { data: { session } } = await supabaseClient.auth.getSession();
             if (!session) { window.location.href = 'index.html'; return; }
             currentUser = session.user;
-            fetchProfiles(); loadSideNotes();
+            
+            const { data } = await supabaseClient.from('profiles').select('*').eq('id', currentUser.id).single();
+            userProfile = data;
+
+            initMap();
+            fetchProfiles();
         });
 
         function toggleMenu() { document.getElementById('navLinks').classList.toggle('active'); }
 
-        async function fetchProfiles() {
-            const { data, error } = await supabaseClient.from('profiles').select('*').order('created_at', {ascending:false});
-            if (error) { 
-                document.getElementById('profileGrid').innerHTML = '<p>Veri çekme hatası.</p>';
-                return;
-            }
-            if(data) { allProfiles = data; renderProfiles(data); }
+        async function initMap() {
+            map = L.map('alumniMap').setView([39.93, 32.85], 5); // Türkiye odaklı başla
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
         }
 
-        function renderProfiles(profiles) {
-            const grid = document.getElementById('profileGrid'); grid.innerHTML = '';
-            const visible = profiles.filter(p => p.id !== currentUser.id);
-            document.getElementById('resultCount').innerText = `${visible.length} Üye Bulundu`;
-            
-            if(visible.length === 0) {
-                 grid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: #999;">Kriterlere uygun üye bulunamadı.</p>';
-                 return;
+        async function fetchProfiles() {
+            const { data } = await supabaseClient.from('profiles').select('*').order('created_at', {ascending:false});
+            if(data) { 
+                allProfiles = data; 
+                filterProfiles(); 
+                updateMapMarkers(data); // Haritayı güncelle
             }
+        }
 
-            visible.forEach(p => {
-                const isChecked = selectedUserIds.has(p.id) ? 'checked' : '';
-                const avatarChar = p.full_name ? p.full_name.substring(0,2).toUpperCase() : 'U';
-                
-                grid.innerHTML += `
-                <div class="profile-card">
-                    <input type="checkbox" class="profile-select" value="${p.id}" ${isChecked} onchange="toggleSelection('${p.id}', this.checked)">
-                    <div class="p-avatar">${avatarChar}</div>
-                    <div style="font-weight:bold;">${p.full_name || 'İsimsiz'}</div>
-                    <div style="color:#666; font-size:0.9rem; margin-bottom:10px;">${p.department || 'Bölüm Yok'}</div>
-                    <button class="btn-msg" onclick="openMsgModal('${p.id}', '${p.full_name}')">Mesaj</button>
-                </div>`;
+        function updateMapMarkers(profiles) {
+            // Haritayı temizle (LayerGroup kullanılabilir ama basitlik için direkt ekliyoruz)
+            // Mevcut markerları temizlemek için map.eachLayer döngüsü yapılabilir, şimdilik üzerine ekliyoruz.
+            
+            profiles.forEach(p => {
+                if(p.latitude && p.longitude) {
+                    const role = p.user_type === 'student' ? 'Öğrenci' : 'Mezun';
+                    const detail = p.company ? p.company : role;
+                    L.marker([p.latitude, p.longitude]).addTo(map)
+                        .bindPopup(`<b>${p.full_name}</b><br>${p.department}<br><small>${detail}</small>`);
+                }
             });
         }
 
         function filterProfiles() {
             const n = document.getElementById('searchName').value.toLowerCase();
             const d = document.getElementById('searchDept').value.toLowerCase();
-            const filtered = allProfiles.filter(p => (p.full_name||'').toLowerCase().includes(n) && (p.department||'').toLowerCase().includes(d));
+            const onlyMentors = document.getElementById('showMentorsOnly').checked;
+
+            const filtered = allProfiles.filter(p => {
+                if (p.id === currentUser.id) return false;
+                const matchText = (p.full_name||'').toLowerCase().includes(n) && (p.department||'').toLowerCase().includes(d);
+                const matchMentor = onlyMentors ? p.is_mentor === true : true;
+                return matchText && matchMentor;
+            });
+
             renderProfiles(filtered);
         }
 
-        function toggleSelection(id, checked) {
-            if(checked) selectedUserIds.add(id); else selectedUserIds.delete(id);
-            const bar = document.getElementById('bulkActionBar');
-            if(selectedUserIds.size > 0) { bar.style.display = 'flex'; document.getElementById('bulkCount').innerText = `${selectedUserIds.size} Seçildi`; } else { bar.style.display = 'none'; }
+        function renderProfiles(profiles) {
+            const grid = document.getElementById('profileGrid'); grid.innerHTML = '';
+            document.getElementById('resultCount').innerText = `${profiles.length} Kişi`;
+
+            if(profiles.length === 0) { grid.innerHTML = '<p style="grid-column:1/-1; text-align:center;">Sonuç yok.</p>'; return; }
+
+            const isStudent = userProfile && userProfile.user_type === 'student';
+
+            profiles.forEach(p => {
+                const avatar = p.full_name ? p.full_name.substring(0,2).toUpperCase() : 'U';
+                const isMentor = p.is_mentor === true;
+                const cardClass = isMentor ? 'profile-card is-mentor' : 'profile-card';
+                
+                let badges = `<span class="badge bg-grad">Mezun</span>`;
+                if(isMentor) badges += ` <span class="badge bg-mentor"><i class="fa-solid fa-star"></i> Mentor</span>`;
+                if(p.user_type === 'student') badges = `<span class="badge" style="background:#fff3e0; color:#e67e22;">Öğrenci</span>`;
+                
+                let buttons = `<button class="btn-msg" onclick="openMsgModal('${p.id}', '${p.full_name}')">Mesaj At</button>`;
+                
+                if (isMentor && isStudent) {
+                    buttons += `<button class="btn-req" onclick="openReqModal('${p.id}', '${p.full_name}')">Mentorluk İste</button>`;
+                }
+
+                grid.innerHTML += `
+                <div class="${cardClass}">
+                    <div class="p-avatar">${avatar}</div>
+                    <div class="p-name">${p.full_name}</div>
+                    <div class="p-role">${p.department}<br><small>${p.company || ''}</small></div>
+                    <div class="badges">${badges}</div>
+                    <div class="card-actions">${buttons}</div>
+                </div>`;
+            });
         }
-        function clearBulkSelection() { selectedUserIds.clear(); document.getElementById('bulkActionBar').style.display='none'; renderProfiles(allProfiles); }
 
-        function openMsgModal(id, name) { document.getElementById('isBulk').value='false'; document.getElementById('msgTargetId').value=id; document.getElementById('msgTargetName').innerText=name; document.getElementById('msgModal').style.display='flex'; }
-        function openBulkMsgModal() { document.getElementById('isBulk').value='true'; document.getElementById('msgTargetName').innerText=`${selectedUserIds.size} Kişi`; document.getElementById('msgModal').style.display='flex'; }
-        function closeModal() { document.getElementById('msgModal').style.display='none'; }
-
+        // --- MESAJ ---
+        function openMsgModal(id, name) {
+            document.getElementById('msgTargetId').value = id;
+            document.getElementById('msgTargetName').innerText = name;
+            document.getElementById('msgContent').value = '';
+            document.getElementById('msgModal').style.display = 'flex';
+        }
         async function sendMessage() {
+            const tId = document.getElementById('msgTargetId').value;
             const txt = document.getElementById('msgContent').value;
-            const isBulk = document.getElementById('isBulk').value === 'true';
-            const myName = currentUser.user_metadata?.full_name;
-            if(!txt) return alert("Mesaj boş olamaz");
-            
-            const btn = event.target; btn.innerText="..."; btn.disabled=true;
-            
-            if(isBulk) {
-                const promises = Array.from(selectedUserIds).map(r => supabaseClient.from('direct_messages').insert({ sender_id: currentUser.id, receiver_id: r, content: txt, sender_name: myName }));
-                await Promise.all(promises); showToast("Toplu Gönderildi!"); clearBulkSelection();
-            } else {
-                const tId = document.getElementById('msgTargetId').value;
-                await supabaseClient.from('direct_messages').insert({ sender_id: currentUser.id, receiver_id: tId, content: txt, sender_name: myName });
-                showToast("Gönderildi!");
-            }
-            closeModal(); document.getElementById('msgContent').value=''; btn.innerText="Gönder"; btn.disabled=false;
+            if(!txt) return alert("Boş mesaj gönderilemez.");
+            const { error } = await supabaseClient.from('direct_messages').insert({ sender_id: currentUser.id, receiver_id: tId, content: txt, sender_name: userProfile.full_name });
+            if(!error) { showToast("Mesaj Gönderildi!"); closeModal('msgModal'); }
         }
 
-        async function loadSideNotes() {
-            const { data } = await supabaseClient.from('personal_notes').select('*').eq('user_id', currentUser.id).order('created_at', {ascending:false});
-            const l = document.getElementById('sideNoteList'); l.innerHTML='';
-            if(data) data.forEach(n => l.innerHTML+=`<li style="background:#fff3e0; padding:5px; margin-bottom:5px; border-radius:4px;">${n.content} <i class="fa-solid fa-times" style="float:right; cursor:pointer; color:red;" onclick="delSideNote(${n.id})"></i></li>`);
+        // --- MENTORLUK İSTEĞİ ---
+        function openReqModal(id, name) {
+            document.getElementById('reqTargetId').value = id;
+            document.getElementById('reqTargetName').innerText = name;
+            document.getElementById('reqContent').value = '';
+            document.getElementById('reqModal').style.display = 'flex';
         }
-        async function addSideNote() {
-            const t = document.getElementById('sideNoteInput').value; if(!t)return;
-            await supabaseClient.from('personal_notes').insert({user_id:currentUser.id, content:t});
-            document.getElementById('sideNoteInput').value=''; loadSideNotes();
+        async function sendRequest() {
+            const mId = document.getElementById('reqTargetId').value;
+            const txt = document.getElementById('reqContent').value;
+            if(!txt) return alert("Lütfen bir not yazın.");
+            const { error } = await supabaseClient.from('mentor_requests').insert({ mentor_id: mId, student_id: currentUser.id, status: 'pending', request_message: txt });
+            if(!error) { showToast("İstek İletildi!"); closeModal('reqModal'); }
+            else if(error.code==='23505') alert("Zaten istek gönderdiniz!");
         }
-        async function delSideNote(id) { await supabaseClient.from('personal_notes').delete().eq('id', id); loadSideNotes(); }
 
+        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
         function showToast(msg) { const t=document.getElementById('liveToast'); t.innerText=msg; t.style.display='block'; setTimeout(()=>t.style.display='none',3000); }
         async function logout() { await supabaseClient.auth.signOut(); window.location.href = "index.html"; }
     </script>
